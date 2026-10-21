@@ -4,7 +4,7 @@
 
 两个生成入口（规则抽卡、手搓 AI）共用 CRT，输出后出现赞/踩。规则结果和 AI 结果保存为 pending，不自动当作正样本。评分变更事务性写事件和队列；同文最终评分去重、重复评分幂等。显示器下方可投喂完整句，独立记录并自动作为正向样本排入队列；后台用最新点赞/投喂句与可信训练种子回放做小步 SGD；点踩排除未来正向训练和回放，不宣称撤销历史梯度或完整 RLHF。
 
-原始模型为手写两层 causal pre-LN Transformer，字符 tokenizer、主题 token、tied embedding/output 和完整 context 位置表。当前训练词表1067时，d=160、heads=8、context=239、FFN=[906,907]，恰好1000000个唯一参数。PyTorch MPS用于初训，MLX功能实现读取同名canonical FP32数组。不能在AI路径用规则结果回退伪装模型。
+原始模型为手写两层 causal pre-LN Transformer，字符 tokenizer、256个UTF-8字节回退 token、主题 token、tied embedding/output 和完整 context 位置表。当前词表1323时，d=160、heads=8、context=174、FFN=[858,859]，恰好1000000个唯一参数。PyTorch MPS用于初训，MLX功能实现读取同名canonical FP32数组。不能在AI路径用规则结果回退伪装模型。
 
 初始数据：16000条实际规则生成句+120条curated_seed，稳定完整句hash划分train14508/validation806/test806。tokenizer只在train拟合。底层模板/词块跨划分共享，指标只说明域内拟合；curated种子不得伪装成人类赞。
 

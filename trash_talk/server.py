@@ -51,6 +51,9 @@ class LocalHTTPServer(ThreadingHTTPServer):
             self._connections.release()
 
     def server_close(self):
+        styles = getattr(self, "style_hub", None)
+        if styles is not None:
+            styles.close()
         learner = getattr(self, "learner", None)
         if learner is not None:
             learner.close()
@@ -100,6 +103,8 @@ def create_server(root: Path, port: int = 8765, *, seed: int | None = None, back
                 self._json(200, {"app": APP_ID, "project_id": project_identity(root), "status": "ok", "api_version": 2, "backend": backend, **stats}, head=head)
             elif route.path == "/api/model":
                 self._json(200, {**runtime.status(), "counts": feedback.counts(), "queue": feedback.queue_counts(), "fed_sentences": feedback.corpus_feed_count()}, head=head)
+            elif route.path == "/api/styles":
+                self._json(200, styles.status(), head=head)
             elif route.path == "/api/draw":
                 if head:
                     self._json(405, {"error": "抽取语料请使用 GET"}, head=True)
@@ -158,27 +163,36 @@ def create_server(root: Path, port: int = 8765, *, seed: int | None = None, back
                 return
             try:
                 if route == "/api/feedback":
-                    result = feedback.rate(data.get("sample_id"), data.get("rating"))
-                    # The response never waits for a gradient update or disk checkpoint.
-                    learner.notify()
-                elif route == "/api/feed":
-                    model = runtime.status()
-                    result = feedback.feed_sentence(data.get("text"), model["step"], model["run_id"])
-                    if result["job_id"] is not None:
+                    try:
+                        result = feedback.rate(data.get("sample_id"), data.get("rating"))
                         learner.notify()
+                    except LookupError:
+                        result = styles.rate(data.get("sample_id"), data.get("rating"))
+                elif route == "/api/feed":
+                    style = data.get("style", "base")
+                    target, store, worker = (runtime, feedback, learner) if style == "base" else styles.get(style)
+                    model = target.status()
+                    result = store.feed_sentence(data.get("text"), model["step"], model["run_id"])
+                    result["style"] = style
+                    if result["job_id"] is not None:
+                        worker.notify()
                 else:
                     source = "rule" if route == "/api/draw" else "garbage-1"
-                    result = generator.draw() if source == "rule" else runtime.generate()
+                    style = "base" if source == "rule" else data.get("style", "base")
+                    target, store, _ = (runtime, feedback, learner) if style == "base" else styles.get(style)
+                    result = generator.draw() if source == "rule" else target.generate()
                     model = result.get("model", runtime.status())
-                    sample_id = feedback.add_sample(result["text"], source, result["theme"], model["step"], model["run_id"])
-                    result = {**result, "sample_id": sample_id, "source": source, "rating": 0, "model": model}
+                    sample_id = store.add_sample(result["text"], source, result["theme"], model["step"], model["run_id"])
+                    from .lora import STYLE_NAMES
+                    result = {**result, "sample_id": sample_id, "source": source, "rating": 0, "model": model,
+                              "style": style, "style_name": "原版" if style == "base" else STYLE_NAMES[style]}
                 self._json(200, result)
             except LookupError:
                 self._json(404, {"error": "样本不存在，请先生成一句"})
-            except ValueError as error:
+            except (ValueError, TypeError) as error:
                 self._json(400, {"error": str(error)})
-            except RuntimeError:
-                self._json(503, {"error": "garbage-1 暂未就绪，请检查本地权重和 MLX 依赖。规则抽卡仍可用。"})
+            except RuntimeError as error:
+                self._json(503, {"error": (str(error) or "模型暂未就绪") + "。规则抽卡仍可用。"})
             except Exception:
                 LOGGER.exception("Generation or annotation failed")
                 self._json(500, {"error": "本地服务暂时卡壳了，请再试一次。"})
@@ -193,6 +207,9 @@ def create_server(root: Path, port: int = 8765, *, seed: int | None = None, back
         server.learner = learner
         server.model_runtime = runtime
         server.feedback_store = feedback
+        from .lora import StyleHub
+        styles = StyleHub(root, backend, base_runtime=runtime)
+        server.style_hub = styles
     except BaseException:
         server.server_close()
         raise

@@ -1,0 +1,63 @@
+- main [ref=f2e2]:
+  - region "嘴硬终端" [ref=f2e4]:
+    - generic [ref=f2e5]:
+      - generic [ref=f2e6]:
+        - generic "嘴硬终端" [ref=f2e7]:
+          - generic [aria-hidden] [ref=f2e8]: 嘴
+          - generic [ref=f2e9]:
+            - generic [ref=f2e10]: 嘴 硬
+            - generic [ref=f2e11]: Garbage Harness 01
+        - generic [aria-hidden] [ref=f2e12]:
+          - generic [ref=f2e13]: PERSONAL OPINIONS
+          - generic [ref=f2e14]: NO. 01
+      - region "垃圾话显示屏" [ref=f2e17]:
+        - generic [ref=f2e18]:
+          - generic [ref=f2e19]: READY · 等你开口
+          - generic [aria-hidden] [ref=f2e22]: CH 01
+        - status [ref=f2e23]: 系统已就绪，等你嘴硬。
+        - generic [aria-hidden] [ref=f2e24]:
+          - generic [ref=f2e25]: 信号稳定 · 随时开喷
+          - generic [ref=f2e26]: KEEP A STRAIGHT FACE
+      - generic [ref=f2e27]:
+        - generic [ref=f2e29]: POWER
+        - group "选择垃圾话生成方式" [ref=f2e33]:
+          - button "来点垃圾话 规则抽卡" [ref=f2e34] [cursor=pointer]:
+            - generic [aria-hidden] [ref=f2e35]: ↗
+            - generic [ref=f2e36]:
+              - generic [ref=f2e37]: 来点垃圾话
+              - generic [ref=f2e38]: 规则抽卡
+          - button "手搓 AI garbage-1" [ref=f2e39] [cursor=pointer]:
+            - generic [aria-hidden] [ref=f2e40]: ∿
+            - generic [ref=f2e41]:
+              - generic [ref=f2e42]: 手搓 AI
+              - generic [ref=f2e43]: garbage-1
+      - generic [ref=f2e44]:
+        - generic [ref=f2e45]:
+          - generic [ref=f2e46]: LoRA 风格
+          - combobox "LoRA 风格" [ref=f2e47] [cursor=pointer]:
+            - option "原版 · Base · 就绪" [selected]
+            - option "嘴臭 · Mouthy · 就绪"
+            - option "疯子 · Mad · 就绪"
+            - option "娘炮 · Sassy · 就绪"
+            - option "二次元 · Anime · 就绪"
+            - option "伪娘 · Femboy · 就绪"
+            - option "社畜 · Office · 就绪"
+            - option "兵王 · Soldier · 就绪"
+            - option "外星人 · Alien · 就绪"
+            - option "陪酒女 · Hostess · 就绪"
+        - generic [ref=f2e48]:
+          - status [ref=f2e49]: 当前投喂目标：原版底座 · 就绪 · step 430 · 1M 参数
+          - paragraph [ref=f2e50]: 选原版时投喂到底座训练；选 LoRA 风格后只投喂到对应适配器。
+      - generic [ref=f2e51]:
+        - generic [ref=f2e52]:
+          - generic [aria-hidden] [ref=f2e53]: 🗑️💾
+          - status [ref=f2e54]: GARBAGE-1 · 1M · FP32 · ZH · MLX
+        - generic [ref=f2e55]:
+          - generic [ref=f2e56]: 投喂一句完整中文语料
+          - textbox "投喂一句完整中文语料" [ref=f2e57]:
+            - /placeholder: 投喂一句完整中文语料，不拆词
+          - button "投喂 ↵" [ref=f2e58] [cursor=pointer]
+        - status [ref=f2e59]
+      - generic [aria-hidden] [ref=f2e60]:
+        - generic [ref=f2e61]: 不必认真，只管痛快。
+        - generic [ref=f2e62]: DEVELOPED BY KARAS

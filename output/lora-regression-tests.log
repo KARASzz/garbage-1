@@ -1,0 +1,98 @@
+garbage-1 load failed; rule generator remains available
+Traceback (most recent call last):
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 118, in __init__
+    entry = json.loads(pointer.read_text())
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+garbage-1 load failed; rule generator remains available
+Traceback (most recent call last):
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 118, in __init__
+    entry = json.loads(pointer.read_text())
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+Queue read failed; retrying without losing annotations
+Traceback (most recent call last):
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 309, in _consume
+    job = self.store.claim_job()
+  File "/Users/karas/+Python mac/垃圾话/tests/test_model_runtime.py", line 339, in fail_first_claim
+    raise RuntimeError("injected one-time claim failure")
+RuntimeError: injected one-time claim failure
+Queue acknowledgement failed; keeping original training result
+Traceback (most recent call last):
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 331, in _consume
+    self.store.finish_job(job["id"], result, error=error)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/karas/+Python mac/垃圾话/tests/test_model_runtime.py", line 367, in fail_first_finish
+    raise RuntimeError("injected one-time SQLite acknowledgement failure")
+RuntimeError: injected one-time SQLite acknowledgement failure
+garbage-1 load failed; rule generator remains available
+Traceback (most recent call last):
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 145, in __init__
+    self.prefixes = _load_examples(data_dir / "prefixes.json", prefixes=True)
+                    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 84, in _load_examples
+    raise ValueError(f"{path.name} 的版本、计数或 examples 无效")
+ValueError: prefixes.json 的版本、计数或 examples 无效
+garbage-1 load failed; rule generator remains available
+Traceback (most recent call last):
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 146, in __init__
+    self.replay = _load_examples(data_dir / "seed_replay.json")
+                  ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 84, in _load_examples
+    raise ValueError(f"{path.name} 的版本、计数或 examples 无效")
+ValueError: seed_replay.json 的版本、计数或 examples 无效
+======================================================================
+FAIL: test_solver_builds_exact_fp32_models_for_multiple_vocabularies (test_garbage_model.ModelConfigurationTests.test_solver_builds_exact_fp32_models_for_multiple_vocabularies) (vocab_size=8)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karas/+Python mac/垃圾话/tests/test_garbage_model.py", line 63, in test_solver_builds_exact_fp32_models_for_multiple_vocabularies
+    self.assertLessEqual(config.context, 192)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 not less than or equal to 192
+
+======================================================================
+FAIL: test_http_routes_preserve_get_shape_return_complete_results_and_reject_bad_requests (test_model_runtime.HttpRuntimeIntegrationTests.test_http_routes_preserve_get_shape_return_complete_results_and_reject_bad_requests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karas/+Python mac/垃圾话/tests/test_model_runtime.py", line 639, in test_http_routes_preserve_get_shape_return_complete_results_and_reject_bad_requests
+    self.assertEqual(
+    ~~~~~~~~~~~~~~~~^
+        set(rule),
+        ^^^^^^^^^^
+        {"text", "id", "theme", "block_count", "sample_id", "source", "rating", "model"},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+AssertionError: Items in the first set but not the second:
+'style_name'
+'style'
+
+======================================================================
+FAIL: test_missing_model_keeps_rule_post_available_and_returns_ai_503 (test_model_runtime.HttpRuntimeIntegrationTests.test_missing_model_keeps_rule_post_available_and_returns_ai_503)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karas/+Python mac/垃圾话/tests/test_model_runtime.py", line 747, in test_missing_model_keeps_rule_post_available_and_returns_ai_503
+    self.assertIn("规则抽卡仍可用", json.loads(body)["error"])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '规则抽卡仍可用' not found in '初始权重不存在，请先准备 garbage-1 checkpoint'
+
+----------------------------------------------------------------------
+Ran 53 tests in 9.372s
+
+FAILED (failures=3)
