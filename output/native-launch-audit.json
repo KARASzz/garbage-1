@@ -1,0 +1,16 @@
+{
+  "method": "macOS LaunchServices open 启动.command",
+  "health": {
+    "app": "trash-talk-crt",
+    "project_id": "4ae8271985962414",
+    "status": "ok",
+    "sqlite_version": "3.54.1",
+    "source_sha256": "8bb6deb2faed86cca7b5023771965e12b35178fd7cc1b83b5bc597619e79841b",
+    "categories": 14,
+    "fragments": 917,
+    "templates": 40,
+    "rules": 532
+  },
+  "source_matches_runtime": true,
+  "status": "passed"
+}

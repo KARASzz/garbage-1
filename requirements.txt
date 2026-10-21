@@ -1,0 +1,4 @@
+apsw==3.54.1.0
+numpy==2.5.4
+torch==2.14.1
+mlx==0.32.4; sys_platform == "darwin" and platform_machine == "arm64"

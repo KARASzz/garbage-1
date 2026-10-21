@@ -1,0 +1,336 @@
+{
+  "format": "garbage-1-evaluation-v1",
+  "evaluated_at_utc": "2026-10-21T07:09:23.019977Z",
+  "scope": "validation/test are sentence-disjoint, but templates and grammar fragments are shared across splits; metrics describe in-domain next-token prediction, not unseen-template generalization.",
+  "checkpoint": {
+    "metadata_path": "/Users/karas/+Python mac/垃圾话/models/garbage-1/checkpoints/20261021T070102Z-61517a33-a14.json",
+    "metadata_path_relative": "checkpoints/20261021T070102Z-61517a33-a14.json",
+    "metadata_sha256": "0b6d300a600c6fce8c31eefe485a6bd19ff6b19f2acdb6a2104a89b2adf5eadc",
+    "weights_path": "/Users/karas/+Python mac/垃圾话/models/garbage-1/checkpoints/20261021T070102Z-61517a33-a14.npz",
+    "weights_file_sha256": "3db9be84b6983f81983f6cc11c5b3b257eaa6ca6d225c1c8f944ba9879b59212",
+    "weight_sha256": "87ef7ee06f1226272889bf9fc64101ece1d11d2f1b8c389bbba0c48485851338",
+    "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+    "step": 6000,
+    "source_sha256": "8766084c7eb26c5b1ef79d4bbed1804b53f72a54c3a8f524173871259eacc1b8",
+    "dataset_source_sha256": "8766084c7eb26c5b1ef79d4bbed1804b53f72a54c3a8f524173871259eacc1b8",
+    "source_matches_dataset": true,
+    "parameter_storage": {
+      "weights_path": "/Users/karas/+Python mac/垃圾话/models/garbage-1/checkpoints/20261021T070102Z-61517a33-a14.npz",
+      "weights_path_relative": "20261021T070102Z-61517a33-a14.npz",
+      "weights_file_sha256": "3db9be84b6983f81983f6cc11c5b3b257eaa6ca6d225c1c8f944ba9879b59212",
+      "weight_sha256": "87ef7ee06f1226272889bf9fc64101ece1d11d2f1b8c389bbba0c48485851338",
+      "unique_parameter_names": 29,
+      "parameter_count": 100000,
+      "raw_array_bytes": 400000,
+      "dtype": "float32",
+      "tied_lm_head_duplicate_present": false
+    },
+    "config": {
+      "vocab_size": 1067,
+      "context": 192,
+      "d_model": 48,
+      "heads": 6,
+      "ffn_dims": [
+        98,
+        99
+      ],
+      "architecture": "dense_transformer_v1",
+      "ffn_type": "dense",
+      "target_parameters": 100000
+    },
+    "dtype": "float32"
+  },
+  "runtime": {
+    "ready": true,
+    "status": {
+      "name": "garbage-1",
+      "parameters": 100000,
+      "dtype": "float32",
+      "temperature": 0,
+      "backend": "mlx",
+      "ready": true,
+      "step": 6000,
+      "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+      "architecture": "dense_transformer_v1",
+      "error": null
+    },
+    "device": {
+      "backend": "mlx",
+      "default_device": "Device(gpu, 0)",
+      "metal_available": true
+    },
+    "backend_weight_digest": "87ef7ee06f1226272889bf9fc64101ece1d11d2f1b8c389bbba0c48485851338"
+  },
+  "evaluation": {
+    "packing": "all split rows encoded as BOS/theme/text/EOS and concatenated; every adjacent next-token target is counted once; final partial context is PAD-filled and PAD targets are ignored",
+    "batch_size": 16,
+    "context": 192,
+    "validation": {
+      "sentence_count": 806,
+      "packed_stream_token_count": 32225,
+      "next_token_target_count": 32224,
+      "counted_target_count": 32224,
+      "ignored_pad_target_count": 1568,
+      "context": 192,
+      "batch_size": 16,
+      "average_next_token_cross_entropy_nats": 0.636503077074958,
+      "perplexity": 1.8898606138665053,
+      "oov": {
+        "character_count": 29807,
+        "oov_character_count": 6,
+        "oov_unique_character_count": 6,
+        "oov_ratio": 0.00020129499781930418,
+        "oov_characters": {
+          "伪": 1,
+          "拉": 1,
+          "挨": 1,
+          "杀": 1,
+          "盐": 1,
+          "餐": 1
+        }
+      },
+      "elapsed_seconds": 0.4398882500008767
+    },
+    "test": {
+      "sentence_count": 806,
+      "packed_stream_token_count": 32299,
+      "next_token_target_count": 32298,
+      "counted_target_count": 32298,
+      "ignored_pad_target_count": 1494,
+      "context": 192,
+      "batch_size": 16,
+      "average_next_token_cross_entropy_nats": 0.6145826221339841,
+      "perplexity": 1.84888475492058,
+      "oov": {
+        "character_count": 29881,
+        "oov_character_count": 7,
+        "oov_unique_character_count": 7,
+        "oov_ratio": 0.00023426257488035876,
+        "oov_characters": {
+          "兵": 1,
+          "惜": 1,
+          "捂": 1,
+          "攥": 1,
+          "晶": 1,
+          "炸": 1,
+          "爆": 1
+        }
+      },
+      "elapsed_seconds": 0.18746166700111644
+    }
+  },
+  "torch_cpu_reference": {
+    "backend_pair": "MLX runtime vs PyTorch CPU reference",
+    "input_shape": [
+      1,
+      16
+    ],
+    "torch_threads": 4,
+    "torch_float32_matmul_precision": "highest",
+    "tf32_allowed": false,
+    "max_absolute_logit_error": 2.586841583251953e-05,
+    "mean_absolute_logit_error": 4.218739414045473e-06,
+    "all_logits_within_rtol_1e-4_atol_1e-4": true,
+    "all_argmax_match": true,
+    "last_position_argmax_match": true
+  },
+  "generation": {
+    "selection_seed": 20261021,
+    "max_new_tokens": 64,
+    "sample_count": 16,
+    "samples_per_theme": {
+      "game": 4,
+      "logic": 4,
+      "boast": 4,
+      "daily": 4
+    },
+    "eos_count": 16,
+    "eos_rate": 1.0,
+    "generated_token_length": {
+      "mean": 36.4375,
+      "min": 10,
+      "max": 49,
+      "values": [
+        33,
+        41,
+        10,
+        45,
+        37,
+        35,
+        36,
+        45,
+        36,
+        42,
+        49,
+        31,
+        38,
+        39,
+        38,
+        28
+      ]
+    },
+    "all_deterministic_repeats_match": true,
+    "raw_samples": [
+      {
+        "index": 1,
+        "theme": "game",
+        "prompt": "阵容顾问",
+        "source_train_id": "04fbfbac0e57dada031db85ef47a7b39c1b46800ca7afda100f39f6925fc168b",
+        "raw_text": "阵容顾问，你这位辅助菜得跟傻逼操作教学似的，队友只能把希望先存到下一局。",
+        "generated_token_count": 33,
+        "ended_with_eos": true,
+        "deterministic_repeat_match": true
+      },
+      {
+        "index": 2,
+        "theme": "game",
+        "prompt": "只要地图",
+        "source_train_id": "01334d2d65e171353c11795cce56dc08cea1d02bcbff1c89241e3df9325de9d9",
+        "raw_text": "只要地图上出现目标点，你这位选手他妈的把好局打成了回忆录，队友已经开始替你研究回城路线。",
+        "generated_token_count": 41,
+        "ended_with_eos": true,
+        "deterministic_repeat_match": true
+      },
+      {
+        "index": 3,
+        "theme": "game",
+        "prompt": "你他妈不",
+        "source_train_id": "curated_game_012",
+        "raw_text": "你他妈不确认期里找语音量。",
+        "generated_token_count": 10,
+        "ended_with_eos": true,
+        "deterministic_repeat_match": true
+      },
+      {
+        "index": 4,
+        "theme": "game",
+        "prompt": "只要刚拿",
+        "source_train_id": "0c6c0cb8eac1d08eb437d386f4b9c6044fbd236105fdd7ecdeff3cb8f134b488",
+        "raw_text": "只要刚拿到一点优势，你这位辅助还真他妈把撤退路线改成了回泉水参观，队友已经开始替你研究回城路线。",
+        "generated_token_count": 45,
+        "ended_with_eos": true,
+        "deterministic_repeat_match": true
+      },
+      {
+        "index": 5,
+        "theme": "logic",
+        "prompt": "你这位逻",
+        "source_train_id": "0046eedc64c2bda49ce09f76ca6bdd09735bcde7f139a382f1d7ebca710b8d93",
+        "raw_text": "你这位逻辑教练他妈的把这个因果关系绕成了没有出口的环节奏，你还觉得这叫表达清楚。",
+        "generated_token_count": 37,
+        "ended_with_eos": true,
+        "deterministic_repeat_match": true
+      },
+      {
+        "index": 6,
+        "theme": "logic",
+        "prompt": "你这位结",
+        "source_train_id": "009b9b878ac04314e32c315598aff6dbd4f628fbc988b40839a39f4f19fe68f8",
+        "raw_text": "你这位结论保管员的问题在于总让证据追着结论跑，居然他妈把前提换得比话题还勤。",
+        "generated_token_count": 35,
+        "ended_with_eos": true,
+        "deterministic_repeat_match": true
+      },
+      {
+        "index": 7,
+        "theme": "logic",
+        "prompt": "刚才讨论",
+        "source_train_id": "03f97d9772387b4a4656a7476063a78b75cfbc48b00f2733c10b8cd65ec4a7bf",
+        "raw_text": "刚才讨论这个问题时，你这位严谨代表讲得跟傻逼似的，结果原问题还坐在原位等答案。",
+        "generated_token_count": 36,
+        "ended_with_eos": true,
+        "deterministic_repeat_match": true
+      },
+      {
+        "index": 8,
+        "theme": "logic",
+        "prompt": "只要有人",
+        "source_train_id": "06059c32d11c974df14ae0da2e9611bf0352efd1ac966f89b9cb73c2ab215a64",
+        "raw_text": "只要有人追问证据，你这位发言人他妈还真把解释讲成了另一个问题，听众只好重新确认刚才的问题是什么。",
+        "generated_token_count": 45,
+        "ended_with_eos": true,
+        "deterministic_repeat_match": true
+      },
+      {
+        "index": 9,
+        "theme": "boast",
+        "prompt": "你这套计",
+        "source_train_id": "04bf644c7de6573b44f585caa288f35874c918edacc9209b78c4cd68b52c1336",
+        "raw_text": "你这套计划，他妈的把还没开始的计划吹到了大气层外面，掌声还没响你已经谢过两轮。",
+        "generated_token_count": 36,
+        "ended_with_eos": true,
+        "deterministic_repeat_match": true
+      },
+      {
+        "index": 10,
+        "theme": "boast",
+        "prompt": "话题一转",
+        "source_train_id": "0286747688dc584a0014a17b9dbc94c9ea9ad0646a064cfd240057d97debdc10",
+        "raw_text": "话题一转到已经完成的事，你这位气氛组长他妈吹得连未来都想先请个假，现实听完只回了一个已读。",
+        "generated_token_count": 42,
+        "ended_with_eos": true,
+        "deterministic_repeat_match": true
+      },
+      {
+        "index": 11,
+        "theme": "boast",
+        "prompt": "每次话说",
+        "source_train_id": "0121642b139ee32e1ee16b931cf782755eea842082597dc6b65243445886bfe8",
+        "raw_text": "每次话说到兑现承诺，你这位气氛组长他妈的把还没开始的计划说成了全场都欠你掌声，你还顺便替奖杯挑好了位置。",
+        "generated_token_count": 49,
+        "ended_with_eos": true,
+        "deterministic_repeat_match": true
+      },
+      {
+        "index": 12,
+        "theme": "boast",
+        "prompt": "你他妈一",
+        "source_train_id": "curated_boast_027",
+        "raw_text": "你他妈一问你把预热视频当成了比赛现场，奖杯还没出现你已经安排了合影。",
+        "generated_token_count": 31,
+        "ended_with_eos": true,
+        "deterministic_repeat_match": true
+      },
+      {
+        "index": 13,
+        "theme": "daily",
+        "prompt": "细节总监",
+        "source_train_id": "031760e5306043a59e9dc81a41158404d1b5f12c1255d99b3c89a883484b531e",
+        "raw_text": "细节总监，你这位流程主管把简单小事他妈拖成了年度大戏，最后最后最清楚的是会议时间。",
+        "generated_token_count": 38,
+        "ended_with_eos": true,
+        "deterministic_repeat_match": true
+      },
+      {
+        "index": 14,
+        "theme": "daily",
+        "prompt": "你说再看",
+        "source_train_id": "curated_daily_030",
+        "raw_text": "你说再看人，你这位流程主管把简单小事他妈拖成了年度大戏，最后最后最清楚的是会议时间。",
+        "generated_token_count": 39,
+        "ended_with_eos": true,
+        "deterministic_repeat_match": true
+      },
+      {
+        "index": 15,
+        "theme": "daily",
+        "prompt": "今天处理",
+        "source_train_id": "01cca293a978fa9e5dccacf526dae35127b1fd90502f7e04302b17cd4bbdbd95",
+        "raw_text": "今天处理，你这位流程主管把简单小事他妈拖成了年度大戏，最后最后最清楚的是会议时间。",
+        "generated_token_count": 38,
+        "ended_with_eos": true,
+        "deterministic_repeat_match": true
+      },
+      {
+        "index": 16,
+        "theme": "daily",
+        "prompt": "你他妈做",
+        "source_train_id": "curated_daily_022",
+        "raw_text": "你他妈做完一件小事都要开始执行，待办清单比你本人更有生活规划。",
+        "generated_token_count": 28,
+        "ended_with_eos": true,
+        "deterministic_repeat_match": true
+      }
+    ]
+  }
+}

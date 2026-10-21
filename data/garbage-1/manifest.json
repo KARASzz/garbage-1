@@ -1,0 +1,178 @@
+{
+  "format": "garbage-1-dataset-v1",
+  "generated_at_utc": "2026-10-21T06:49:33.239182Z",
+  "source_inputs": {
+    "corpus.json": "89d0d3232e4e3af02279299f86bdc191a42297c997848c37e8b13604362f7361",
+    "curated.jsonl": "eea68099aadd6b7106b4c69e175ff8c563d237308063af31c39eef71567689b3"
+  },
+  "dataset_sha256": "00c25577511a1a917c8b80fe9c3787759e4270f734b4681895cee321e3d6083a",
+  "base_seed": 20261021,
+  "generated_sentence_count": 16000,
+  "curated_sentence_count": 120,
+  "total_sentence_count": 16120,
+  "generation_attempts": 16344,
+  "temporary_database": {
+    "format": "SQLite initialized from data/corpus.json",
+    "path": "temporary directory; removed after preparation",
+    "database_source_sha256": "89d0d3232e4e3af02279299f86bdc191a42297c997848c37e8b13604362f7361",
+    "fragments": 1173,
+    "templates": 40,
+    "categories": 14
+  },
+  "split_method": "Normalize each complete sentence to NFC, hash UTF-8 with SHA-256, sort by (digest, normalized text), then assign the first floor(90%) to train, the next floor(5%) to validation, and the remainder to test. A sentence occurs in exactly one split. Shared templates and grammar fragments cross splits, so evaluation is in-domain and does not measure novel-template generalization.",
+  "split_counts": {
+    "train": 14508,
+    "validation": 806,
+    "test": 806
+  },
+  "split_sha256": {
+    "train": "17238e2c17ab0f38c09267807e70e15ec8157379ac9cf08913b67f5c8b507e90",
+    "validation": "943182c681f73e0cb6cfc5834341ae2b7e31e26196403d8e8bbb5a0528d13fd5",
+    "test": "9e8fa27cc3a4f48d9c04d77ca69b4b64907b094b12c30b92d19c62619bd8e98c"
+  },
+  "split_distributions": {
+    "train": {
+      "theme": {
+        "boast": {
+          "count": 3675,
+          "ratio": 0.25330851943755167
+        },
+        "daily": {
+          "count": 3633,
+          "ratio": 0.25041356492969397
+        },
+        "game": {
+          "count": 3587,
+          "ratio": 0.24724290046870692
+        },
+        "logic": {
+          "count": 3613,
+          "ratio": 0.2490350151640474
+        }
+      },
+      "source": {
+        "curated_seed": {
+          "count": 107,
+          "ratio": 0.007375241246208988
+        },
+        "grammar_generated": {
+          "count": 14401,
+          "ratio": 0.992624758753791
+        }
+      }
+    },
+    "validation": {
+      "theme": {
+        "boast": {
+          "count": 187,
+          "ratio": 0.23200992555831265
+        },
+        "daily": {
+          "count": 214,
+          "ratio": 0.2655086848635236
+        },
+        "game": {
+          "count": 208,
+          "ratio": 0.25806451612903225
+        },
+        "logic": {
+          "count": 197,
+          "ratio": 0.24441687344913152
+        }
+      },
+      "source": {
+        "curated_seed": {
+          "count": 8,
+          "ratio": 0.009925558312655087
+        },
+        "grammar_generated": {
+          "count": 798,
+          "ratio": 0.9900744416873449
+        }
+      }
+    },
+    "test": {
+      "theme": {
+        "boast": {
+          "count": 191,
+          "ratio": 0.2369727047146402
+        },
+        "daily": {
+          "count": 185,
+          "ratio": 0.22952853598014888
+        },
+        "game": {
+          "count": 206,
+          "ratio": 0.2555831265508685
+        },
+        "logic": {
+          "count": 224,
+          "ratio": 0.27791563275434245
+        }
+      },
+      "source": {
+        "curated_seed": {
+          "count": 5,
+          "ratio": 0.00620347394540943
+        },
+        "grammar_generated": {
+          "count": 801,
+          "ratio": 0.9937965260545906
+        }
+      }
+    }
+  },
+  "training_only_tokenizer": {
+    "fit_split": "train",
+    "vocab_size": 1067,
+    "exact_100k_parameter_config": {
+      "vocab_size": 1067,
+      "context": 192,
+      "d_model": 48,
+      "heads": 6,
+      "ffn_dims": [
+        98,
+        99
+      ],
+      "architecture": "dense_transformer_v1",
+      "ffn_type": "dense",
+      "target_parameters": 100000
+    }
+  },
+  "seed_replay_count": 512,
+  "prefix_count": 14508,
+  "evaluation_scope": "域内评估；模板与语料块跨 split 共享，不能据此声称未见模板泛化。",
+  "dataset_source_sha256": "8766084c7eb26c5b1ef79d4bbed1804b53f72a54c3a8f524173871259eacc1b8",
+  "corpus_sha256": "89d0d3232e4e3af02279299f86bdc191a42297c997848c37e8b13604362f7361",
+  "curated_sha256": "eea68099aadd6b7106b4c69e175ff8c563d237308063af31c39eef71567689b3",
+  "overall_distributions": {
+    "theme": {
+      "boast": {
+        "count": 4053,
+        "ratio": 0.2514267990074442
+      },
+      "daily": {
+        "count": 4032,
+        "ratio": 0.2501240694789082
+      },
+      "game": {
+        "count": 4001,
+        "ratio": 0.24820099255583128
+      },
+      "logic": {
+        "count": 4034,
+        "ratio": 0.2502481389578164
+      }
+    },
+    "source": {
+      "curated_seed": {
+        "count": 120,
+        "ratio": 0.007444168734491315
+      },
+      "grammar_generated": {
+        "count": 16000,
+        "ratio": 0.9925558312655087
+      }
+    }
+  }
+}

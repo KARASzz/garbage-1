@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#171914">
+    <meta name="description" content="按下按钮，来一句不太必要但很解气的垃圾话。">
+    <title>嘴硬终端 · 垃圾话生成器</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+    <link rel="stylesheet" href="./style.css">
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <main class="room">
+      <div class="room-light" aria-hidden="true"></div>
+      <section class="terminal" aria-label="嘴硬终端">
+        <div class="monitor-case">
+          <header class="case-header">
+            <div class="brand-lockup" aria-label="嘴硬终端">
+              <span class="brand-glyph" aria-hidden="true">嘴</span>
+              <span class="brand-copy">
+                <span class="brand-name">嘴 硬</span>
+                <span class="brand-model">TRASH TERMINAL <span>· GT-01</span></span>
+              </span>
+            </div>
+            <div class="case-edition" aria-hidden="true">
+              <span class="edition-label">PERSONAL OPINIONS</span>
+              <span class="edition-number">NO. 01 <i></i></span>
+            </div>
+          </header>
+
+          <div class="display-frame">
+            <section class="display-glass" aria-label="垃圾话显示屏">
+              <div class="display-meta">
+                <span class="signal-state"><i class="signal-dot" aria-hidden="true"></i><span id="screenStatus" aria-live="polite">READY · 等你开口</span></span>
+                <span class="channel-mark" aria-hidden="true">CH&nbsp;01</span>
+              </div>
+              <p class="message" id="message" role="status" aria-live="polite" aria-atomic="true">系统已就绪，等你嘴硬。</p>
+              <div class="feedback-panel" id="feedbackPanel" hidden>
+                <div class="feedback-actions" role="group" aria-label="评价这条垃圾话">
+                  <button class="feedback-button" id="likeButton" type="button" aria-pressed="false">
+                    <span aria-hidden="true">👍</span><span>点赞</span>
+                  </button>
+                  <button class="feedback-button" id="dislikeButton" type="button" aria-pressed="false">
+                    <span aria-hidden="true">👎</span><span>点踩</span>
+                  </button>
+                </div>
+                <p class="feedback-status" id="feedbackStatus" role="status" aria-live="polite"></p>
+              </div>
+              <div class="display-footer" aria-hidden="true">
+                <span>信号稳定 · 随时开喷</span>
+                <span class="display-footer__right">KEEP A STRAIGHT FACE</span>
+              </div>
+            </section>
+          </div>
+
+          <div class="control-row">
+            <div class="console-left" aria-hidden="true">
+              <span class="power-cluster"><i class="power-light"></i><span>POWER</span></span>
+              <span class="speaker-grille"></span>
+            </div>
+            <div class="generation-actions" role="group" aria-label="选择垃圾话生成方式">
+              <button class="draw-button" id="drawButton" type="button">
+                <span class="button-symbol" aria-hidden="true">↗</span>
+                <span class="button-copy">
+                  <span class="button-label" id="buttonLabel">来点垃圾话</span>
+                  <span class="button-hint">规则抽卡</span>
+                </span>
+              </button>
+              <button class="draw-button ai-button" id="aiButton" type="button">
+                <span class="button-symbol" aria-hidden="true">∿</span>
+                <span class="button-copy">
+                  <span class="button-label">手搓 AI</span>
+                  <span class="button-hint">garbage-1</span>
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <div class="model-status-row">
+            <span class="model-indicator" aria-hidden="true">AI</span>
+            <span class="model-status" id="modelStatus" role="status" aria-live="polite">garbage-1 · 100K · FP32 · MLX</span>
+          </div>
+
+          <div class="case-rim" aria-hidden="true">
+            <span>不必认真，只管痛快。</span>
+            <span>MADE FOR THE MOMENT</span>
+          </div>
+        </div>
+        <div class="monitor-neck" aria-hidden="true"></div>
+        <div class="monitor-foot" aria-hidden="true"></div>
+      </section>
+    </main>
+  </body>
+</html>

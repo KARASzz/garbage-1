@@ -1,0 +1,45 @@
+{
+  "single_button": true,
+  "initial_text": "系统已就绪，等你嘴硬。",
+  "real_api_sentence": {
+    "text": "你这套论证，真他妈让证据排在结论后面。",
+    "id": "6145ae2bf0ae",
+    "theme": "logic",
+    "block_count": 3
+  },
+  "keyboard_enter": true,
+  "local_resources": [],
+  "network_error_recovers": true,
+  "retry_real_api": true,
+  "long_text_layouts": [
+    {
+      "width": 320,
+      "document_width": 320,
+      "message_overflow": false,
+      "message_inside_screen": true
+    },
+    {
+      "width": 390,
+      "document_width": 390,
+      "message_overflow": false,
+      "message_inside_screen": true
+    },
+    {
+      "width": 768,
+      "document_width": 768,
+      "message_overflow": false,
+      "message_inside_screen": true
+    },
+    {
+      "width": 1440,
+      "document_width": 1440,
+      "message_overflow": false,
+      "message_inside_screen": true
+    }
+  ],
+  "reduced_motion": {
+    "requested": true,
+    "duration": "1e-05s"
+  },
+  "page_errors": []
+}

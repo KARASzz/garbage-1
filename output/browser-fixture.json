@@ -1,0 +1,19 @@
+{
+  "url": "http://127.0.0.1:61634",
+  "pid": 14711,
+  "temporary_root": "/Users/karas/+Python mac/垃圾话/.runtime/garbage1-ui-xyewebg7",
+  "model": {
+    "name": "garbage-1",
+    "parameters": 100000,
+    "dtype": "float32",
+    "temperature": 0,
+    "backend": "mlx",
+    "ready": true,
+    "step": 6000,
+    "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+    "architecture": "dense_transformer_v1",
+    "error": null
+  },
+  "weight_sha256": "87ef7ee06f1226272889bf9fc64101ece1d11d2f1b8c389bbba0c48485851338",
+  "purpose": "Disposable browser QA; annotations do not enter user database."
+}

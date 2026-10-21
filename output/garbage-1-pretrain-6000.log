@@ -1,0 +1,32 @@
+{"step": 1, "steps": 6000, "train_loss": 6.978454113006592, "validation_loss": 6.913139998912811, "device": "cpu"}
+{"step": 500, "steps": 6000, "train_loss": 3.6462145181361563, "validation_loss": 2.5142907798290253, "device": "cpu"}
+{"step": 1000, "steps": 6000, "train_loss": 2.125072549343109, "validation_loss": 1.8201119750738144, "device": "cpu"}
+{"step": 1500, "steps": 6000, "train_loss": 1.515639850139618, "validation_loss": 1.3452125042676926, "device": "cpu"}
+{"step": 2000, "steps": 6000, "train_loss": 1.1568262346982956, "validation_loss": 1.0815432518720627, "device": "cpu"}
+{"step": 2500, "steps": 6000, "train_loss": 0.9440292100906372, "validation_loss": 0.9113803654909134, "device": "cpu"}
+{"step": 3000, "steps": 6000, "train_loss": 0.816767054438591, "validation_loss": 0.8191954270005226, "device": "cpu"}
+{"step": 3500, "steps": 6000, "train_loss": 0.7379323273897171, "validation_loss": 0.7453741580247879, "device": "cpu"}
+{"step": 4000, "steps": 6000, "train_loss": 0.6861573441028594, "validation_loss": 0.7023750692605972, "device": "cpu"}
+{"step": 4500, "steps": 6000, "train_loss": 0.6495457121133804, "validation_loss": 0.6909640654921532, "device": "cpu"}
+{"step": 5000, "steps": 6000, "train_loss": 0.6230939561128617, "validation_loss": 0.6594298034906387, "device": "cpu"}
+{"step": 5500, "steps": 6000, "train_loss": 0.6048634299039841, "validation_loss": 0.6418644115328789, "device": "cpu"}
+{"step": 6000, "steps": 6000, "train_loss": 0.5892209726572036, "validation_loss": 0.6436959058046341, "device": "cpu"}
+{
+  "status": "trained",
+  "step": 6000,
+  "train_loss": 0.6132503151893616,
+  "validation_loss": 0.6436959058046341,
+  "source_sha256": "8766084c7eb26c5b1ef79d4bbed1804b53f72a54c3a8f524173871259eacc1b8",
+  "vocab_size": 1067,
+  "context": 192,
+  "parameter_count": 100000,
+  "device": "cpu",
+  "checkpoint": {
+    "generation": "20261021T070102Z-61517a33-a14",
+    "weights": "/Users/karas/+Python mac/垃圾话/models/garbage-1/checkpoints/20261021T070102Z-61517a33-a14.npz",
+    "metadata": "/Users/karas/+Python mac/垃圾话/models/garbage-1/checkpoints/20261021T070102Z-61517a33-a14.json",
+    "current": "/Users/karas/+Python mac/垃圾话/models/garbage-1/current.json",
+    "parameter_count": 100000,
+    "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992"
+  }
+}
