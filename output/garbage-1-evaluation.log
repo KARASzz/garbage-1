@@ -1,0 +1,115 @@
+{
+  "status": "evaluated",
+  "output": "/Users/karas/+Python mac/垃圾话/output/garbage-1-evaluation.json",
+  "checkpoint": {
+    "metadata_path": "/Users/karas/+Python mac/垃圾话/models/garbage-1/checkpoints/20261021T070102Z-61517a33-a14.json",
+    "metadata_path_relative": "checkpoints/20261021T070102Z-61517a33-a14.json",
+    "metadata_sha256": "0b6d300a600c6fce8c31eefe485a6bd19ff6b19f2acdb6a2104a89b2adf5eadc",
+    "weights_path": "/Users/karas/+Python mac/垃圾话/models/garbage-1/checkpoints/20261021T070102Z-61517a33-a14.npz",
+    "weights_file_sha256": "3db9be84b6983f81983f6cc11c5b3b257eaa6ca6d225c1c8f944ba9879b59212",
+    "weight_sha256": "87ef7ee06f1226272889bf9fc64101ece1d11d2f1b8c389bbba0c48485851338",
+    "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+    "step": 6000,
+    "source_sha256": "8766084c7eb26c5b1ef79d4bbed1804b53f72a54c3a8f524173871259eacc1b8",
+    "dataset_source_sha256": "8766084c7eb26c5b1ef79d4bbed1804b53f72a54c3a8f524173871259eacc1b8",
+    "source_matches_dataset": true,
+    "parameter_storage": {
+      "weights_path": "/Users/karas/+Python mac/垃圾话/models/garbage-1/checkpoints/20261021T070102Z-61517a33-a14.npz",
+      "weights_path_relative": "20261021T070102Z-61517a33-a14.npz",
+      "weights_file_sha256": "3db9be84b6983f81983f6cc11c5b3b257eaa6ca6d225c1c8f944ba9879b59212",
+      "weight_sha256": "87ef7ee06f1226272889bf9fc64101ece1d11d2f1b8c389bbba0c48485851338",
+      "unique_parameter_names": 29,
+      "parameter_count": 100000,
+      "raw_array_bytes": 400000,
+      "dtype": "float32",
+      "tied_lm_head_duplicate_present": false
+    },
+    "config": {
+      "vocab_size": 1067,
+      "context": 192,
+      "d_model": 48,
+      "heads": 6,
+      "ffn_dims": [
+        98,
+        99
+      ],
+      "architecture": "dense_transformer_v1",
+      "ffn_type": "dense",
+      "target_parameters": 100000
+    },
+    "dtype": "float32"
+  },
+  "validation": {
+    "sentence_count": 806,
+    "packed_stream_token_count": 32225,
+    "next_token_target_count": 32224,
+    "counted_target_count": 32224,
+    "ignored_pad_target_count": 1568,
+    "context": 192,
+    "batch_size": 16,
+    "average_next_token_cross_entropy_nats": 0.636503077074958,
+    "perplexity": 1.8898606138665053,
+    "oov": {
+      "character_count": 29807,
+      "oov_character_count": 6,
+      "oov_unique_character_count": 6,
+      "oov_ratio": 0.00020129499781930418,
+      "oov_characters": {
+        "伪": 1,
+        "拉": 1,
+        "挨": 1,
+        "杀": 1,
+        "盐": 1,
+        "餐": 1
+      }
+    },
+    "elapsed_seconds": 0.4398882500008767
+  },
+  "test": {
+    "sentence_count": 806,
+    "packed_stream_token_count": 32299,
+    "next_token_target_count": 32298,
+    "counted_target_count": 32298,
+    "ignored_pad_target_count": 1494,
+    "context": 192,
+    "batch_size": 16,
+    "average_next_token_cross_entropy_nats": 0.6145826221339841,
+    "perplexity": 1.84888475492058,
+    "oov": {
+      "character_count": 29881,
+      "oov_character_count": 7,
+      "oov_unique_character_count": 7,
+      "oov_ratio": 0.00023426257488035876,
+      "oov_characters": {
+        "兵": 1,
+        "惜": 1,
+        "捂": 1,
+        "攥": 1,
+        "晶": 1,
+        "炸": 1,
+        "爆": 1
+      }
+    },
+    "elapsed_seconds": 0.18746166700111644
+  },
+  "generation": {
+    "sample_count": 16,
+    "eos_rate": 1.0,
+    "all_deterministic_repeats_match": true
+  },
+  "torch_cpu_reference": {
+    "backend_pair": "MLX runtime vs PyTorch CPU reference",
+    "input_shape": [
+      1,
+      16
+    ],
+    "torch_threads": 4,
+    "torch_float32_matmul_precision": "highest",
+    "tf32_allowed": false,
+    "max_absolute_logit_error": 2.586841583251953e-05,
+    "mean_absolute_logit_error": 4.218739414045473e-06,
+    "all_logits_within_rtol_1e-4_atol_1e-4": true,
+    "all_argmax_match": true,
+    "last_position_argmax_match": true
+  }
+}

@@ -1,0 +1,724 @@
+{
+  "status": "passed",
+  "seed": 20261020,
+  "database": {
+    "sqlite_version": "3.54.1",
+    "source_sha256": "89d0d3232e4e3af02279299f86bdc191a42297c997848c37e8b13604362f7361",
+    "categories": 14,
+    "fragments": 1173,
+    "templates": 40,
+    "rules": 532
+  },
+  "reachable_fragments": 1100,
+  "unused_fragment_ids": [
+    "cfix_boast_object_005",
+    "cfix_boast_predicate_015",
+    "cfix_boast_predicate_021",
+    "cfix_daily_object_002",
+    "cfix_daily_object_003",
+    "cfix_daily_predicate_021",
+    "cfix_game_object_003",
+    "cfix_game_predicate_023",
+    "cfix_game_predicate_031",
+    "cfix_logic_object_005",
+    "cfix_logic_predicate_018",
+    "cfix_logic_predicate_028",
+    "complement_boast_001",
+    "complement_boast_002",
+    "complement_boast_003",
+    "complement_boast_004",
+    "complement_boast_005",
+    "complement_boast_006",
+    "complement_boast_007",
+    "complement_boast_008",
+    "complement_daily_001",
+    "complement_daily_002",
+    "complement_daily_003",
+    "complement_daily_004",
+    "complement_daily_005",
+    "complement_daily_006",
+    "complement_daily_007",
+    "complement_daily_008",
+    "complement_game_001",
+    "complement_game_002",
+    "complement_game_003",
+    "complement_game_004",
+    "complement_game_005",
+    "complement_game_006",
+    "complement_game_007",
+    "complement_game_008",
+    "complement_logic_001",
+    "complement_logic_002",
+    "complement_logic_003",
+    "complement_logic_004",
+    "complement_logic_005",
+    "complement_logic_006",
+    "complement_logic_007",
+    "complement_logic_008",
+    "degree_daily_008",
+    "object_boast_005",
+    "object_boast_010",
+    "object_daily_007",
+    "object_daily_011",
+    "object_game_007",
+    "object_game_009",
+    "object_game_012",
+    "object_logic_003",
+    "predicate_boast_018",
+    "predicate_game_014",
+    "predicate_game_015",
+    "predicate_game_018",
+    "predicate_game_020",
+    "predicate_logic_011",
+    "predicate_logic_014",
+    "predicate_logic_018",
+    "result_boast_swear_013",
+    "result_daily_swear_013",
+    "result_game_swear_013",
+    "result_logic_swear_013",
+    "subject_boast_swear_018",
+    "subject_daily_swear_018",
+    "subject_game_swear_018",
+    "subject_logic_swear_018",
+    "twist_boast_swear_009",
+    "twist_daily_swear_009",
+    "twist_game_swear_009",
+    "twist_logic_swear_009"
+  ],
+  "random_draws": 10000,
+  "unique_sentences": 9897,
+  "unique_ratio": 0.9897,
+  "immediate_duplicates": 0,
+  "profanity_ratio": 0.8242,
+  "block_count_distribution": {
+    "3": 1846,
+    "4": 5011,
+    "5": 3143
+  },
+  "length": {
+    "min": 17,
+    "max": 63,
+    "mean": 37.17
+  },
+  "template_distribution": {
+    "boast_01": 272,
+    "boast_02": 228,
+    "boast_03": 265,
+    "boast_04": 233,
+    "boast_05": 243,
+    "boast_06": 251,
+    "boast_07": 232,
+    "boast_08": 241,
+    "boast_09": 274,
+    "boast_10": 224,
+    "daily_01": 251,
+    "daily_02": 225,
+    "daily_03": 261,
+    "daily_04": 231,
+    "daily_05": 261,
+    "daily_06": 220,
+    "daily_07": 264,
+    "daily_08": 245,
+    "daily_09": 263,
+    "daily_10": 246,
+    "game_01": 277,
+    "game_02": 259,
+    "game_03": 247,
+    "game_04": 261,
+    "game_05": 256,
+    "game_06": 270,
+    "game_07": 248,
+    "game_08": 223,
+    "game_09": 249,
+    "game_10": 240,
+    "logic_01": 244,
+    "logic_02": 267,
+    "logic_03": 261,
+    "logic_04": 253,
+    "logic_05": 284,
+    "logic_06": 247,
+    "logic_07": 229,
+    "logic_08": 257,
+    "logic_09": 244,
+    "logic_10": 254
+  },
+  "theme_distribution": {
+    "boast": 2463,
+    "logic": 2540,
+    "daily": 2467,
+    "game": 2530
+  },
+  "template_extremes": [
+    {
+      "template": "boast_01",
+      "name": "直球互怼",
+      "optional": false,
+      "text": "你这位预言家真他妈把计划讲得像全世界都在等你。",
+      "block_count": 3
+    },
+    {
+      "template": "boast_01",
+      "name": "直球互怼",
+      "optional": true,
+      "text": "你这位自信代言人他妈的把开会的勇气说成执行的成绩，计划还没动身气氛已经到终点。",
+      "block_count": 4
+    },
+    {
+      "template": "boast_02",
+      "name": "称呼起手",
+      "optional": false,
+      "text": "预言家，你这位庆功宴策划把牛皮吹得跟傻逼似的。",
+      "block_count": 3
+    },
+    {
+      "template": "boast_02",
+      "name": "称呼起手",
+      "optional": true,
+      "text": "气场选手，你这位战绩预告员说得跟傻逼似的，你倒是先替没发生的事领了奖。",
+      "block_count": 4
+    },
+    {
+      "template": "boast_03",
+      "name": "条件起手",
+      "optional": false,
+      "text": "每逢有人问你进度，你这位准得主还真他妈把一张便签抬成了获奖作品。",
+      "block_count": 4
+    },
+    {
+      "template": "boast_03",
+      "name": "条件起手",
+      "optional": true,
+      "text": "话题一转到已经完成的事，你这位大话选手可他妈真把自信开到顶格把成果留在待机，目标本人听完都不敢认你这么熟。",
+      "block_count": 5
+    },
+    {
+      "template": "boast_04",
+      "name": "优势白给",
+      "optional": false,
+      "text": "你这位庆功宴策划他妈居然把一个普通目标说成了全场都欠你掌声。",
+      "block_count": 4
+    },
+    {
+      "template": "boast_04",
+      "name": "优势白给",
+      "optional": true,
+      "text": "你这位气氛组组长简直他妈把这份目标吹成了世界纪录，牛皮落地时记得轻一点。",
+      "block_count": 5
+    },
+    {
+      "template": "boast_05",
+      "name": "场景触发",
+      "optional": false,
+      "text": "你这位战绩预告员只要聊到自己的本事就把还没做的事说得像已经领奖。",
+      "block_count": 3
+    },
+    {
+      "template": "boast_05",
+      "name": "场景触发",
+      "optional": true,
+      "text": "你这位庆功宴策划越接近现实越把目标说得比进度快了三季，旁边的人只能先替你留个舞台。",
+      "block_count": 4
+    },
+    {
+      "template": "boast_06",
+      "name": "场景补刀",
+      "optional": false,
+      "text": "你刚说完马上成功时，你这位自信代言人飘得像奖杯已经送到家了一样。",
+      "block_count": 3
+    },
+    {
+      "template": "boast_06",
+      "name": "场景补刀",
+      "optional": true,
+      "text": "刚才聊到目标时，你这位领奖台候补得意得连掌声都替你排好班，现实听完只回了一个已读。",
+      "block_count": 4
+    },
+    {
+      "template": "boast_07",
+      "name": "能力比喻",
+      "optional": false,
+      "text": "你这位目标总监的现实评估能力居然他妈像音量开满的想象掌声。",
+      "block_count": 4
+    },
+    {
+      "template": "boast_07",
+      "name": "能力比喻",
+      "optional": true,
+      "text": "你这位未来冠军的成绩预估能力他妈居然像在终点线前搭好的领奖台，牛皮落地记得轻一点。",
+      "block_count": 5
+    },
+    {
+      "template": "boast_08",
+      "name": "问题归因",
+      "optional": false,
+      "text": "你这位预言家的问题在于把信心开得比能力高好几档，可他妈真给未来的结果提前挂上奖牌。",
+      "block_count": 4
+    },
+    {
+      "template": "boast_08",
+      "name": "问题归因",
+      "optional": true,
+      "text": "你这位未来冠军的问题在于总觉得掌声会自动找到座位，还真他妈把计划讲得像全世界都在等你，计划还没动身气氛已经到终点。",
+      "block_count": 5
+    },
+    {
+      "template": "boast_09",
+      "name": "对象变形",
+      "optional": false,
+      "text": "你这位战绩预告员真他妈把手里的成绩单抬到了天花板上。",
+      "block_count": 4
+    },
+    {
+      "template": "boast_09",
+      "name": "对象变形",
+      "optional": true,
+      "text": "你这位领奖台常客他妈的把未来的成绩单摆成了三连冠的架势，你还把没行动说成在等最佳时机。",
+      "block_count": 5
+    },
+    {
+      "template": "boast_10",
+      "name": "话题点评",
+      "optional": false,
+      "text": "你这身气场，可他妈真让气势独自跑完了全程。",
+      "block_count": 3
+    },
+    {
+      "template": "boast_10",
+      "name": "话题点评",
+      "optional": true,
+      "text": "你这股气势，还真他妈把还没开始的比赛吹成了世界纪录，未来本人都被你提前安排了工作。",
+      "block_count": 4
+    },
+    {
+      "template": "daily_01",
+      "name": "直球互怼",
+      "optional": false,
+      "text": "你这位负责人居然他妈一收拾桌子就把东西搬成了新的乱局。",
+      "block_count": 3
+    },
+    {
+      "template": "daily_01",
+      "name": "直球互怼",
+      "optional": true,
+      "text": "你这位负责人真他妈让新待办从旧待办里长出来，家里的小任务都开始排队取号。",
+      "block_count": 4
+    },
+    {
+      "template": "daily_02",
+      "name": "称呼起手",
+      "optional": false,
+      "text": "流程专家，你这位项目经理把简单小事他妈拖成了年度大戏。",
+      "block_count": 3
+    },
+    {
+      "template": "daily_02",
+      "name": "称呼起手",
+      "optional": true,
+      "text": "收尾顾问，你这位排期顾问办得跟傻逼似的，闹钟决定下次响得再大声一点。",
+      "block_count": 4
+    },
+    {
+      "template": "daily_03",
+      "name": "条件起手",
+      "optional": false,
+      "text": "只要有人问什么时候完成，你这位流程设计师可他妈真把计划说得完整，执行得抽象。",
+      "block_count": 4
+    },
+    {
+      "template": "daily_03",
+      "name": "条件起手",
+      "optional": true,
+      "text": "只要事情不再停留在口头，你这位后勤部长竟能总能把方便路线选成绕远方案，家里的小任务都开始排队取号。",
+      "block_count": 5
+    },
+    {
+      "template": "daily_04",
+      "name": "优势白给",
+      "optional": false,
+      "text": "你这位项目经理居然他妈把一场普通的家务拖成了加长版连续剧。",
+      "block_count": 4
+    },
+    {
+      "template": "daily_04",
+      "name": "优势白给",
+      "optional": true,
+      "text": "你这位生活总监可他妈真把一件小事安排成了临时会议，偏偏那把钥匙一直插在门上。",
+      "block_count": 5
+    },
+    {
+      "template": "daily_05",
+      "name": "场景触发",
+      "optional": false,
+      "text": "你这位流程主管还没动手就把准备工作安排得比正事还多。",
+      "block_count": 3
+    },
+    {
+      "template": "daily_05",
+      "name": "场景触发",
+      "optional": true,
+      "text": "你这位家务总管一遇到小事就把十分钟的事拖成系列片，待办清单比你本人更有生活规划。",
+      "block_count": 4
+    },
+    {
+      "template": "daily_06",
+      "name": "场景补刀",
+      "optional": false,
+      "text": "流程刚走到第一步，你这位执行主管拖得连待办清单都想辞职。",
+      "block_count": 3
+    },
+    {
+      "template": "daily_06",
+      "name": "场景补刀",
+      "optional": true,
+      "text": "事情还没真正开始时，你这位负责人折腾得跟屁大点事要开发布会似的，小事本人已经申请更换负责人。",
+      "block_count": 4
+    },
+    {
+      "template": "daily_07",
+      "name": "能力比喻",
+      "optional": false,
+      "text": "你这位执行主管的出门前找东西的稳定性他妈的像把椅背当衣柜的收纳师。",
+      "block_count": 4
+    },
+    {
+      "template": "daily_07",
+      "name": "能力比喻",
+      "optional": true,
+      "text": "你这位时间规划师的安排事情的能力简直他妈像把椅背当衣柜的收纳师，家务没动你的拖延倒是很有条理。",
+      "block_count": 5
+    },
+    {
+      "template": "daily_08",
+      "name": "问题归因",
+      "optional": false,
+      "text": "你这位生活总监的问题在于每次收尾都能发现新的开头，真他妈总能把方便路线选成绕远方案。",
+      "block_count": 4
+    },
+    {
+      "template": "daily_08",
+      "name": "问题归因",
+      "optional": true,
+      "text": "你这位收尾负责人的问题在于总要等到最后才开始找清单，简直他妈把十分钟的事拖成了系列片，计划表写满了执行还没上线。",
+      "block_count": 5
+    },
+    {
+      "template": "daily_09",
+      "name": "对象变形",
+      "optional": false,
+      "text": "你这位执行主管简直他妈把一条清楚的流程写成了需要三轮确认的计划。",
+      "block_count": 4
+    },
+    {
+      "template": "daily_09",
+      "name": "对象变形",
+      "optional": true,
+      "text": "你这位执行者还真他妈把一张待办清单拆成了十个待确认事项，计划表写完就宣布阶段胜利。",
+      "block_count": 5
+    },
+    {
+      "template": "daily_10",
+      "name": "话题点评",
+      "optional": false,
+      "text": "你这次操作，他妈的让一把椅子变成了衣服寄存处。",
+      "block_count": 3
+    },
+    {
+      "template": "daily_10",
+      "name": "话题点评",
+      "optional": true,
+      "text": "你这次小事处理，他妈的把简单决定留到最后处理，闹钟已经替你响到怀疑人生。",
+      "block_count": 4
+    },
+    {
+      "template": "game_01",
+      "name": "直球互怼",
+      "optional": false,
+      "text": "你这个玩家还真他妈让对面打得比训练赛还轻松。",
+      "block_count": 3
+    },
+    {
+      "template": "game_01",
+      "name": "直球互怼",
+      "optional": true,
+      "text": "你这位队友真他妈给对面递上了完整攻略，队友已经开始替你研究回城路线。",
+      "block_count": 4
+    },
+    {
+      "template": "game_02",
+      "name": "称呼起手",
+      "optional": false,
+      "text": "键盘车手，你这位团战选手菜得像个只会送分的傻逼。",
+      "block_count": 3
+    },
+    {
+      "template": "game_02",
+      "name": "称呼起手",
+      "optional": true,
+      "text": "电竞教练，你这位选手打得跟他妈送分局似的，结果对面拿着你的失误顺手收了局。",
+      "block_count": 4
+    },
+    {
+      "template": "game_03",
+      "name": "条件起手",
+      "optional": false,
+      "text": "每逢队友开始集结，你这位开团选手愣是打完一波才想起自己有技能。",
+      "block_count": 4
+    },
+    {
+      "template": "game_03",
+      "name": "条件起手",
+      "optional": true,
+      "text": "只要刚拿到一点优势，你这位团战选手还真他妈给敌方的节奏踩足了拍子，对面拿完优势还顺手点了个赞。",
+      "block_count": 5
+    },
+    {
+      "template": "game_04",
+      "name": "优势白给",
+      "optional": false,
+      "text": "你这位复盘达人偏偏把刚拿下的龙区资源递到了对手手里。",
+      "block_count": 4
+    },
+    {
+      "template": "game_04",
+      "name": "优势白给",
+      "optional": true,
+      "text": "你这个打野他妈的把领先优势白白送到了敌方手里，对面看完回放都想提醒你看小地图。",
+      "block_count": 5
+    },
+    {
+      "template": "game_05",
+      "name": "场景触发",
+      "optional": false,
+      "text": "你这位指挥一进入决胜时刻就把顺风局打成了逆风教学。",
+      "block_count": 3
+    },
+    {
+      "template": "game_05",
+      "name": "场景触发",
+      "optional": true,
+      "text": "你这位队长顺风时还没说完就给对面递上了进场路线，队伍频道只剩下队友的叹气声。",
+      "block_count": 4
+    },
+    {
+      "template": "game_06",
+      "name": "场景补刀",
+      "optional": false,
+      "text": "龙坑那波争夺刚开始，你这位野区导游菜得跟傻逼操作教学似的。",
+      "block_count": 3
+    },
+    {
+      "template": "game_06",
+      "name": "场景补刀",
+      "optional": true,
+      "text": "这把排位赛刚开局，你这位上分选手他妈菜得连人机都嫌你占位置，队友的复盘文档已经自动打开。",
+      "block_count": 4
+    },
+    {
+      "template": "game_07",
+      "name": "能力比喻",
+      "optional": false,
+      "text": "你这位指挥的关键团战判断力还真他妈像只让胜利看远景的导游。",
+      "block_count": 4
+    },
+    {
+      "template": "game_07",
+      "name": "能力比喻",
+      "optional": true,
+      "text": "你这位打野的资源规划能力可他妈真像按着撤退键喊进攻的指挥，队友复盘时只好先深呼吸。",
+      "block_count": 5
+    },
+    {
+      "template": "game_08",
+      "name": "问题归因",
+      "optional": false,
+      "text": "你这位队友的问题在于开团和撤退总像共用一个按钮，可他妈真让队友只能靠回放找目标。",
+      "block_count": 4
+    },
+    {
+      "template": "game_08",
+      "name": "问题归因",
+      "optional": true,
+      "text": "你这个打野的问题在于优势一到手就急着替对面保管，居然他妈把领先优势交代得明明白白，对面还没动手就先收到了你的路线图。",
+      "block_count": 5
+    },
+    {
+      "template": "game_09",
+      "name": "对象变形",
+      "optional": false,
+      "text": "你这位选手真他妈把最后一波团战搅成了谁都看不懂的团战。",
+      "block_count": 4
+    },
+    {
+      "template": "game_09",
+      "name": "对象变形",
+      "optional": true,
+      "text": "你这个玩家居然他妈把队友打出的好局改造成了对面的训练局，结果对面拿着你的失误顺手收了局。",
+      "block_count": 5
+    },
+    {
+      "template": "game_10",
+      "name": "话题点评",
+      "optional": false,
+      "text": "你这波进场，简直他妈让地图导航都像在替你叹气。",
+      "block_count": 3
+    },
+    {
+      "template": "game_10",
+      "name": "话题点评",
+      "optional": true,
+      "text": "你这阵容理解，可他妈真让对手轻松接走了节奏，队伍频道只剩下队友的叹气声。",
+      "block_count": 4
+    },
+    {
+      "template": "logic_01",
+      "name": "直球互怼",
+      "optional": false,
+      "text": "你这个提问者真他妈绕了三圈还是没回到题上。",
+      "block_count": 3
+    },
+    {
+      "template": "logic_01",
+      "name": "直球互怼",
+      "optional": true,
+      "text": "你这位辩手真他妈把结论放到了证据前面，结论在门口等了半天没进来。",
+      "block_count": 4
+    },
+    {
+      "template": "logic_02",
+      "name": "称呼起手",
+      "optional": false,
+      "text": "问题代言人，你这位答题选手讲得跟傻逼似的。",
+      "block_count": 3
+    },
+    {
+      "template": "logic_02",
+      "name": "称呼起手",
+      "optional": true,
+      "text": "推理高手，你这位结论保管员让你的结论听起来纯属放屁，你还觉得这叫表达清楚。",
+      "block_count": 4
+    },
+    {
+      "template": "logic_03",
+      "name": "条件起手",
+      "optional": false,
+      "text": "每逢讨论快到结论，你这位严谨代表他妈的把定义换得比话题还勤。",
+      "block_count": 4
+    },
+    {
+      "template": "logic_03",
+      "name": "条件起手",
+      "optional": true,
+      "text": "每次有人追问证据，你这位概念管理师居然他妈把简单意思说得像加密文件，最后只剩一个更难回答的问题。",
+      "block_count": 5
+    },
+    {
+      "template": "logic_04",
+      "name": "优势白给",
+      "optional": false,
+      "text": "你这位讲解员还真他妈把一个直球问题换成了一个新定义。",
+      "block_count": 4
+    },
+    {
+      "template": "logic_04",
+      "name": "优势白给",
+      "optional": true,
+      "text": "你这位讲解员他妈还真把本来明白的意思讲成了另一个问题，听众只好把重点重新问一遍。",
+      "block_count": 5
+    },
+    {
+      "template": "logic_05",
+      "name": "场景触发",
+      "optional": false,
+      "text": "你这位结论保管员每次有人追问就把结论放到了证据前面。",
+      "block_count": 3
+    },
+    {
+      "template": "logic_05",
+      "name": "场景触发",
+      "optional": true,
+      "text": "你这位提问选手刚开始解释就把定义讲得前后都不认识，讨论结束了原问题还在原地。",
+      "block_count": 4
+    },
+    {
+      "template": "logic_06",
+      "name": "场景补刀",
+      "optional": false,
+      "text": "讨论绕回原点时，你这位逻辑教练他妈蠢得让常识连夜搬家。",
+      "block_count": 3
+    },
+    {
+      "template": "logic_06",
+      "name": "场景补刀",
+      "optional": true,
+      "text": "话题还没说到结论时，你这位严谨代表讲得跟放屁一样离谱，最后唯一没被证明的是你的证明。",
+      "block_count": 4
+    },
+    {
+      "template": "logic_07",
+      "name": "能力比喻",
+      "optional": false,
+      "text": "你这位定义管理员的表达清晰度他妈还真像互不认识的前提和结论。",
+      "block_count": 4
+    },
+    {
+      "template": "logic_07",
+      "name": "能力比喻",
+      "optional": true,
+      "text": "你这位逻辑教练的因果判断力他妈的像被雾气包住的逻辑补丁，这份自信倒是没有绕路。",
+      "block_count": 5
+    },
+    {
+      "template": "logic_08",
+      "name": "问题归因",
+      "optional": false,
+      "text": "你这位论证者的问题在于把定义和结论安排成了陌生人，他妈还真把简单意思说得像加密文件。",
+      "block_count": 4
+    },
+    {
+      "template": "logic_08",
+      "name": "问题归因",
+      "optional": true,
+      "text": "你这位发言选手的问题在于问的是原因答的却是旁枝，真他妈把一句话讲得像在给问号办培训，重点被你讲得像藏进了密室。",
+      "block_count": 5
+    },
+    {
+      "template": "logic_09",
+      "name": "对象变形",
+      "optional": false,
+      "text": "你这位发言人还真他妈把话题重点改造成了概念接力赛。",
+      "block_count": 4
+    },
+    {
+      "template": "logic_09",
+      "name": "对象变形",
+      "optional": true,
+      "text": "你这位提问选手可他妈真把讨论中的关键证据写成了答案不见的证明题，结果原问题一直坐在原位等答案。",
+      "block_count": 5
+    },
+    {
+      "template": "logic_10",
+      "name": "话题点评",
+      "optional": false,
+      "text": "你这段推理，可他妈真把前提和结论讲成了陌生人。",
+      "block_count": 3
+    },
+    {
+      "template": "logic_10",
+      "name": "话题点评",
+      "optional": true,
+      "text": "你这次因果分析，简直他妈把前提换得比结论还快，听众只好重新确认刚才的问题是什么。",
+      "block_count": 4
+    }
+  ],
+  "checks": [
+    "every_required_slot",
+    "optional_slots_both_extremes",
+    "category_and_semantic_tags",
+    "no_repeated_fragment_id",
+    "exact_reconstruction",
+    "punctuation_and_length",
+    "all_templates_covered",
+    "variable_block_count",
+    "recent_sentence_deduplication"
+  ]
+}

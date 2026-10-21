@@ -1,0 +1,174 @@
+{
+  "verified_at": "2026-10-20T16:46:07.441850+08:00",
+  "status": "passed",
+  "url": "http://127.0.0.1:8765",
+  "source_sha256": "8bb6deb2faed86cca7b5023771965e12b35178fd7cc1b83b5bc597619e79841b",
+  "runtime_health": {
+    "app": "trash-talk-crt",
+    "project_id": "4ae8271985962414",
+    "status": "ok",
+    "sqlite_version": "3.54.1",
+    "source_sha256": "8bb6deb2faed86cca7b5023771965e12b35178fd7cc1b83b5bc597619e79841b",
+    "categories": 14,
+    "fragments": 917,
+    "templates": 40,
+    "rules": 532
+  },
+  "unit_tests": {
+    "command": ".venv/bin/python -m unittest discover -s tests -v",
+    "passed": 13,
+    "failed": 0,
+    "includes_real_three_process_startup_race": true
+  },
+  "generation": {
+    "status": "passed",
+    "seed": 20261020,
+    "database": {
+      "sqlite_version": "3.54.1",
+      "source_sha256": "8bb6deb2faed86cca7b5023771965e12b35178fd7cc1b83b5bc597619e79841b",
+      "categories": 14,
+      "fragments": 917,
+      "templates": 40,
+      "rules": 532
+    },
+    "reachable_fragments": 844,
+    "random_draws": 10000,
+    "unique_sentences": 9843,
+    "unique_ratio": 0.9843,
+    "immediate_duplicates": 0,
+    "profanity_ratio": 0.8322,
+    "block_count_distribution": {
+      "3": 1846,
+      "4": 5011,
+      "5": 3143
+    },
+    "length": {
+      "min": 17,
+      "max": 61,
+      "mean": 36.53
+    },
+    "theme_distribution": {
+      "boast": 2462,
+      "logic": 2540,
+      "daily": 2468,
+      "game": 2530
+    },
+    "checks": [
+      "every_required_slot",
+      "optional_slots_both_extremes",
+      "category_and_semantic_tags",
+      "no_repeated_fragment_id",
+      "exact_reconstruction",
+      "punctuation_and_length",
+      "all_templates_covered",
+      "variable_block_count",
+      "recent_sentence_deduplication"
+    ]
+  },
+  "browser": {
+    "single_button": true,
+    "initial_text": "系统已就绪，等你嘴硬。",
+    "real_api_sentence": {
+      "text": "你这套论证，真他妈让证据排在结论后面。",
+      "id": "6145ae2bf0ae",
+      "theme": "logic",
+      "block_count": 3
+    },
+    "keyboard_enter": true,
+    "local_resources": [],
+    "network_error_recovers": true,
+    "retry_real_api": true,
+    "long_text_layouts": [
+      {
+        "width": 320,
+        "document_width": 320,
+        "message_overflow": false,
+        "message_inside_screen": true
+      },
+      {
+        "width": 390,
+        "document_width": 390,
+        "message_overflow": false,
+        "message_inside_screen": true
+      },
+      {
+        "width": 768,
+        "document_width": 768,
+        "message_overflow": false,
+        "message_inside_screen": true
+      },
+      {
+        "width": 1440,
+        "document_width": 1440,
+        "message_overflow": false,
+        "message_inside_screen": true
+      }
+    ],
+    "reduced_motion": {
+      "requested": true,
+      "duration": "1e-05s"
+    },
+    "page_errors": [],
+    "rapid_20_clicks_requests": 1,
+    "invalid_response_recovers": true,
+    "timeout_elapsed_ms": 8181,
+    "timeout_recovers": true,
+    "real_api_after_timeout": true,
+    "method": "Real Chrome through Playwright CLI; one-shot network fault injection, followed by real API retry",
+    "final_runtime_source_sha256": "8bb6deb2faed86cca7b5023771965e12b35178fd7cc1b83b5bc597619e79841b",
+    "final_runtime_verified_in_browser": true
+  },
+  "native_launcher": {
+    "method": "macOS LaunchServices open 启动.command",
+    "health": {
+      "app": "trash-talk-crt",
+      "project_id": "4ae8271985962414",
+      "status": "ok",
+      "sqlite_version": "3.54.1",
+      "source_sha256": "8bb6deb2faed86cca7b5023771965e12b35178fd7cc1b83b5bc597619e79841b",
+      "categories": 14,
+      "fragments": 917,
+      "templates": 40,
+      "rules": 532
+    },
+    "source_matches_runtime": true,
+    "status": "passed"
+  },
+  "reviews": {
+    "frontend_spec": "passed",
+    "code_quality": "passed after connection limit and startup readiness fixes",
+    "corpus": "passed; independent 120-sentence sample across 40 templates; both parallel-predicate punctuation variants corrected and checked against final SQLite rows",
+    "manual_review_boundary": "Samples reviewed, not an exhaustive review of every possible combination",
+    "final_corrected_fragments": {
+      "cfix_daily_predicate_001": "把计划说得完整，执行得抽象",
+      "predicate_daily_006": "把计划说得很完整，执行得很抽象"
+    }
+  },
+  "syntax": {
+    "javascript": "passed",
+    "bash_setup_and_launcher": "passed",
+    "python": "passed"
+  },
+  "scheduler": {
+    "original_task": "本地单按钮CRT垃圾话网页，SQLite分类语料抽取，允许脏字，无LLM",
+    "primary_target": {
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "high",
+      "actual_runtime": "未核实"
+    },
+    "delegate_create_parameters": {
+      "model": "gpt-6-luna",
+      "reasoning_effort": "max",
+      "actual_runtime": "未核实"
+    },
+    "tasks": [
+      "CRT前端",
+      "语料与句型及返工",
+      "后端行为测试和启动回归",
+      "前端需求审查",
+      "代码质量复审",
+      "最终语法抽样复审"
+    ],
+    "final_review": "所有已发现阻断项均已修复，主线程集成与实际启动验证通过"
+  }
+}

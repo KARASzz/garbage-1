@@ -1,0 +1,8 @@
+{
+  "rapid_20_clicks_requests": 1,
+  "invalid_response_recovers": true,
+  "timeout_elapsed_ms": 8181,
+  "timeout_recovers": true,
+  "real_api_after_timeout": true,
+  "method": "Real Chrome through Playwright CLI; one-shot network fault injection, followed by real API retry"
+}

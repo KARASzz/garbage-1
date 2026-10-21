@@ -1,0 +1,39 @@
+### Result
+{"layouts":[{"width":390,"metrics":{"width":390,"scrollWidth":390,"message":"你这位气势总监他妈的把这次小小的进步包装成了冠军履历，奖杯还没出现你已经安排了合影。","buttons":[{"id":"likeButton","x":55,"right":191.5,"width":136.5,"height":44},{"id":"dislikeButton","x":198.5,"right":335,"width":136.5,"height":44},{"id":"drawButton","x":31,"right":191,"width":160,"height":49},{"id":"aiButton","x":199,"right":359,"width":160,"height":49}]},"source":"garbage-1","backend":"mlx"},{"width":320,"metrics":{"width":320,"scrollWidth":320,"message":"每次话说到兑现承诺，你这位气氛组长他妈的把还没开始的计划吹到了大声。","buttons":[{"id":"likeButton","x":51,"right":156.5,"width":105.5,"height":42},{"id":"dislikeButton","x":163.5,"right":269,"width":105.5,"height":42},{"id":"drawButton","x":27,"right":293,"width":266,"height":46},{"id":"aiButton","x":27,"right":293,"width":266,"height":46}]},"source":"garbage-1","backend":"mlx"}],"generationAvailableDuringSave":true,"staleVoteDidNotChangeNewOutput":true,"errorPreservedOutput":true,"nextSampleId":"0b7d68bd8495406b94494ee2404d39e3"}
+### Ran Playwright code
+```js
+await (async(page)=>{
+ const layouts=[];
+ for(const width of [390,320]){
+  await page.setViewportSize({width,height:844});
+  const wait=page.waitForResponse(r=>r.url().endsWith("/api/ai")&&r.request().method()==="POST");
+  await page.locator("#aiButton").click();const ai=await(await wait).json();await page.waitForFunction(()=>!document.querySelector("#aiButton").disabled);
+  const metrics=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,message:document.querySelector("#message").textContent,buttons:[...document.querySelectorAll("button")].map(b=>{const r=b.getBoundingClientRect();return{id:b.id,x:r.x,right:r.right,width:r.width,height:r.height}})}));
+  if(metrics.scrollWidth>width||metrics.buttons.some(b=>b.x<0||b.right>width))throw Error("Mobile overflow");
+  await page.screenshot({path:"output/playwright/garbage-1-mobile-"+width+".png",fullPage:true});
+  layouts.push({width,metrics,source:ai.source,backend:ai.model.backend});
+ }
+ await page.route("**/api/feedback",async route=>{await new Promise(r=>setTimeout(r,500));await route.continue();},{times:1});
+ const voteDone=page.waitForResponse(r=>r.url().endsWith("/api/feedback"));
+ await page.locator("#likeButton").click();
+ const generationAvailableDuringSave=await page.locator("#drawButton").isEnabled();
+ const newOutput=page.waitForResponse(r=>r.url().endsWith("/api/draw")&&r.request().method()==="POST");
+ await page.locator("#drawButton").click();const next=await(await newOutput).json();await voteDone;
+ await page.waitForFunction(()=>!document.querySelector("#drawButton").disabled);
+ const staleVoteDidNotChangeNewOutput=await page.locator("#likeButton").getAttribute("aria-pressed")==="false";
+ if(!generationAvailableDuringSave||!staleVoteDidNotChangeNewOutput)throw Error("Feedback save blocked or leaked rating");
+ const previous=await page.locator("#message").textContent();
+ await page.route("**/api/ai",route=>route.abort(),{times:1});
+ await page.locator("#aiButton").click();
+ await page.waitForFunction(()=>!document.querySelector("#aiButton").disabled);
+ const errorPreservedOutput=await page.locator("#message").textContent()===previous;
+ if(!errorPreservedOutput)throw Error("Error cleared output");
+ return {layouts,generationAvailableDuringSave,staleVoteDidNotChangeNewOutput,errorPreservedOutput,nextSampleId:next.sample_id};
+})(page);
+```
+### Page
+- Page URL: http://127.0.0.1:61634/
+- Page Title: 嘴硬终端 · 垃圾话生成器
+- Console: 1 errors, 0 warnings
+### Events
+- New console entries: .playwright-cli/console-2026-10-21T07-06-47-416Z.log#L1

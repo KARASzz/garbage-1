@@ -1,0 +1,45 @@
+{
+  "status": "passed",
+  "seed": 20261020,
+  "database": {
+    "sqlite_version": "3.54.1",
+    "source_sha256": "89d0d3232e4e3af02279299f86bdc191a42297c997848c37e8b13604362f7361",
+    "categories": 14,
+    "fragments": 1173,
+    "templates": 40,
+    "rules": 532
+  },
+  "reachable_fragments": 1100,
+  "random_draws": 10000,
+  "unique_sentences": 9897,
+  "unique_ratio": 0.9897,
+  "immediate_duplicates": 0,
+  "profanity_ratio": 0.8242,
+  "block_count_distribution": {
+    "3": 1846,
+    "4": 5011,
+    "5": 3143
+  },
+  "length": {
+    "min": 17,
+    "max": 63,
+    "mean": 37.17
+  },
+  "theme_distribution": {
+    "boast": 2463,
+    "logic": 2540,
+    "daily": 2467,
+    "game": 2530
+  },
+  "checks": [
+    "every_required_slot",
+    "optional_slots_both_extremes",
+    "category_and_semantic_tags",
+    "no_repeated_fragment_id",
+    "exact_reconstruction",
+    "punctuation_and_length",
+    "all_templates_covered",
+    "variable_block_count",
+    "recent_sentence_deduplication"
+  ]
+}

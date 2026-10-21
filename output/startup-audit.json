@@ -1,0 +1,16 @@
+{
+  "simultaneous_launches": 6,
+  "running_services": 1,
+  "reused_launches": 5,
+  "health": {
+    "app": "trash-talk-crt",
+    "project_id": "4ae8271985962414",
+    "status": "ok",
+    "sqlite_version": "3.54.1",
+    "categories": 14,
+    "fragments": 602,
+    "templates": 32,
+    "rules": 188
+  },
+  "status": "passed"
+}
