@@ -1,0 +1,6 @@
+### Result
+{"url":"http://127.0.0.1:8765/","title":"嘴硬终端 · 垃圾话生成器","message":"系统已就绪，等你嘴硬。","model":"garbage-1 · 100K · FP32 · MLX","feedbackHidden":true,"width":1440,"scrollWidth":1440}
+### Ran Playwright code
+```js
+await (async(page)=>{await page.setViewportSize({width:1440,height:1050});await page.waitForFunction(()=>document.querySelector("#modelStatus").textContent.includes("MLX"));const result=await page.evaluate(()=>({url:location.href,title:document.title,message:document.querySelector("#message").textContent,model:document.querySelector("#modelStatus").textContent,feedbackHidden:document.querySelector("#feedbackPanel").hidden,width:innerWidth,scrollWidth:document.documentElement.scrollWidth}));await page.screenshot({path:"output/playwright/garbage-1-native-ready.png",fullPage:true});return result;})(page);
+```

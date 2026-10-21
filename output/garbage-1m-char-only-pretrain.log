@@ -1,0 +1,28 @@
+{"step": 1, "steps": 306, "epoch": 1, "train_loss": 7.0041632652282715, "validation_loss": 6.780115127563477, "device": "mps"}
+{"step": 50, "steps": 306, "epoch": 1, "train_loss": 5.584156542408223, "validation_loss": 5.0392667055130005, "device": "mps"}
+{"step": 100, "steps": 306, "epoch": 1, "train_loss": 4.455623579025269, "validation_loss": 3.8949647545814514, "device": "mps"}
+{"step": 150, "steps": 306, "epoch": 1, "train_loss": 3.4424328804016113, "validation_loss": 3.082361340522766, "device": "mps"}
+{"step": 200, "steps": 306, "epoch": 2, "train_loss": 2.8254376602172853, "validation_loss": 2.6522239446640015, "device": "mps"}
+{"step": 250, "steps": 306, "epoch": 2, "train_loss": 2.4799152708053587, "validation_loss": 2.3828558921813965, "device": "mps"}
+{"step": 300, "steps": 306, "epoch": 2, "train_loss": 2.259578628540039, "validation_loss": 2.171430289745331, "device": "mps"}
+{"step": 306, "steps": 306, "epoch": 2, "train_loss": 2.1551747719446817, "validation_loss": 2.15642386674881, "device": "mps"}
+{
+  "status": "trained",
+  "step": 306,
+  "epochs": 2,
+  "train_loss": 2.21041202545166,
+  "validation_loss": 2.15642386674881,
+  "source_sha256": "8766084c7eb26c5b1ef79d4bbed1804b53f72a54c3a8f524173871259eacc1b8",
+  "vocab_size": 1067,
+  "context": 239,
+  "parameter_count": 1000000,
+  "device": "mps",
+  "checkpoint": {
+    "generation": "20261021T081638Z-da65681c-a53",
+    "weights": "/Users/karas/+Python mac/垃圾话/models/garbage-1/checkpoints/20261021T081638Z-da65681c-a53.npz",
+    "metadata": "/Users/karas/+Python mac/垃圾话/models/garbage-1/checkpoints/20261021T081638Z-da65681c-a53.json",
+    "current": "/Users/karas/+Python mac/垃圾话/models/garbage-1/current.json",
+    "parameter_count": 1000000,
+    "run_id": "da65681c-a536-4e89-866a-922fff96d054"
+  }
+}

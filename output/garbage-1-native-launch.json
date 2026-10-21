@@ -1,0 +1,46 @@
+{
+  "launcher": "启动.command",
+  "method": "macOS open",
+  "launches_after_final_restart": 2,
+  "listener_pid": 30145,
+  "listener": "COMMAND   PID  USER   FD   TYPE            DEVICE SIZE/OFF NODE NAME\nPython  30145 karas    4u  IPv4 0x20b92171e3522c1      0t0  TCP 127.0.0.1:8765 (LISTEN)\n",
+  "health": {
+    "app": "trash-talk-crt",
+    "project_id": "4ae8271985962414",
+    "status": "ok",
+    "api_version": 2,
+    "backend": "mlx",
+    "sqlite_version": "3.54.1",
+    "source_sha256": "89d0d3232e4e3af02279299f86bdc191a42297c997848c37e8b13604362f7361",
+    "categories": 14,
+    "fragments": 1173,
+    "templates": 40,
+    "rules": 532
+  },
+  "model": {
+    "name": "garbage-1",
+    "parameters": 100000,
+    "dtype": "float32",
+    "temperature": 0,
+    "backend": "mlx",
+    "ready": true,
+    "step": 6000,
+    "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+    "architecture": "dense_transformer_v1",
+    "error": null,
+    "counts": {
+      "up": 0,
+      "down": 0,
+      "pending": 0,
+      "total_samples": 0
+    },
+    "queue": {
+      "pending": 0,
+      "running": 0,
+      "done": 0,
+      "error": 0
+    }
+  },
+  "url": "http://127.0.0.1:8765",
+  "test_feedback_in_user_database": false
+}

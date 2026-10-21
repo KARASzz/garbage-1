@@ -7,6 +7,7 @@ import argparse
 from datetime import datetime, timezone
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import random
@@ -21,7 +22,13 @@ from torch.nn import functional as F
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from trash_talk.garbage_model import CharacterTokenizer, build_model, solve_config
+from trash_talk.garbage_model import (
+    BYTE_TOKEN_COUNT,
+    SPECIAL_TOKENS,
+    CharacterTokenizer,
+    build_model,
+    solve_config,
+)
 
 
 def utc_now() -> str:
@@ -145,8 +152,10 @@ def save_checkpoint(
         for name, parameter in named_parameters
     }
     parameter_count = sum(array.size for array in arrays.values())
-    if parameter_count != 100_000:
-        raise RuntimeError(f"检查点参数数错误：{parameter_count}，预期 100000")
+    if parameter_count != config.target_parameters:
+        raise RuntimeError(
+            f"检查点参数数错误：{parameter_count}，预期 {config.target_parameters}"
+        )
     if any(array.dtype != np.float32 for array in arrays.values()):
         raise RuntimeError("检查点必须全部使用 float32")
     digest = hashlib.sha256()
@@ -258,19 +267,36 @@ def train(args: argparse.Namespace) -> dict:
 
     # Fit vocabulary strictly from train.jsonl. Held-out text is encoded only
     # after fitting and can map unseen characters to the reserved UNK token.
-    tokenizer = CharacterTokenizer.fit([row["text"] for row in train_rows])
-    config = solve_config(tokenizer.vocab_size)
-    expected_config = manifest.get("training_only_tokenizer", {}).get(
-        "exact_100k_parameter_config"
+    byte_fallback = args.target_parameters >= 1_000_000
+    tokenizer = CharacterTokenizer.fit(
+        [row["text"] for row in train_rows], byte_fallback=byte_fallback
     )
-    if expected_config and expected_config != config.to_dict():
-        raise ValueError("manifest 中的精確 100k 配置與 train-only tokenizer 不一致")
-    if tokenizer.vocab_size != manifest.get("training_only_tokenizer", {}).get("vocab_size"):
+    config = solve_config(tokenizer.vocab_size, target=args.target_parameters)
+    if args.target_parameters == 100_000:
+        expected_config = manifest.get("training_only_tokenizer", {}).get(
+            "exact_100k_parameter_config"
+        )
+        if expected_config and expected_config != config.to_dict():
+            raise ValueError("manifest 中的精确 100K 配置与 train-only tokenizer 不一致")
+    manifest_vocab_size = manifest.get("training_only_tokenizer", {}).get("vocab_size")
+    expected_vocab_size = manifest_vocab_size + (256 if byte_fallback else 0)
+    if tokenizer.vocab_size != expected_vocab_size:
         raise ValueError("manifest 中的 tokenizer 詞表大小與 train-only tokenizer 不一致")
 
     train_stream = encode_stream(train_rows, tokenizer)
     validation_stream = encode_stream(validation_rows, tokenizer)
+    steps_per_epoch = max(
+        1, math.ceil(train_stream.numel() / (args.batch_size * config.context))
+    )
+    if args.epochs is not None:
+        total_steps = args.epochs * steps_per_epoch
+    else:
+        total_steps = args.steps if args.steps is not None else 3000
     model = build_model(config).to(device=device, dtype=torch.float32)
+    if byte_fallback:
+        byte_start = len(SPECIAL_TOKENS)
+        with torch.no_grad():
+            model.lm_bias[byte_start:byte_start + BYTE_TOKEN_COUNT].fill_(-4.0)
     optimizer = torch.optim.AdamW(
         model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay
     )
@@ -280,7 +306,7 @@ def train(args: argparse.Namespace) -> dict:
     final_train_loss = float("nan")
     final_validation_loss = float("nan")
     model.train()
-    for step in range(1, args.steps + 1):
+    for step in range(1, total_steps + 1):
         inputs, targets, cursor = packed_batch(
             train_stream, cursor, args.batch_size, config.context, device
         )
@@ -293,7 +319,7 @@ def train(args: argparse.Namespace) -> dict:
         final_train_loss = float(loss.detach().cpu())
         window_losses.append(final_train_loss)
 
-        if step % args.log_every == 0 or step == 1 or step == args.steps:
+        if step % args.log_every == 0 or step == 1 or step == total_steps:
             final_validation_loss = evaluate(
                 model,
                 validation_stream,
@@ -307,7 +333,9 @@ def train(args: argparse.Namespace) -> dict:
                 json.dumps(
                     {
                         "step": step,
-                        "steps": args.steps,
+                        "steps": total_steps,
+                        "epoch": min(args.epochs, math.ceil(step / steps_per_epoch))
+                        if args.epochs is not None else None,
                         "train_loss": logged_train_loss,
                         "validation_loss": final_validation_loss,
                         "device": device.type,
@@ -328,7 +356,12 @@ def train(args: argparse.Namespace) -> dict:
         "batch_size": args.batch_size,
         "device": device.type,
         "cpu_threads": args.threads,
-        "steps": args.steps,
+        "steps": total_steps,
+        "epochs": args.epochs,
+        "steps_per_epoch": steps_per_epoch,
+        "target_parameters": config.target_parameters,
+        "byte_fallback": tokenizer.byte_fallback,
+        "byte_output_bias_init": -4.0 if byte_fallback else None,
         "log_every": args.log_every,
         "eval_batches": args.eval_batches,
         "float32_matmul_precision": "highest",
@@ -351,12 +384,13 @@ def train(args: argparse.Namespace) -> dict:
         output_dir=output_dir,
         source_sha256=dataset_source_sha,
         seed=args.seed,
-        steps=args.steps,
+        steps=total_steps,
         training=training_metadata,
     )
     return {
         "status": "trained",
-        "step": args.steps,
+        "step": total_steps,
+        "epochs": args.epochs,
         "train_loss": final_train_loss,
         "validation_loss": final_validation_loss,
         "source_sha256": dataset_source_sha,
@@ -372,7 +406,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--output", type=Path, default=None, help="输出目录；默认 <root>/models/garbage-1")
-    parser.add_argument("--steps", type=int, default=3000)
+    parser.add_argument("--steps", type=int, default=None, help="固定训练步数；与 --epochs 二选一")
+    parser.add_argument("--epochs", type=int, default=None, help="按 packed train stream 完整覆盖次数训练")
+    parser.add_argument("--target-parameters", type=int, choices=(100_000, 1_000_000), default=100_000)
     parser.add_argument("--batch-size", type=int, default=16)
     parser.add_argument("--device", choices=("cpu", "mps", "cuda"), default="cpu")
     parser.add_argument("--threads", type=int, default=4)
@@ -382,8 +418,10 @@ def main() -> None:
     parser.add_argument("--log-every", type=int, default=100)
     parser.add_argument("--eval-batches", type=int, default=4)
     args = parser.parse_args()
-    if args.steps <= 0 or args.batch_size <= 0 or args.threads <= 0:
-        parser.error("steps、batch-size 和 threads 必须为正数")
+    if args.steps is not None and args.epochs is not None:
+        parser.error("--steps 和 --epochs 只能指定一个")
+    if (args.steps is not None and args.steps <= 0) or (args.epochs is not None and args.epochs <= 0) or args.batch_size <= 0 or args.threads <= 0:
+        parser.error("steps、epochs、batch-size 和 threads 必须为正数")
     if args.log_every <= 0 or args.eval_batches <= 0:
         parser.error("log-every 和 eval-batches 必须为正数")
     if args.learning_rate <= 0 or args.weight_decay < 0:

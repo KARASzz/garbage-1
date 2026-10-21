@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "runtime_word_or_topic_filter_found": false,
+  "sample_count": 3,
+  "exact_http_text_preserved": true,
+  "exact_positive_training_pool_text_preserved": true,
+  "tokenizer_fit_round_trip": true,
+  "current_model_vocab_size": 1067,
+  "current_model_missing_characters_in_samples": [
+    "与",
+    "亲",
+    "儿",
+    "孕",
+    "搁",
+    "避",
+    "防"
+  ],
+  "current_checkpoint": "checkpoints/20261021T070102Z-61517a33-a14.json",
+  "current_run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+  "weights_modified": false,
+  "formal_annotation_database_modified": false,
+  "scope": "Swearing, slang, and non-explicit adult-topic text preservation; no claim that current weights learned these topics."
+}

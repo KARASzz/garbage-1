@@ -8,6 +8,10 @@
   const feedbackPanel = document.querySelector("#feedbackPanel");
   const feedbackStatus = document.querySelector("#feedbackStatus");
   const modelStatus = document.querySelector("#modelStatus");
+  const feedForm = document.querySelector("#feedForm");
+  const feedInput = document.querySelector("#feedInput");
+  const feedButton = document.querySelector("#feedButton");
+  const feedStatus = document.querySelector("#feedStatus");
 
   if (
     !drawButton ||
@@ -18,7 +22,11 @@
     !screenStatus ||
     !feedbackPanel ||
     !feedbackStatus ||
-    !modelStatus
+    !modelStatus ||
+    !feedForm ||
+    !feedInput ||
+    !feedButton ||
+    !feedStatus
   ) {
     return;
   }
@@ -28,6 +36,7 @@
   const timeoutMs = 30_000;
   const pendingFeedbackSamples = new Set();
   let isGenerating = false;
+  let isFeeding = false;
   let activeSampleId = null;
   let activeRating = 0;
 
@@ -41,6 +50,8 @@
     feedbackButtons.forEach((button) => {
       button.disabled = activeSamplePending;
     });
+    feedButton.disabled = isFeeding;
+    feedInput.disabled = isFeeding;
   }
 
   function readableError(error, fallback) {
@@ -102,7 +113,8 @@
     return Boolean(
       model &&
         model.name === "garbage-1" &&
-        model.parameters === 100000 &&
+        Number.isSafeInteger(model.parameters) &&
+        model.parameters > 0 &&
         model.dtype === "float32" &&
         model.temperature === 0,
     );
@@ -133,7 +145,10 @@
   function applyModel(model) {
     if (!validateModel(model)) return;
     const backend = { mlx: "MLX", cuda: "CUDA", "torch-cpu": "CPU" }[model.backend] || "MLX";
-    modelStatus.textContent = `${model.name} · 100K · FP32 · ${backend}`;
+    const size = model.parameters >= 1_000_000
+      ? `${Number((model.parameters / 1_000_000).toFixed(1))}M`
+      : `${Math.round(model.parameters / 1_000)}K`;
+    modelStatus.textContent = `${model.name} · ${size} · FP32 · ${backend}`;
   }
 
   function installOutput(result) {
@@ -226,6 +241,43 @@
     }
   }
 
+  async function feedSentence(event) {
+    event.preventDefault();
+    if (isFeeding) return;
+    const text = feedInput.value.trim();
+    if (text.length < 2) {
+      feedStatus.textContent = "请输入一句完整语料，不要只投喂单个字。";
+      feedInput.focus();
+      return;
+    }
+
+    isFeeding = true;
+    feedStatus.textContent = "正在收下这句语料…";
+    updateButtonState();
+    try {
+      const result = await requestJson("/api/feed", "POST", { text });
+      if (
+        !result ||
+        typeof result.sample_id !== "string" ||
+        typeof result.duplicate !== "boolean" ||
+        !(result.job_id === null || isInteger(result.job_id)) ||
+        !isInteger(result.fed_sentences)
+      ) {
+        throw new Error("投喂结果格式不完整，请重试。");
+      }
+      feedInput.value = "";
+      feedStatus.textContent = result.duplicate
+        ? "这句已经在语料库里了。"
+        : "整句已收下，后台正在学习。";
+      screenStatus.textContent = result.duplicate ? "语料已存在" : "整句已投喂 · 后台学习中";
+    } catch (error) {
+      feedStatus.textContent = readableError(error, "投喂失败，请重试。");
+    } finally {
+      isFeeding = false;
+      updateButtonState();
+    }
+  }
+
   async function loadModelStatus() {
     try {
       const model = await requestJson("/api/model", "GET");
@@ -239,6 +291,7 @@
   aiButton.addEventListener("click", () => generate("garbage-1"));
   likeButton.addEventListener("click", () => rateOutput(1));
   dislikeButton.addEventListener("click", () => rateOutput(-1));
+  feedForm.addEventListener("submit", feedSentence);
 
   void loadModelStatus();
 })();

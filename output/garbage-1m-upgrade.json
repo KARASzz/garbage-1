@@ -1,0 +1,52 @@
+{
+  "request": "升级 garbage-1 到 1M 参数，在本机预训练两轮，并增加整句投喂与静默在线学习。",
+  "model": {
+    "name": "garbage-1",
+    "parameter_count": 1000000,
+    "dtype": "float32",
+    "architecture": "dense_transformer_v1",
+    "vocab_size": 1323,
+    "tokenizer": "character tokens plus 256 UTF-8 byte fallback tokens",
+    "d_model": 160,
+    "heads": 8,
+    "context": 174,
+    "ffn_dims": [858, 859],
+    "weight_sha256": "8c304ba82251bc46e6f6de1055a7a59c18c9db011c88fd72ae187ca0081318fa",
+    "run_id": "202a56a3-52d6-43bc-a5ba-7e1b8ffe4f0d",
+    "checkpoint": "models/garbage-1/checkpoints/20261021T082320Z-202a56a3-52d.json",
+    "previous_100k_pointer": "models/garbage-1/current-100k.json",
+    "superseded_intermediate_1m_pointer": "models/garbage-1/current-1m-char-only.json"
+  },
+  "pretraining": {
+    "epochs": 2,
+    "steps_per_epoch": 210,
+    "total_steps": 420,
+    "device": "mps",
+    "framework": "PyTorch",
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.01,
+    "batch_size": 16,
+    "precision": "FP32",
+    "train_stream_tokens": 584599,
+    "final_batch_train_loss": 1.0351089239120483,
+    "final_validation_loss_4_batches": 0.9642341136932373,
+    "utf8_byte_fallback": true,
+    "byte_output_bias_init": -4.0,
+    "log": "output/garbage-1m-pretrain.log"
+  },
+  "runtime": {
+    "inference_backend": "MLX / Metal",
+    "temperature": 0,
+    "ready": true,
+    "generated_nonempty_output": true,
+    "ui_loaded_at_desktop_and_390px": true,
+    "browser_console_errors": 0
+  },
+  "feed_sentence": {
+    "endpoint": "POST /api/feed",
+    "persistence": "data/feedback.sqlite3 corpus_feeds table",
+    "training": "positive sample and durable background training job",
+    "submission_smoke": "not submitted during upgrade verification; no test sentence was added to the user's corpus"
+  }
+}

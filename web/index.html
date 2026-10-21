@@ -78,8 +78,16 @@
           </div>
 
           <div class="model-status-row">
-            <span class="model-indicator" aria-hidden="true">AI</span>
-            <span class="model-status" id="modelStatus" role="status" aria-live="polite">garbage-1 · 100K · FP32 · MLX</span>
+            <div class="model-status-copy">
+              <span class="model-indicator" aria-hidden="true">AI</span>
+              <span class="model-status" id="modelStatus" role="status" aria-live="polite">garbage-1 · 1M · FP32 · MLX</span>
+            </div>
+            <form class="feed-form" id="feedForm">
+              <label class="visually-hidden" for="feedInput">投喂一句完整中文语料</label>
+              <input class="feed-input" id="feedInput" name="text" type="text" maxlength="800" autocomplete="off" placeholder="投喂一句完整中文语料，不拆词" required>
+              <button class="feed-button" id="feedButton" type="submit">投喂 ↵</button>
+            </form>
+            <p class="feed-status" id="feedStatus" role="status" aria-live="polite"></p>
           </div>
 
           <div class="case-rim" aria-hidden="true">

@@ -18,7 +18,9 @@ from torch.nn import functional as F
 
 
 TOKENIZER_FORMAT_VERSION = 1
+TOKENIZER_BYTE_FALLBACK_FORMAT_VERSION = 2
 MODEL_FORMAT_VERSION = 1
+BYTE_TOKEN_COUNT = 256
 SPECIAL_TOKENS = (
     "<PAD>",
     "<BOS>",
@@ -35,9 +37,11 @@ _SPECIAL_TO_ID = {token: index for index, token in enumerate(SPECIAL_TOKENS)}
 
 
 class CharacterTokenizer:
-    """NFC-normalized character tokenizer with fixed control/theme IDs."""
+    """NFC character tokenizer with optional lossless UTF-8 byte fallback."""
 
-    def __init__(self, characters: Sequence[str]):
+    def __init__(self, characters: Sequence[str], *, byte_fallback: bool = False):
+        if type(byte_fallback) is not bool:
+            raise ValueError("byte_fallback 必须是布尔值")
         if any(not isinstance(char, str) for char in characters):
             raise ValueError("字符表必须只包含单个 Unicode 字符")
         normalized = [unicodedata.normalize("NFC", char) for char in characters]
@@ -48,8 +52,11 @@ class CharacterTokenizer:
         if any(char in _SPECIAL_TO_ID for char in normalized):
             raise ValueError("字符表不能包含特殊 token 名称")
         self.characters = tuple(normalized)
+        self.byte_fallback = byte_fallback
+        self._byte_start = len(SPECIAL_TOKENS) if byte_fallback else None
+        self._char_start = len(SPECIAL_TOKENS) + (BYTE_TOKEN_COUNT if byte_fallback else 0)
         self._char_to_id = {
-            char: len(SPECIAL_TOKENS) + index
+            char: self._char_start + index
             for index, char in enumerate(self.characters)
         }
         self._id_to_char = {
@@ -61,7 +68,7 @@ class CharacterTokenizer:
         }
 
     @classmethod
-    def fit(cls, texts: list[str]) -> CharacterTokenizer:
+    def fit(cls, texts: list[str], *, byte_fallback: bool = False) -> CharacterTokenizer:
         """Fit only on the supplied training texts, never on held-out text."""
         if not isinstance(texts, list) or any(not isinstance(text, str) for text in texts):
             raise TypeError("texts 必须是字符串列表")
@@ -70,11 +77,11 @@ class CharacterTokenizer:
             for text in texts
             for char in unicodedata.normalize("NFC", text)
         }
-        return cls(sorted(characters))
+        return cls(sorted(characters), byte_fallback=byte_fallback)
 
     @property
     def vocab_size(self) -> int:
-        return len(SPECIAL_TOKENS) + len(self.characters)
+        return len(SPECIAL_TOKENS) + (BYTE_TOKEN_COUNT if self.byte_fallback else 0) + len(self.characters)
 
     @property
     def pad_id(self) -> int:
@@ -111,10 +118,14 @@ class CharacterTokenizer:
             result.append(self.bos_id)
         if theme is not None:
             result.append(self._theme_to_id[theme])
-        result.extend(
-            self._char_to_id.get(char, self.unk_id)
-            for char in unicodedata.normalize("NFC", text)
-        )
+        for char in unicodedata.normalize("NFC", text):
+            token_id = self._char_to_id.get(char)
+            if token_id is not None:
+                result.append(token_id)
+            elif self.byte_fallback:
+                result.extend(self._byte_start + value for value in char.encode("utf-8"))
+            else:
+                result.append(self.unk_id)
         if eos:
             result.append(self.eos_id)
         return result
@@ -122,33 +133,58 @@ class CharacterTokenizer:
     def decode(self, ids: Sequence[int]) -> str:
         """Decode character IDs and omit every reserved special token."""
         pieces: list[str] = []
+        pending_bytes = bytearray()
+
+        def flush_bytes() -> None:
+            if pending_bytes:
+                pieces.append(bytes(pending_bytes).decode("utf-8", errors="replace"))
+                pending_bytes.clear()
+
         for token_id in ids:
             if isinstance(token_id, bool) or not isinstance(token_id, int):
                 raise TypeError("token ID 必须是整数")
             if token_id < 0 or token_id >= self.vocab_size:
                 raise ValueError(f"token ID 超出词表范围: {token_id}")
+            if self.byte_fallback and self._byte_start <= token_id < self._char_start:
+                pending_bytes.append(token_id - self._byte_start)
+                continue
+            flush_bytes()
             char = self._id_to_char.get(token_id)
             if char is not None:
                 pieces.append(char)
+        flush_bytes()
         return "".join(pieces)
 
     def to_dict(self) -> dict:
-        return {
-            "format_version": TOKENIZER_FORMAT_VERSION,
+        data = {
+            "format_version": TOKENIZER_BYTE_FALLBACK_FORMAT_VERSION if self.byte_fallback else TOKENIZER_FORMAT_VERSION,
             "normalization": "NFC",
             "special_tokens": list(SPECIAL_TOKENS),
             "characters": list(self.characters),
         }
+        if self.byte_fallback:
+            data["byte_fallback"] = True
+        return data
 
     @classmethod
     def from_dict(cls, data: Mapping[str, object]) -> CharacterTokenizer:
         if not isinstance(data, Mapping):
             raise TypeError("tokenizer 数据必须是映射")
-        expected = {"format_version", "normalization", "special_tokens", "characters"}
+        expected_v1 = {"format_version", "normalization", "special_tokens", "characters"}
+        expected_v2 = expected_v1 | {"byte_fallback"}
+        version = data.get("format_version")
+        if version == TOKENIZER_FORMAT_VERSION:
+            expected = expected_v1
+            byte_fallback = False
+        elif version == TOKENIZER_BYTE_FALLBACK_FORMAT_VERSION:
+            expected = expected_v2
+            byte_fallback = data.get("byte_fallback") is True
+            if not byte_fallback:
+                raise ValueError("tokenizer v2 必须启用 byte_fallback")
+        else:
+            raise ValueError("不支持的 tokenizer 格式版本")
         if set(data) != expected:
             raise ValueError("tokenizer 配置字段不匹配")
-        if data["format_version"] != TOKENIZER_FORMAT_VERSION:
-            raise ValueError("不支持的 tokenizer 格式版本")
         if data["normalization"] != "NFC":
             raise ValueError("只支持 NFC 字符规范化")
         if data["special_tokens"] != list(SPECIAL_TOKENS):
@@ -158,7 +194,7 @@ class CharacterTokenizer:
             raise ValueError("characters 必须是字符串列表")
         if characters != sorted(characters):
             raise ValueError("characters 必须按 Unicode 顺序排列")
-        return cls(characters)
+        return cls(characters, byte_fallback=byte_fallback)
 
 
 FFNFactory = Callable[[int, int], nn.Module]
@@ -274,15 +310,18 @@ def _parameter_count_for(
 
 def _candidate_architectures() -> tuple[tuple[int, int], ...]:
     # Prefer a conventional 48-wide, six-head model for ordinary corpora;
-    # smaller widths keep larger vocabularies inside the same budget.
-    return ((48, 6), (56, 7), (40, 5), (32, 4), (64, 8), (49, 7), (24, 4))
+    # larger widths let the same exact-budget builder support the 1M variant.
+    return (
+        (48, 6), (56, 7), (40, 5), (32, 4), (64, 8), (49, 7), (24, 4),
+        (128, 8), (160, 8), (192, 8), (256, 8),
+    )
 
 
 def solve_config(
     vocab_size: int,
     target: int = 100_000,
     min_context: int = 96,
-    max_context: int = 192,
+    max_context: int = 512,
 ) -> ModelConfig:
     """Find an exact two-layer dense configuration without spare parameters."""
     for name, value in (("vocab_size", vocab_size), ("target", target), ("min_context", min_context), ("max_context", max_context)):

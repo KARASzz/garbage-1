@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 from pathlib import Path
+import unicodedata
 import uuid
 
 import apsw
@@ -21,6 +22,12 @@ CREATE TABLE IF NOT EXISTS samples (
     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
 ) STRICT;
 CREATE INDEX IF NOT EXISTS samples_content ON samples(content_sha256);
+CREATE TABLE IF NOT EXISTS corpus_feeds (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sample_id TEXT NOT NULL UNIQUE REFERENCES samples(id),
+    content_sha256 TEXT NOT NULL UNIQUE,
+    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+) STRICT;
 CREATE TABLE IF NOT EXISTS ratings (
     content_sha256 TEXT PRIMARY KEY,
     sample_id TEXT NOT NULL REFERENCES samples(id),
@@ -109,6 +116,95 @@ class FeedbackStore:
         try:
             connection.execute("INSERT INTO samples(id,content_sha256,text,source,theme,model_step,model_run_id) VALUES (?,?,?,?,?,?,?)", (identifier, text_digest(text), text, source, theme, model_step, model_run_id))
             return identifier
+        finally:
+            connection.close()
+
+    def feed_sentence(self, text: str, model_step: int, model_run_id: str) -> dict:
+        """Persist a complete user sentence as a positive example and queue it."""
+        if not isinstance(text, str):
+            raise ValueError("请输入一句中文语料")
+        normalized = unicodedata.normalize("NFC", text.strip())
+        if not normalized or len(normalized) < 2:
+            raise ValueError("请输入完整句子，不要只投喂单个字")
+        if len(normalized) > 800:
+            raise ValueError("单句最多 800 个字符")
+        if any(char in "\r\n\u2028\u2029" for char in normalized):
+            raise ValueError("一次投喂一整句，请不要换行")
+        if type(model_step) is not int or model_step < 0 or not isinstance(model_run_id, str):
+            raise ValueError("模型状态无效，暂时无法投喂")
+
+        digest = text_digest(normalized)
+        connection = self.connect()
+        try:
+            connection.execute("BEGIN IMMEDIATE")
+            try:
+                existing = connection.execute(
+                    "SELECT sample_id FROM corpus_feeds WHERE content_sha256=?",
+                    (digest,),
+                ).get
+                if existing is not None:
+                    counts = self._counts(connection)
+                    feed_count = connection.execute("SELECT count(*) FROM corpus_feeds").get
+                    connection.execute("COMMIT")
+                    return {
+                        "sample_id": existing,
+                        "duplicate": True,
+                        "job_id": None,
+                        "counts": counts,
+                        "fed_sentences": feed_count,
+                        "message": "这句已经投喂过了。",
+                    }
+
+                sample_id = uuid.uuid4().hex
+                connection.execute(
+                    "INSERT INTO samples(id,content_sha256,text,source,theme,model_step,model_run_id) "
+                    "VALUES (?,?,?,?,?,?,?)",
+                    (sample_id, digest, normalized, "garbage-1", "manual", model_step, model_run_id),
+                )
+                previous = connection.execute(
+                    "SELECT rating FROM ratings WHERE content_sha256=?", (digest,)
+                ).get
+                connection.execute(
+                    "INSERT INTO ratings(content_sha256,sample_id,rating) VALUES (?,?,1) "
+                    "ON CONFLICT(content_sha256) DO UPDATE SET sample_id=excluded.sample_id,"
+                    "rating=1,updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now')",
+                    (digest, sample_id),
+                )
+                event_id = connection.execute(
+                    "INSERT INTO feedback_events(sample_id,previous_rating,rating) "
+                    "VALUES (?,?,1) RETURNING id",
+                    (sample_id, previous),
+                ).get
+                job_id = connection.execute(
+                    "INSERT INTO training_jobs(event_id,sample_id,action) "
+                    "VALUES (?,?,'positive') RETURNING id",
+                    (event_id, sample_id),
+                ).get
+                connection.execute(
+                    "INSERT INTO corpus_feeds(sample_id,content_sha256) VALUES (?,?)",
+                    (sample_id, digest),
+                )
+                counts = self._counts(connection)
+                feed_count = connection.execute("SELECT count(*) FROM corpus_feeds").get
+                connection.execute("COMMIT")
+                return {
+                    "sample_id": sample_id,
+                    "duplicate": False,
+                    "job_id": job_id,
+                    "counts": counts,
+                    "fed_sentences": feed_count,
+                    "message": "整句已收下，正在后台学习。",
+                }
+            except BaseException:
+                connection.execute("ROLLBACK")
+                raise
+        finally:
+            connection.close()
+
+    def corpus_feed_count(self) -> int:
+        connection = self.connect()
+        try:
+            return connection.execute("SELECT count(*) FROM corpus_feeds").get
         finally:
             connection.close()
 
