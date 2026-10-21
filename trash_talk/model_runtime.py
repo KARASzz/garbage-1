@@ -153,6 +153,9 @@ class ModelRuntime:
     def ready(self):
         return self.backend is not None
 
+    def reload(self):
+        return ModelRuntime(self.root, backend=self.backend_name, model_dir=self.model_dir)
+
     def status(self):
         metadata = self.metadata
         parameters = metadata.get("parameter_count", metadata.get("config", {}).get("target_parameters", 100000))
@@ -268,8 +271,7 @@ class BackgroundLearner:
                     self.store.recover_jobs()
                     # A previous process may have updated the pointer while
                     # this process waited for the single-writer lease.
-                    replacement = ModelRuntime(self.runtime.root, backend=self.runtime.backend_name,
-                                               model_dir=self.runtime.model_dir)
+                    replacement = self.runtime.reload()
                     if not replacement.ready:
                         with self.runtime.lock:
                             self.runtime.backend = None

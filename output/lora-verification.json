@@ -1,0 +1,37 @@
+{
+  "scope": "isolated temporary project copy; production UI checked read-only",
+  "tests": {
+    "command": ".venv/bin/python -m unittest discover -s tests -q",
+    "passed": 61
+  },
+  "browser": {
+    "style_options": 10,
+    "switch_after_generation_feedback_target": "office",
+    "same_sentence_separate_feed_targets": [
+      "alien",
+      "base"
+    ],
+    "office_step_change": [
+      40,
+      41
+    ],
+    "alien_step_change": [
+      40,
+      41
+    ],
+    "base_queue_done": 1,
+    "production_viewports_without_horizontal_overflow": [
+      1440,
+      390
+    ]
+  },
+  "backend_checks": {
+    "mlx": true,
+    "torch_cpu": true,
+    "cuda_hardware_tested": false
+  },
+  "limitations": [
+    "Only 48 train and 8 validation sentences per style.",
+    "Real continuations still repeat and break grammar."
+  ]
+}

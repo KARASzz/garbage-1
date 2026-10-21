@@ -3,10 +3,16 @@
   "model": {
     "name": "garbage-1",
     "parameter_count": 1000000,
+    "raw_fp32_weight_bytes": 4000000,
     "dtype": "float32",
     "architecture": "dense_transformer_v1",
     "vocab_size": 1323,
-    "tokenizer": "character tokens plus 256 UTF-8 byte fallback tokens",
+    "tokenizer_format": 2,
+    "tokenizer": {
+      "training_characters": 1059,
+      "control_tokens": 8,
+      "utf8_byte_fallback_tokens": 256
+    },
     "d_model": 160,
     "heads": 8,
     "context": 174,
@@ -40,6 +46,7 @@
     "temperature": 0,
     "ready": true,
     "generated_nonempty_output": true,
+    "unseen_unicode_roundtrip": true,
     "ui_loaded_at_desktop_and_390px": true,
     "browser_console_errors": 0
   },

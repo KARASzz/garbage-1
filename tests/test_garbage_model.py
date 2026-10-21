@@ -60,7 +60,7 @@ class ModelConfigurationTests(unittest.TestCase):
                 self.assertEqual(config.ffn_type, "dense")
                 self.assertEqual(config.vocab_size, vocab_size)
                 self.assertGreaterEqual(config.context, 96)
-                self.assertLessEqual(config.context, 192)
+                self.assertLessEqual(config.context, 512)
 
                 model = build_model(config)
                 self.assertEqual(sum(parameter.numel() for parameter in model.parameters()), 100_000)

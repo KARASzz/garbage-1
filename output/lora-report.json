@@ -1,0 +1,275 @@
+{
+  "format": "garbage-1-lora-training-report-v1",
+  "styles": [
+    {
+      "style": "mad",
+      "name": "疯子",
+      "parameters": 47952,
+      "rank": 8,
+      "base_frozen": true,
+      "optimizer": "adam",
+      "learning_rate": 0.002,
+      "attempted_steps": 1200,
+      "train_sentences": 48,
+      "validation_sentences": 8,
+      "validation_before": 8.231386905653189,
+      "validation_after": 6.033612329168758,
+      "optimizer_state_saved": false,
+      "online_optimizer": "sgd",
+      "samples": [
+        {
+          "prompt": "我给沙发",
+          "base": "我给沙发言，你这位排期说得跟傻逼似的，最后最后最清楚的是会议时间。",
+          "adapter": "我给沙发货，我把我把我开厚了宇宙声。",
+          "changed": true
+        },
+        {
+          "prompt": "今天的月",
+          "base": "今天的月成，你这位排期顾问他妈的把简单小事办成了大型项目，待办清单比执行进度长得快。",
+          "adapter": "今天的月把我把钥匙演成了密文步。",
+          "changed": true
+        }
+      ]
+    },
+    {
+      "style": "sassy",
+      "name": "娘炮",
+      "parameters": 47952,
+      "rank": 8,
+      "base_frozen": true,
+      "optimizer": "adam",
+      "learning_rate": 0.002,
+      "attempted_steps": 1200,
+      "train_sentences": 48,
+      "validation_sentences": 8,
+      "validation_before": 8.07982381271239,
+      "validation_after": 5.709597461550913,
+      "optimizer_state_saved": false,
+      "online_optimizer": "sgd",
+      "samples": [
+        {
+          "prompt": "哼，人家",
+          "base": "哼，人家里的时间表，你这位生活总监他妈磨蹭得连闹钟都开始催第二遍。",
+          "adapter": "哼，人家刚的，你的是一个重点是是等等到开始积怎么呼吸。",
+          "changed": true
+        },
+        {
+          "prompt": "哎呀这流",
+          "base": "哎呀这流程刚说到第一步，你这位流程设计师把简单小事他妈拖成年度大戏，最后最后最清楚的是会",
+          "adapter": "哎呀这流程，你的事情把简单问题说得像个待办。",
+          "changed": true
+        }
+      ]
+    },
+    {
+      "style": "anime",
+      "name": "二次元",
+      "parameters": 47952,
+      "rank": 8,
+      "base_frozen": true,
+      "optimizer": "adam",
+      "learning_rate": 0.002,
+      "attempted_steps": 1200,
+      "train_sentences": 48,
+      "validation_sentences": 8,
+      "validation_before": 8.06067447805178,
+      "validation_after": 6.067432329316824,
+      "optimizer_state_saved": false,
+      "online_optimizer": "sgd",
+      "samples": [
+        {
+          "prompt": "传说中的",
+          "base": "传说中的时间表，你这位排期顾问把简单小事他妈拖成了年度大戏，最后最后最清楚的是会议时间。",
+          "adapter": "传说中的战，我的把一份简单流程写成了，我不见了。",
+          "changed": true
+        },
+        {
+          "prompt": "我已看穿",
+          "base": "我已看穿冠军履历，你这位收尾负责人把简单小事他妈拖成了年度大戏，最后最后最清楚的是会议时",
+          "adapter": "我已看穿冠的比始。",
+          "changed": true
+        }
+      ]
+    },
+    {
+      "style": "femboy",
+      "name": "伪娘",
+      "parameters": 47952,
+      "rank": 8,
+      "base_frozen": true,
+      "optimizer": "adam",
+      "learning_rate": 0.002,
+      "attempted_steps": 1200,
+      "train_sentences": 48,
+      "validation_sentences": 8,
+      "validation_before": 8.41172745670257,
+      "validation_after": 5.939229179072393,
+      "optimizer_state_saved": false,
+      "online_optimizer": "sgd",
+      "samples": [
+        {
+          "prompt": "一件皮衣",
+          "base": "一件皮衣服都要开会议，你这位流程设计师简直他妈把简单的选择纠结成了投票大赛，最后最后最清",
+          "adapter": "一件皮衣服都能有信，我不能把我不好的路线。",
+          "changed": true
+        },
+        {
+          "prompt": "我不靠衣",
+          "base": "我不靠衣服凉了你这位流程设计划的流程，简直他妈把一份安排弄成了谁都不敢先动手的流程，待办",
+          "adapter": "我不靠衣服能，我不在的才的样发么。",
+          "changed": true
+        }
+      ]
+    },
+    {
+      "style": "office",
+      "name": "社畜",
+      "parameters": 47952,
+      "rank": 8,
+      "base_frozen": true,
+      "optimizer": "adam",
+      "learning_rate": 0.002,
+      "attempted_steps": 1200,
+      "train_sentences": 48,
+      "validation_sentences": 8,
+      "validation_before": 6.981948261945591,
+      "validation_after": 5.406881197831882,
+      "optimizer_state_saved": false,
+      "online_optimizer": "sgd",
+      "samples": [
+        {
+          "prompt": "表格终于",
+          "base": "表格终于事越多一步越多出三步，居然他妈把一个简单的进场，待办清单事情本人已经申请换个负责",
+          "adapter": "表格终于一到需要重一步越有人，还没开始自己找到位置。",
+          "changed": true
+        },
+        {
+          "prompt": "领导说不",
+          "base": "领导说不时，你这位项目经理他妈磨蹭得连闹钟都开始催第二遍，最后最后最开始的是会议时间。",
+          "adapter": "领导说不得比正把一个问题，我的目标本人还没收到位置。",
+          "changed": true
+        }
+      ]
+    },
+    {
+      "style": "soldier",
+      "name": "兵王",
+      "parameters": 47952,
+      "rank": 8,
+      "base_frozen": true,
+      "optimizer": "adam",
+      "learning_rate": 0.002,
+      "attempted_steps": 1200,
+      "train_sentences": 48,
+      "validation_sentences": 8,
+      "validation_before": 7.922295597781251,
+      "validation_after": 6.228191306466504,
+      "optimizer_state_saved": false,
+      "online_optimizer": "sgd",
+      "samples": [
+        {
+          "prompt": "突发情况",
+          "base": "突发情况的时间表，你这位排期顾问把简单小事他妈拖成了年度大戏，最后最后最清楚的是会议时间",
+          "adapter": "突发情况。",
+          "changed": true
+        },
+        {
+          "prompt": "全队听令",
+          "base": "全队听令半天还没动手。",
+          "adapter": "全队听令，全队的加时，全队的加时，队友的加时，队友的加时。",
+          "changed": true
+        }
+      ]
+    },
+    {
+      "style": "alien",
+      "name": "外星人",
+      "parameters": 47952,
+      "rank": 8,
+      "base_frozen": true,
+      "optimizer": "adam",
+      "learning_rate": 0.002,
+      "attempted_steps": 1200,
+      "train_sentences": 48,
+      "validation_sentences": 8,
+      "validation_before": 8.53219679552497,
+      "validation_after": 6.272994533266974,
+      "optimizer_state_saved": false,
+      "online_optimizer": "sgd",
+      "samples": [
+        {
+          "prompt": "这颗星球",
+          "base": "这颗星球，你这位流程设计师把简单小事他妈拖成了年度大戏，最后最后最清楚的是会议时间。",
+          "adapter": "这颗星球的会议，地球的人把我还是没找到题。",
+          "changed": true
+        },
+        {
+          "prompt": "地球人把",
+          "base": "地球人把简单的事他妈拖成了连续剧，待办清单又多了一步流程。",
+          "adapter": "地球人把我讲出。",
+          "changed": true
+        }
+      ]
+    },
+    {
+      "style": "hostess",
+      "name": "陪酒女",
+      "parameters": 47952,
+      "rank": 8,
+      "base_frozen": true,
+      "optimizer": "adam",
+      "learning_rate": 0.002,
+      "attempted_steps": 1200,
+      "train_sentences": 48,
+      "validation_sentences": 8,
+      "validation_before": 8.871125681770252,
+      "validation_after": 6.066905060417719,
+      "optimizer_state_saved": false,
+      "online_optimizer": "sgd",
+      "samples": [
+        {
+          "prompt": "客人想听",
+          "base": "客人想听起来已经完就把简单流程写成了需要三轮确认的计划，你的计划表写完就宣布阶段胜利。",
+          "adapter": "客人想听起来又我就。",
+          "changed": true
+        },
+        {
+          "prompt": "您不必勉",
+          "base": "您不必勉，你这位排期顾成绩预言家把简单小事他妈拖成了年度大戏，最后最清楚的是会议时间。",
+          "adapter": "您不必勉罗最会文档，我，我都像在替天准备。",
+          "changed": true
+        }
+      ]
+    },
+    {
+      "style": "mouthy",
+      "name": "嘴臭",
+      "parameters": 47952,
+      "rank": 8,
+      "base_frozen": true,
+      "optimizer": "adam",
+      "learning_rate": 0.002,
+      "attempted_steps": 1200,
+      "train_sentences": 48,
+      "validation_sentences": 8,
+      "validation_before": 7.137742329944564,
+      "validation_after": 5.533983542646203,
+      "optimizer_state_saved": false,
+      "online_optimizer": "sgd",
+      "samples": [
+        {
+          "prompt": "你倒挺会",
+          "base": "你倒挺会议，他妈的把简单流程绕成了审批迷宫，最后最后最清楚的是会议时间。",
+          "adapter": "你倒挺会绕了半天，是先是没回到题上，，还在自己还在到了，你倒先先把自己来了。",
+          "changed": true
+        },
+        {
+          "prompt": "别把烂摊",
+          "base": "别把烂摊包装成了总快，你还真他妈把一句豪言吹成了冠军履历，成绩单安静得像没收到通知。",
+          "adapter": "别把烂摊",
+          "changed": true
+        }
+      ]
+    }
+  ]
+}

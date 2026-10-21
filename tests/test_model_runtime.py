@@ -638,7 +638,7 @@ class HttpRuntimeIntegrationTests(TemporaryRuntimeCase):
         self.assertEqual(status, 200)
         self.assertEqual(
             set(rule),
-            {"text", "id", "theme", "block_count", "sample_id", "source", "rating", "model"},
+            {"text", "id", "theme", "block_count", "sample_id", "source", "rating", "model", "style", "style_name"},
         )
         self.assertEqual(rule["source"], "rule")
         self.assertEqual(rule["rating"], 0)
@@ -654,7 +654,7 @@ class HttpRuntimeIntegrationTests(TemporaryRuntimeCase):
             set(generated),
             {
                 "text", "theme", "id", "block_count", "model", "prompt",
-                "generated_tokens", "sample_id", "source", "rating",
+                "generated_tokens", "sample_id", "source", "rating", "style", "style_name",
             },
         )
         self.assertEqual(generated["source"], "garbage-1")
@@ -717,7 +717,7 @@ class HttpRuntimeIntegrationTests(TemporaryRuntimeCase):
             set(model),
             {
                 "name", "parameters", "dtype", "temperature", "backend", "ready",
-                "step", "run_id", "architecture", "error", "counts", "queue",
+                "step", "run_id", "architecture", "error", "counts", "queue", "fed_sentences",
             },
         )
         self.assertEqual(model["name"], "garbage-1")
