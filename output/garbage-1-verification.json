@@ -1,0 +1,579 @@
+{
+  "status": "passed",
+  "verified_at_utc": "2026-10-21T07:17:05.289266+00:00",
+  "request": "100k FP32 garbage-1; native MLX inference; annotation-triggered silent learning; no training button; CUDA/MoE extension boundaries",
+  "native": {
+    "launcher": "启动.command",
+    "method": "macOS open",
+    "launches_after_final_restart": 2,
+    "listener_pid": 30145,
+    "listener": "COMMAND   PID  USER   FD   TYPE            DEVICE SIZE/OFF NODE NAME\nPython  30145 karas    4u  IPv4 0x20b92171e3522c1      0t0  TCP 127.0.0.1:8765 (LISTEN)\n",
+    "health": {
+      "app": "trash-talk-crt",
+      "project_id": "4ae8271985962414",
+      "status": "ok",
+      "api_version": 2,
+      "backend": "mlx",
+      "sqlite_version": "3.54.1",
+      "source_sha256": "89d0d3232e4e3af02279299f86bdc191a42297c997848c37e8b13604362f7361",
+      "categories": 14,
+      "fragments": 1173,
+      "templates": 40,
+      "rules": 532
+    },
+    "model": {
+      "name": "garbage-1",
+      "parameters": 100000,
+      "dtype": "float32",
+      "temperature": 0,
+      "backend": "mlx",
+      "ready": true,
+      "step": 6000,
+      "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+      "architecture": "dense_transformer_v1",
+      "error": null,
+      "counts": {
+        "up": 0,
+        "down": 0,
+        "pending": 0,
+        "total_samples": 0
+      },
+      "queue": {
+        "pending": 0,
+        "running": 0,
+        "done": 0,
+        "error": 0
+      }
+    },
+    "url": "http://127.0.0.1:8765",
+    "test_feedback_in_user_database": false
+  },
+  "model": {
+    "metadata_path": "/Users/karas/+Python mac/垃圾话/models/garbage-1/checkpoints/20261021T070102Z-61517a33-a14.json",
+    "metadata_path_relative": "checkpoints/20261021T070102Z-61517a33-a14.json",
+    "metadata_sha256": "0b6d300a600c6fce8c31eefe485a6bd19ff6b19f2acdb6a2104a89b2adf5eadc",
+    "weights_path": "/Users/karas/+Python mac/垃圾话/models/garbage-1/checkpoints/20261021T070102Z-61517a33-a14.npz",
+    "weights_file_sha256": "3db9be84b6983f81983f6cc11c5b3b257eaa6ca6d225c1c8f944ba9879b59212",
+    "weight_sha256": "87ef7ee06f1226272889bf9fc64101ece1d11d2f1b8c389bbba0c48485851338",
+    "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+    "step": 6000,
+    "source_sha256": "8766084c7eb26c5b1ef79d4bbed1804b53f72a54c3a8f524173871259eacc1b8",
+    "dataset_source_sha256": "8766084c7eb26c5b1ef79d4bbed1804b53f72a54c3a8f524173871259eacc1b8",
+    "source_matches_dataset": true,
+    "parameter_storage": {
+      "weights_path": "/Users/karas/+Python mac/垃圾话/models/garbage-1/checkpoints/20261021T070102Z-61517a33-a14.npz",
+      "weights_path_relative": "20261021T070102Z-61517a33-a14.npz",
+      "weights_file_sha256": "3db9be84b6983f81983f6cc11c5b3b257eaa6ca6d225c1c8f944ba9879b59212",
+      "weight_sha256": "87ef7ee06f1226272889bf9fc64101ece1d11d2f1b8c389bbba0c48485851338",
+      "unique_parameter_names": 29,
+      "parameter_count": 100000,
+      "raw_array_bytes": 400000,
+      "dtype": "float32",
+      "tied_lm_head_duplicate_present": false
+    },
+    "config": {
+      "vocab_size": 1067,
+      "context": 192,
+      "d_model": 48,
+      "heads": 6,
+      "ffn_dims": [
+        98,
+        99
+      ],
+      "architecture": "dense_transformer_v1",
+      "ffn_type": "dense",
+      "target_parameters": 100000
+    },
+    "dtype": "float32"
+  },
+  "metrics": {
+    "packing": "all split rows encoded as BOS/theme/text/EOS and concatenated; every adjacent next-token target is counted once; final partial context is PAD-filled and PAD targets are ignored",
+    "batch_size": 16,
+    "context": 192,
+    "validation": {
+      "sentence_count": 806,
+      "packed_stream_token_count": 32225,
+      "next_token_target_count": 32224,
+      "counted_target_count": 32224,
+      "ignored_pad_target_count": 1568,
+      "context": 192,
+      "batch_size": 16,
+      "average_next_token_cross_entropy_nats": 0.636503077074958,
+      "perplexity": 1.8898606138665053,
+      "oov": {
+        "character_count": 29807,
+        "oov_character_count": 6,
+        "oov_unique_character_count": 6,
+        "oov_ratio": 0.00020129499781930418,
+        "oov_characters": {
+          "伪": 1,
+          "拉": 1,
+          "挨": 1,
+          "杀": 1,
+          "盐": 1,
+          "餐": 1
+        }
+      },
+      "elapsed_seconds": 0.4398882500008767
+    },
+    "test": {
+      "sentence_count": 806,
+      "packed_stream_token_count": 32299,
+      "next_token_target_count": 32298,
+      "counted_target_count": 32298,
+      "ignored_pad_target_count": 1494,
+      "context": 192,
+      "batch_size": 16,
+      "average_next_token_cross_entropy_nats": 0.6145826221339841,
+      "perplexity": 1.84888475492058,
+      "oov": {
+        "character_count": 29881,
+        "oov_character_count": 7,
+        "oov_unique_character_count": 7,
+        "oov_ratio": 0.00023426257488035876,
+        "oov_characters": {
+          "兵": 1,
+          "惜": 1,
+          "捂": 1,
+          "攥": 1,
+          "晶": 1,
+          "炸": 1,
+          "爆": 1
+        }
+      },
+      "elapsed_seconds": 0.18746166700111644
+    }
+  },
+  "greedy_generation": {
+    "selection_seed": 20261021,
+    "max_new_tokens": 64,
+    "sample_count": 16,
+    "samples_per_theme": {
+      "game": 4,
+      "logic": 4,
+      "boast": 4,
+      "daily": 4
+    },
+    "eos_count": 16,
+    "eos_rate": 1.0,
+    "generated_token_length": {
+      "mean": 36.4375,
+      "min": 10,
+      "max": 49,
+      "values": [
+        33,
+        41,
+        10,
+        45,
+        37,
+        35,
+        36,
+        45,
+        36,
+        42,
+        49,
+        31,
+        38,
+        39,
+        38,
+        28
+      ]
+    },
+    "all_deterministic_repeats_match": true
+  },
+  "torch_cpu_parity": {
+    "backend_pair": "MLX runtime vs PyTorch CPU reference",
+    "input_shape": [
+      1,
+      16
+    ],
+    "torch_threads": 4,
+    "torch_float32_matmul_precision": "highest",
+    "tf32_allowed": false,
+    "max_absolute_logit_error": 2.586841583251953e-05,
+    "mean_absolute_logit_error": 4.218739414045473e-06,
+    "all_logits_within_rtol_1e-4_atol_1e-4": true,
+    "all_argmax_match": true,
+    "last_position_argmax_match": true
+  },
+  "unit_integration_tests": {
+    "count": 53,
+    "result": "passed",
+    "log": "output/garbage-1-tests.log",
+    "includes_actual_mlx": true
+  },
+  "corpus_audit": {
+    "status": "passed",
+    "seed": 20261020,
+    "database": {
+      "sqlite_version": "3.54.1",
+      "source_sha256": "89d0d3232e4e3af02279299f86bdc191a42297c997848c37e8b13604362f7361",
+      "categories": 14,
+      "fragments": 1173,
+      "templates": 40,
+      "rules": 532
+    },
+    "reachable_fragments": 1100,
+    "random_draws": 10000,
+    "unique_sentences": 9897,
+    "unique_ratio": 0.9897,
+    "immediate_duplicates": 0,
+    "profanity_ratio": 0.8242,
+    "block_count_distribution": {
+      "3": 1846,
+      "4": 5011,
+      "5": 3143
+    },
+    "length": {
+      "min": 17,
+      "max": 63,
+      "mean": 37.17
+    },
+    "theme_distribution": {
+      "boast": 2463,
+      "logic": 2540,
+      "daily": 2467,
+      "game": 2530
+    },
+    "checks": [
+      "every_required_slot",
+      "optional_slots_both_extremes",
+      "category_and_semantic_tags",
+      "no_repeated_fragment_id",
+      "exact_reconstruction",
+      "punctuation_and_length",
+      "all_templates_covered",
+      "variable_block_count",
+      "recent_sentence_deduplication"
+    ]
+  },
+  "silent_learning": {
+    "status": "passed",
+    "isolated_temporary_copy": true,
+    "initial": {
+      "name": "garbage-1",
+      "parameters": 100000,
+      "dtype": "float32",
+      "temperature": 0,
+      "backend": "mlx",
+      "ready": true,
+      "step": 6000,
+      "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+      "architecture": "dense_transformer_v1",
+      "error": null,
+      "counts": {
+        "up": 0,
+        "down": 0,
+        "pending": 0,
+        "total_samples": 0
+      },
+      "queue": {
+        "pending": 0,
+        "running": 0,
+        "done": 0,
+        "error": 0
+      }
+    },
+    "draw": {
+      "text": "团战指挥，你这位指挥把好局打成了他妈的回放素材，结果对面顺手把优势接走了。",
+      "id": "78e5d44072e9",
+      "theme": "game",
+      "block_count": 4,
+      "sample_id": "00194e9d18b74599853473439dc5c7f3",
+      "source": "rule",
+      "rating": 0,
+      "model": {
+        "name": "garbage-1",
+        "parameters": 100000,
+        "dtype": "float32",
+        "temperature": 0,
+        "backend": "mlx",
+        "ready": true,
+        "step": 6000,
+        "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+        "architecture": "dense_transformer_v1",
+        "error": null
+      }
+    },
+    "feedback_response_ms": 2.008249999562395,
+    "after_like": {
+      "name": "garbage-1",
+      "parameters": 100000,
+      "dtype": "float32",
+      "temperature": 0,
+      "backend": "mlx",
+      "ready": true,
+      "step": 6001,
+      "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+      "architecture": "dense_transformer_v1",
+      "error": null,
+      "counts": {
+        "up": 1,
+        "down": 0,
+        "pending": 0,
+        "total_samples": 1
+      },
+      "queue": {
+        "pending": 0,
+        "running": 0,
+        "done": 1,
+        "error": 0
+      }
+    },
+    "default_ai": {
+      "text": "比赛进入关键节点时，你这位辅助菜得跟傻逼操作教学似的，你还顺便给自己点了个赞。",
+      "theme": "game",
+      "id": "e998eff90be34226983f63cc3cbe7f0c",
+      "block_count": 0,
+      "model": {
+        "name": "garbage-1",
+        "parameters": 100000,
+        "dtype": "float32",
+        "temperature": 0,
+        "backend": "mlx",
+        "ready": true,
+        "step": 6001,
+        "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+        "architecture": "dense_transformer_v1",
+        "error": null
+      },
+      "prompt": "比赛进入",
+      "generated_tokens": 36,
+      "sample_id": "f2d3d5d823d0417397a9ad86e8e0d9be",
+      "source": "garbage-1",
+      "rating": 0
+    },
+    "after_dislike": {
+      "name": "garbage-1",
+      "parameters": 100000,
+      "dtype": "float32",
+      "temperature": 0,
+      "backend": "mlx",
+      "ready": true,
+      "step": 6001,
+      "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+      "architecture": "dense_transformer_v1",
+      "error": null,
+      "counts": {
+        "up": 1,
+        "down": 1,
+        "pending": 0,
+        "total_samples": 2
+      },
+      "queue": {
+        "pending": 0,
+        "running": 0,
+        "done": 2,
+        "error": 0
+      }
+    },
+    "weight_before": "87ef7ee06f1226272889bf9fc64101ece1d11d2f1b8c389bbba0c48485851338",
+    "weight_after": "7a0296c8f0ee8ba79105a4bcee5e3d3b267fe17e47699b602c205f27bc5327cd",
+    "training_events": [
+      [
+        1,
+        6000,
+        6001,
+        1,
+        13,
+        0.5496326088905334,
+        "7a0296c8f0ee8ba79105a4bcee5e3d3b267fe17e47699b602c205f27bc5327cd"
+      ],
+      [
+        2,
+        6001,
+        6001,
+        0,
+        0,
+        null,
+        "7a0296c8f0ee8ba79105a4bcee5e3d3b267fe17e47699b602c205f27bc5327cd"
+      ]
+    ],
+    "reloaded_model": {
+      "name": "garbage-1",
+      "parameters": 100000,
+      "dtype": "float32",
+      "temperature": 0,
+      "backend": "mlx",
+      "ready": true,
+      "step": 6001,
+      "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+      "architecture": "dense_transformer_v1",
+      "error": null
+    },
+    "reloaded_counts": {
+      "up": 1,
+      "down": 1,
+      "pending": 0,
+      "total_samples": 2
+    },
+    "annotation_database_modified": false
+  },
+  "browser": {
+    "desktop": {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "buttons": [
+        {
+          "id": "likeButton",
+          "width": 104,
+          "height": 42
+        },
+        {
+          "id": "dislikeButton",
+          "width": 104,
+          "height": 42
+        },
+        {
+          "id": "drawButton",
+          "width": 295,
+          "height": 48
+        },
+        {
+          "id": "aiButton",
+          "width": 295,
+          "height": 48
+        }
+      ],
+      "text": "嘴\n嘴 硬\nTRASH TERMINAL · GT-01\nPERSONAL OPINIONS\nNO. 01\n已保存\nCH 01\n\n你这位发言人他妈的把一个常见概念改成了只有自己懂的暗号，你还把跑题说成了扩大讨论范围。\n\n👍\n点赞\n👎\n点踩\n\n已点踩\n\n信号稳定 · 随时开喷\nKEEP A STRAIGHT FACE\nPOWER\n↗\n来点垃圾话\n规则抽卡\n∿\n手搓 AI\ngarbage-1\nAI\ngarbage-1 · 100K · FP32 · MLX\n不必认真，只管痛快。\nMADE FOR THE MOMENT"
+    },
+    "mobile": {
+      "layouts": [
+        {
+          "width": 390,
+          "metrics": {
+            "width": 390,
+            "scrollWidth": 390,
+            "message": "你这位气势总监他妈的把这次小小的进步包装成了冠军履历，奖杯还没出现你已经安排了合影。",
+            "buttons": [
+              {
+                "id": "likeButton",
+                "x": 55,
+                "right": 191.5,
+                "width": 136.5,
+                "height": 44
+              },
+              {
+                "id": "dislikeButton",
+                "x": 198.5,
+                "right": 335,
+                "width": 136.5,
+                "height": 44
+              },
+              {
+                "id": "drawButton",
+                "x": 31,
+                "right": 191,
+                "width": 160,
+                "height": 49
+              },
+              {
+                "id": "aiButton",
+                "x": 199,
+                "right": 359,
+                "width": 160,
+                "height": 49
+              }
+            ]
+          },
+          "source": "garbage-1",
+          "backend": "mlx"
+        },
+        {
+          "width": 320,
+          "metrics": {
+            "width": 320,
+            "scrollWidth": 320,
+            "message": "每次话说到兑现承诺，你这位气氛组长他妈的把还没开始的计划吹到了大声。",
+            "buttons": [
+              {
+                "id": "likeButton",
+                "x": 51,
+                "right": 156.5,
+                "width": 105.5,
+                "height": 42
+              },
+              {
+                "id": "dislikeButton",
+                "x": 163.5,
+                "right": 269,
+                "width": 105.5,
+                "height": 42
+              },
+              {
+                "id": "drawButton",
+                "x": 27,
+                "right": 293,
+                "width": 266,
+                "height": 46
+              },
+              {
+                "id": "aiButton",
+                "x": 27,
+                "right": 293,
+                "width": 266,
+                "height": 46
+              }
+            ]
+          },
+          "source": "garbage-1",
+          "backend": "mlx"
+        }
+      ],
+      "generationAvailableDuringSave": true,
+      "staleVoteDidNotChangeNewOutput": true,
+      "errorPreservedOutput": true,
+      "nextSampleId": "0b7d68bd8495406b94494ee2404d39e3"
+    },
+    "initial_step": 6000,
+    "after_like_step": 6001,
+    "errors": [],
+    "evidence": "output/garbage-1-browser-audit.json"
+  },
+  "limitations": [
+    "100k toy character model can produce broken grammar; no rule fallback on AI path",
+    "Shared templates and fragments across train/validation/test; metrics measure in-domain fit only",
+    "Dislike excludes future positive SFT/replay; no automatic reversal of historical gradients or full RLHF",
+    "CUDA adapter uses shared canonical weights but CUDA hardware untested on this Mac",
+    "MoE interface hooks only; router/experts/load balancing not implemented"
+  ],
+  "scheduling": {
+    "delegated_target_model": "gpt-6-luna",
+    "delegated_target_reasoning": "max",
+    "actual_agent_model_and_reasoning": "unverified",
+    "main_integration_and_review": "completed; all delegated outputs reviewed"
+  },
+  "source_sha256": {
+    "run.py": "0cebf215939f4d2c061ece8344105ad39af3c7d5f88c2de7f3332c70ebfdf7fe",
+    "setup.sh": "ab80bcc2a6a9a1706e014be5339ab47dab44dd24d396198a53a66d4f2f31d1eb",
+    "启动.command": "3ec8aa58efd546ed8b085589d97ff0c39243285d46bdc18756fad5b8c747fd70",
+    "requirements.txt": "9fda841532d642482035564f31d94ea44c7206e9da1c3ee9d43208379d7ba35b",
+    "schema.sql": "59c69d1ed6ca999ff5addf0a19535b601c09524016db07cd1eaf94a8e1009993",
+    "data/corpus.json": "89d0d3232e4e3af02279299f86bdc191a42297c997848c37e8b13604362f7361",
+    "data/garbage-1/manifest.json": "adbdbabed32cbf23c946ab2afb8e4058fdd0ac0ceb4d4bf87860614d96848c2d",
+    "models/garbage-1/current.json": "2783cc909944c62bb1420ef7010303ede0018fe5cfdc1814e7cb85ffea61d621",
+    "trash_talk/__init__.py": "345140d4733fa579f0bc28f886065943ce2203f7dbbc26ea504ff5dea90ef31e",
+    "trash_talk/feedback.py": "d419612934484db78d0021a77db520de020b44d5c3d6ecab0e40ce9330f8cf86",
+    "trash_talk/garbage_model.py": "a27444e59a63f7654d7a95abd0485398c0bb30093e273f78d2dad88b1d90b3e8",
+    "trash_talk/generator.py": "298d40e9d971a59f3e87fcbe2b68e0c3524b2b311a059ccf273efaed026180a7",
+    "trash_talk/mlx_backend.py": "1749a95468c83afe2a9f23c0424a8c9ac707b419e4a19c2f3b6f4bb31d9a85af",
+    "trash_talk/model_runtime.py": "6cb05810b37906b66e8487aaf8918d28135952d7b80828f25979ca2ed32eab35",
+    "trash_talk/server.py": "9a8c1ac602a9e5cba59471135a07830b0461b6520e3f53f4207710dcce3a127e",
+    "trash_talk/storage.py": "d64218d7690d7b1c88153a007820b4ad30d85428d0c7609e865319c75bc22a8e",
+    "trash_talk/torch_backend.py": "f5aa9bb099e9e68f20aea11f4c06d2a67ed40f574b21a09a439d34c72f637d14",
+    "web/app.js": "4b2e50318d3e87d35a0a5016ec2a5f24a7ce496c23d842909d28e88d6a199696",
+    "web/favicon.svg": "0e6dcb4fc09d58b4963c113246b6e6aebae2682cb77e7f7765191bca9948198c",
+    "web/index.html": "ef1c5bbab853c5481ae1e771493a55f88747c71da3c5597aef2e410c693f3942",
+    "web/style.css": "382c1076eeddfc77c8c5da24e011a44ececab42852ade7fdb4ecca52d8e2ab43",
+    "scripts/audit.py": "b4d128378d3b336b31cbd31a9eff811a8de2f38d5a95f921cf6122a27428e014",
+    "scripts/evaluate_garbage.py": "8e5b7037a69ee7480b7fc53aa069f47cd09c4392a7ebd1c5dc3a623c4336c51a",
+    "scripts/prepare_garbage.py": "3e53c922335412c47c3bc8a90fb8524547bc7542b280d679d18b50f9ca417ece",
+    "scripts/train_garbage.py": "8291a8dc20203571ab8b691887c589536e7896749b1ad82b1ac5185cb3b8f68d",
+    "tests/test_backend.py": "2d55581c54ddbe6aec90891b6e28f091d64ec4bcac937345b0dfcb9de832ef48",
+    "tests/test_feedback.py": "81d4f1629c3792caedf3f3a49ea97de15c510f76823adf1c76e148eb427f9901",
+    "tests/test_garbage_model.py": "0ff077ce0b15a70c61da8663ff8877863a2fb85fa24930ea2f6adee5634abcf1",
+    "tests/test_mlx_backend.py": "c2b375872b4ca102c79a44e95c3161531e97124b9a32cd69127f4cc13c0d4565",
+    "tests/test_model_runtime.py": "6ca9c4090ab5e3eb688791e979afe743e9d061b85f894138e906a330a40ea460",
+    "tests/test_training_queue.py": "4c017ab9e73168fa3967623ee75b9b924aee686c2fe3fad8ac29a3d32c08120c"
+  }
+}

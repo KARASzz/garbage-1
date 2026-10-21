@@ -1,0 +1,46 @@
+- main [ref=e2]:
+  - region "嘴硬终端" [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic "嘴硬终端" [ref=e7]:
+          - generic [aria-hidden] [ref=e8]: 嘴
+          - generic [ref=e9]:
+            - generic [ref=e10]: 嘴 硬
+            - generic [ref=e11]: TRASH TERMINAL · GT-01
+        - generic [aria-hidden] [ref=e12]:
+          - generic [ref=e13]: PERSONAL OPINIONS
+          - generic [ref=e14]: NO. 01
+      - region "垃圾话显示屏" [ref=e17]:
+        - generic [ref=e18]:
+          - generic [ref=e19]: READY · 等你开口
+          - generic [aria-hidden] [ref=e22]: CH 01
+        - status [ref=e23]: 系统已就绪，等你嘴硬。
+        - generic [aria-hidden] [ref=e24]:
+          - generic [ref=e25]: 信号稳定 · 随时开喷
+          - generic [ref=e26]: KEEP A STRAIGHT FACE
+      - generic [ref=e27]:
+        - generic [ref=e29]: POWER
+        - group "选择垃圾话生成方式" [ref=e33]:
+          - button "来点垃圾话 规则抽卡" [ref=e34] [cursor=pointer]:
+            - generic [aria-hidden] [ref=e35]: ↗
+            - generic [ref=e36]:
+              - generic [ref=e37]: 来点垃圾话
+              - generic [ref=e38]: 规则抽卡
+          - button "手搓 AI garbage-1" [ref=e39] [cursor=pointer]:
+            - generic [aria-hidden] [ref=e40]: ∿
+            - generic [ref=e41]:
+              - generic [ref=e42]: 手搓 AI
+              - generic [ref=e43]: garbage-1
+      - generic [ref=e44]:
+        - generic [ref=e45]:
+          - generic [aria-hidden] [ref=e46]: AI
+          - status [ref=e47]: garbage-1 · 1M · FP32 · MLX
+        - generic [ref=e48]:
+          - generic [ref=e49]: 投喂一句完整中文语料
+          - textbox "投喂一句完整中文语料" [ref=e50]:
+            - /placeholder: 投喂一句完整中文语料，不拆词
+          - button "投喂 ↵" [ref=e51] [cursor=pointer]
+        - status [ref=e52]
+      - generic [aria-hidden] [ref=e53]:
+        - generic [ref=e54]: 不必认真，只管痛快。
+        - generic [ref=e55]: MADE FOR THE MOMENT

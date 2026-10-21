@@ -590,13 +590,22 @@ button {
 }
 
 .model-status-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, 0.9fr);
+  min-width: 0;
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 5px;
+  margin: 0 5px;
+  padding: 0 5px 9px;
+  color: #64685f;
+}
+
+.model-status-copy {
   display: flex;
   min-width: 0;
   align-items: center;
   gap: 8px;
-  margin: 0 5px;
-  padding: 0 5px 9px;
-  color: #64685f;
 }
 
 .model-indicator {
@@ -615,6 +624,7 @@ button {
 }
 
 .model-status {
+  flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
   color: #666a61;
@@ -625,6 +635,89 @@ button {
   line-height: 1.35;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.feed-form {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.feed-input {
+  width: 100%;
+  min-width: 0;
+  min-height: 34px;
+  flex: 1 1 auto;
+  padding: 0 10px;
+  border: 1px solid rgba(91, 111, 89, 0.35);
+  border-radius: 7px;
+  outline: none;
+  color: #3d4a3c;
+  background: rgba(239, 239, 222, 0.58);
+  font-size: 11px;
+  transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+}
+
+.feed-input::placeholder {
+  color: #858a7c;
+}
+
+.feed-input:focus {
+  border-color: rgba(92, 133, 91, 0.78);
+  background: rgba(247, 247, 230, 0.86);
+  box-shadow: 0 0 0 2px rgba(100, 155, 106, 0.12);
+}
+
+.feed-input:disabled {
+  opacity: 0.65;
+}
+
+.feed-button {
+  min-height: 34px;
+  flex: 0 0 auto;
+  padding: 0 11px;
+  border: 1px solid rgba(84, 105, 80, 0.52);
+  border-radius: 7px;
+  color: #e7ecda;
+  background: linear-gradient(180deg, #626d59, #4f5b49);
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 120ms ease, opacity 120ms ease, transform 120ms ease;
+}
+
+.feed-button:hover:not(:disabled) {
+  background: linear-gradient(180deg, #71806a, #5a6a52);
+}
+
+.feed-button:focus-visible {
+  outline: 2px solid #829c7a;
+  outline-offset: 2px;
+}
+
+.feed-button:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+.feed-status {
+  grid-column: 1 / -1;
+  min-height: 12px;
+  margin: -2px 0 0;
+  color: #667b63;
+  font-size: 9px;
+  line-height: 1.4;
 }
 
 .case-rim {
@@ -803,9 +896,14 @@ button {
   }
 
   .model-status-row {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 7px;
     margin: 0 3px;
     padding: 0 3px 8px;
-    gap: 6px;
+  }
+
+  .feed-status {
+    margin-top: -5px;
   }
 
   .model-status {

@@ -99,7 +99,7 @@ def create_server(root: Path, port: int = 8765, *, seed: int | None = None, back
             if route.path == "/api/health":
                 self._json(200, {"app": APP_ID, "project_id": project_identity(root), "status": "ok", "api_version": 2, "backend": backend, **stats}, head=head)
             elif route.path == "/api/model":
-                self._json(200, {**runtime.status(), "counts": feedback.counts(), "queue": feedback.queue_counts()}, head=head)
+                self._json(200, {**runtime.status(), "counts": feedback.counts(), "queue": feedback.queue_counts(), "fed_sentences": feedback.corpus_feed_count()}, head=head)
             elif route.path == "/api/draw":
                 if head:
                     self._json(405, {"error": "抽取语料请使用 GET"}, head=True)
@@ -135,10 +135,10 @@ def create_server(root: Path, port: int = 8765, *, seed: int | None = None, back
                 return
             origin = self.headers.get("Origin")
             if origin and origin not in (f"http://127.0.0.1:{self.server.server_port}", f"http://localhost:{self.server.server_port}"):
-                self._json(403, {"error": "评价和生成只接受当前本地页面"})
+                self._json(403, {"error": "提交和生成只接受当前本地页面"})
                 return
             route = urlsplit(self.path).path
-            if route not in ("/api/draw", "/api/ai", "/api/feedback"):
+            if route not in ("/api/draw", "/api/ai", "/api/feedback", "/api/feed"):
                 self._json(404, {"error": "这里没有这个频道"})
                 return
             if self.headers.get("Content-Type", "").split(";", 1)[0].strip().lower() != "application/json":
@@ -161,6 +161,11 @@ def create_server(root: Path, port: int = 8765, *, seed: int | None = None, back
                     result = feedback.rate(data.get("sample_id"), data.get("rating"))
                     # The response never waits for a gradient update or disk checkpoint.
                     learner.notify()
+                elif route == "/api/feed":
+                    model = runtime.status()
+                    result = feedback.feed_sentence(data.get("text"), model["step"], model["run_id"])
+                    if result["job_id"] is not None:
+                        learner.notify()
                 else:
                     source = "rule" if route == "/api/draw" else "garbage-1"
                     result = generator.draw() if source == "rule" else runtime.generate()

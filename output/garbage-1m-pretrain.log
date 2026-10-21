@@ -1,0 +1,30 @@
+{"step": 1, "steps": 420, "epoch": 1, "train_loss": 7.033825874328613, "validation_loss": 6.757550239562988, "device": "mps"}
+{"step": 50, "steps": 420, "epoch": 1, "train_loss": 5.2023279812871195, "validation_loss": 4.244076728820801, "device": "mps"}
+{"step": 100, "steps": 420, "epoch": 1, "train_loss": 3.559584546089172, "validation_loss": 3.095697343349457, "device": "mps"}
+{"step": 150, "steps": 420, "epoch": 1, "train_loss": 2.771607584953308, "validation_loss": 2.5811650156974792, "device": "mps"}
+{"step": 200, "steps": 420, "epoch": 1, "train_loss": 2.382387652397156, "validation_loss": 2.268867552280426, "device": "mps"}
+{"step": 250, "steps": 420, "epoch": 2, "train_loss": 2.0992320919036866, "validation_loss": 1.9905919134616852, "device": "mps"}
+{"step": 300, "steps": 420, "epoch": 2, "train_loss": 1.8011660718917846, "validation_loss": 1.6629433333873749, "device": "mps"}
+{"step": 350, "steps": 420, "epoch": 2, "train_loss": 1.4618854093551636, "validation_loss": 1.3395112454891205, "device": "mps"}
+{"step": 400, "steps": 420, "epoch": 2, "train_loss": 1.1436018025875092, "validation_loss": 1.0572634935379028, "device": "mps"}
+{"step": 420, "steps": 420, "epoch": 2, "train_loss": 0.9750646561384201, "validation_loss": 0.9642341136932373, "device": "mps"}
+{
+  "status": "trained",
+  "step": 420,
+  "epochs": 2,
+  "train_loss": 1.0351089239120483,
+  "validation_loss": 0.9642341136932373,
+  "source_sha256": "8766084c7eb26c5b1ef79d4bbed1804b53f72a54c3a8f524173871259eacc1b8",
+  "vocab_size": 1323,
+  "context": 174,
+  "parameter_count": 1000000,
+  "device": "mps",
+  "checkpoint": {
+    "generation": "20261021T082320Z-202a56a3-52d",
+    "weights": "/Users/karas/+Python mac/垃圾话/models/garbage-1/checkpoints/20261021T082320Z-202a56a3-52d.npz",
+    "metadata": "/Users/karas/+Python mac/垃圾话/models/garbage-1/checkpoints/20261021T082320Z-202a56a3-52d.json",
+    "current": "/Users/karas/+Python mac/垃圾话/models/garbage-1/current.json",
+    "parameter_count": 1000000,
+    "run_id": "202a56a3-52d6-43bc-a5ba-7e1b8ffe4f0d"
+  }
+}

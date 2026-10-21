@@ -119,12 +119,15 @@ def load_canonical_weights(metadata_path: Path, metadata: dict) -> tuple[dict, d
         weights = {name: archive[name] for name in names}
     parameter_count = sum(array.size for array in weights.values())
     raw_array_bytes = sum(array.nbytes for array in weights.values())
-    if parameter_count != 100_000:
-        raise ValueError(f"NPZ unique 参数数为 {parameter_count}，预期 100000")
+    expected_parameters = metadata.get("config", {}).get("target_parameters", 100_000)
+    if parameter_count != expected_parameters:
+        raise ValueError(f"NPZ unique 参数数为 {parameter_count}，预期 {expected_parameters}")
     if any(array.dtype != np.float32 for array in weights.values()):
         raise ValueError("NPZ canonical 参数必须全部是 FP32")
-    if raw_array_bytes != 400_000:
-        raise ValueError(f"NPZ raw array bytes 为 {raw_array_bytes}，预期 400000")
+    if raw_array_bytes != expected_parameters * 4:
+        raise ValueError(
+            f"NPZ raw array bytes 为 {raw_array_bytes}，预期 {expected_parameters * 4}"
+        )
     if "lm_head.weight" in weights:
         raise ValueError("canonical NPZ 不应重复存储 tied lm_head.weight")
     digest = canonical_weight_digest(weights)
@@ -431,8 +434,8 @@ def evaluate(args: argparse.Namespace) -> dict:
         raise RuntimeError("current.json 在检查点解析期间发生变化")
     if runtime.backend_name != "mlx":
         raise AssertionError("评估必须通过 MLX 实际后端")
-    if sum(array.size for array in runtime.backend.parameters.values()) != 100_000:
-        raise AssertionError("MLX runtime canonical 参数数量不是 100000")
+    if sum(array.size for array in runtime.backend.parameters.values()) != metadata["parameter_count"]:
+        raise AssertionError("MLX runtime canonical 参数数量与 checkpoint 元数据不一致")
     if any(array.dtype != mx.float32 for array in runtime.backend.parameters.values()):
         raise AssertionError("MLX runtime 参数存在非 float32 dtype")
     if runtime.backend.weight_digest() != weight_info["weight_sha256"]:

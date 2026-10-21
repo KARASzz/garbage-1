@@ -7,10 +7,10 @@ checkpoint pointer is replaced only after both new immutable files exist.
 from __future__ import annotations
 
 from datetime import datetime, timezone
-import hashlib
 import fcntl
 import json
 import logging
+import math
 import os
 from pathlib import Path
 import random
@@ -127,8 +127,16 @@ class ModelRuntime:
             weights_path = _relative_file(metadata_path.parent, metadata["weights"])
             with np.load(weights_path, allow_pickle=False) as archive:
                 weights = {name: archive[name] for name in archive.files}
-            if sum(array.size for array in weights.values()) != 100000 or any(array.dtype != np.float32 for array in weights.values()):
-                raise ValueError("当前版本必须是恰好 100000 个唯一 FP32 权重")
+            parameter_count = sum(array.size for array in weights.values())
+            if parameter_count != self.config.target_parameters or any(
+                array.dtype != np.float32 for array in weights.values()
+            ):
+                raise ValueError(
+                    f"checkpoint 参数数或精度错误：实际 {parameter_count} 个，"
+                    f"配置 {self.config.target_parameters} 个 FP32 参数"
+                )
+            if metadata.get("parameter_count", parameter_count) != parameter_count:
+                raise ValueError("checkpoint 元数据中的参数数与权重不一致")
             self.backend = BACKEND_REGISTRY[backend](self.config, weights)
             if metadata.get("weight_sha256") and metadata["weight_sha256"] != self.backend.weight_digest():
                 raise ValueError("权重摘要不匹配")
@@ -147,7 +155,8 @@ class ModelRuntime:
 
     def status(self):
         metadata = self.metadata
-        return {"name": "garbage-1", "parameters": 100000, "dtype": "float32", "temperature": 0,
+        parameters = metadata.get("parameter_count", metadata.get("config", {}).get("target_parameters", 100000))
+        return {"name": "garbage-1", "parameters": parameters, "dtype": "float32", "temperature": 0,
                 "backend": self.backend_name, "ready": self.ready, "step": metadata.get("step", 0),
                 "run_id": metadata.get("run_id", "uninitialized"), "architecture": metadata.get("config", {}).get("architecture", "dense_transformer_v1"),
                 "error": self.error}
@@ -213,14 +222,17 @@ class ModelRuntime:
                 theme = item["theme"] if item["theme"] in ("game", "logic", "boast", "daily") else None
                 encoded.extend(self.tokenizer.encode(item["text"], theme=theme, eos=True))
             # Use complete context windows, with EOS/BOS separating sentences.
-            length = self.config.context + 1
-            while len(encoded) < length * 2:
-                encoded += encoded
-            chunks = [encoded[offset:offset + length] for offset in range(0, min(len(encoded) - length + 1, length * 2), length)]
+            context = self.config.context
+            windows = max(1, math.ceil((len(encoded) - 1) / context))
+            needed = windows * context + 1
+            encoded = (encoded * math.ceil(needed / len(encoded)))[:needed]
+            chunks = [encoded[offset:offset + context + 1] for offset in range(0, windows * context, context)]
             x, y = [row[:-1] for row in chunks], [row[1:] for row in chunks]
             previous_weights = self.backend.export_weights()
             try:
                 loss = self.backend.train_step(x, y, learning_rate=0.003, pad_id=self.tokenizer.pad_id)
+                if not math.isfinite(loss):
+                    raise RuntimeError("训练 loss 不是有限值，保留上次权重")
                 if self.backend.weight_digest() == result["weight_sha256"]:
                     raise RuntimeError("梯度步骤没有改变真实权重")
                 completed = {**result, "trained": True, "samples": len(examples), "loss": loss,

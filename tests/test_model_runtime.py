@@ -450,6 +450,107 @@ class RuntimeIntegrationTests(TemporaryRuntimeCase):
         self.assertEqual(first_event, (0, 1, 1))
         self.assertEqual(second_event, (1, 2, 1))
 
+    def test_waiting_worker_does_not_consume_or_replace_a_broken_pointer(self) -> None:
+        feedback_path = self.root / "data" / "feedback.sqlite3"
+        first_store = FeedbackStore(feedback_path)
+        second_store = FeedbackStore(feedback_path)
+        first_runtime = ModelRuntime(self.root, backend="torch-cpu")
+        second_runtime = ModelRuntime(self.root, backend="torch-cpu")
+        first_worker = BackgroundLearner(first_runtime, first_store)
+        self.addCleanup(first_worker.close)
+
+        first_sample = first_store.add_sample(POSITIVE_TEXT, "rule", "daily", 0)
+        first_job_id = first_store.rate(first_sample, 1)["job_id"]
+        first_worker.notify()
+        self.assertTrue(_wait_until(lambda: first_store.queue_counts()["done"] == 1))
+        step_one_digest, step_one_metadata = _checkpoint_state(self.root)
+        self.assertEqual(step_one_metadata["step"], 1)
+
+        model_dir = self.root / "models" / "garbage-1"
+        pointer_path = model_dir / "current.json"
+        good_pointer = pointer_path.read_bytes()
+        contention_seen = threading.Event()
+        real_flock = model_runtime_module.fcntl.flock
+
+        def observe_contended_lease(file_descriptor, operation):
+            try:
+                return real_flock(file_descriptor, operation)
+            except BlockingIOError:
+                contention_seen.set()
+                raise
+
+        with patch.object(model_runtime_module.fcntl, "flock", observe_contended_lease):
+            second_worker = BackgroundLearner(second_runtime, second_store)
+            self.addCleanup(second_worker.close)
+            self.assertTrue(contention_seen.wait(3), "secondary did not wait on the primary lease")
+
+        broken_pointer = b"{temporarily-broken-current-pointer"
+        pointer_path.write_bytes(broken_pointer)
+        first_worker.close()
+
+        # The secondary owns the lease now, but must remain unready and leave
+        # the invalid pointer untouched until a valid checkpoint is restored.
+        self.assertTrue(_wait_until(lambda: not second_runtime.ready), second_runtime.status())
+        self.assertTrue(second_runtime.error)
+        pending_text = "指针恢复后才允许训练这句话"
+        pending_sample = second_store.add_sample(
+            pending_text, "rule", "logic", 1, first_runtime.status()["run_id"]
+        )
+        pending_job_id = second_store.rate(pending_sample, 1)["job_id"]
+        second_worker.notify()
+        time.sleep(1.15)  # Span a lease-holder retry while the pointer is still invalid.
+
+        self.assertEqual(pointer_path.read_bytes(), broken_pointer)
+        self.assertEqual(
+            second_store.queue_counts(),
+            {"pending": 1, "running": 0, "done": 1, "error": 0},
+        )
+        connection = second_store.connect()
+        try:
+            pending_state = connection.execute(
+                "SELECT attempts,status FROM training_jobs WHERE id=?", (pending_job_id,)
+            ).get
+            pending_events = connection.execute(
+                "SELECT count(*) FROM background_training_events WHERE job_id=?", (pending_job_id,)
+            ).get
+        finally:
+            connection.close()
+        self.assertEqual(pending_state, (0, "pending"))
+        self.assertEqual(pending_events, 0)
+
+        # Restoring the prior valid pointer lets the same worker reload the
+        # step-one checkpoint, then consume the still-pending like once.
+        pointer_path.write_bytes(good_pointer)
+        second_worker.notify()
+        self.assertTrue(_wait_until(lambda: second_store.queue_counts()["done"] == 2))
+        final_digest, final_metadata = _checkpoint_state(self.root)
+        self.assertTrue(second_runtime.ready, second_runtime.error)
+        self.assertEqual(second_runtime.status()["step"], 2)
+        self.assertEqual(final_metadata["step"], 2)
+        self.assertNotEqual(final_digest, step_one_digest)
+        self.assertEqual(final_digest, second_runtime.backend.weight_digest())
+
+        connection = second_store.connect()
+        try:
+            state = connection.execute(
+                "SELECT attempts,status FROM training_jobs WHERE id=?", (pending_job_id,)
+            ).get
+            events = connection.execute(
+                "SELECT step_before,step_after,trained,examples,weight_sha256 "
+                "FROM background_training_events WHERE job_id=?",
+                (pending_job_id,),
+            ).get
+            first_state = connection.execute(
+                "SELECT attempts,status FROM training_jobs WHERE id=?", (first_job_id,)
+            ).get
+        finally:
+            connection.close()
+        self.assertEqual(state, (1, "done"))
+        self.assertEqual(events[:3], (1, 2, 1))
+        self.assertGreater(events[3], 0)
+        self.assertEqual(events[4], final_digest)
+        self.assertEqual(first_state, (1, "done"))
+
     @unittest.skipUnless(MLX_METAL_AVAILABLE, "MLX Metal is unavailable on this host")
     def test_mlx_runtime_performs_real_inference_online_learning_and_reload(self) -> None:
         import mlx.core as mx

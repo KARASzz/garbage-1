@@ -37,23 +37,70 @@ test_http_routes_preserve_get_shape_return_complete_results_and_reject_bad_reque
 test_missing_model_keeps_rule_post_available_and_returns_ai_503 (test_model_runtime.HttpRuntimeIntegrationTests.test_missing_model_keeps_rule_post_available_and_returns_ai_503) ... ok
 test_mlx_runtime_performs_real_inference_online_learning_and_reload (test_model_runtime.RuntimeIntegrationTests.test_mlx_runtime_performs_real_inference_online_learning_and_reload) ... ok
 test_pending_and_downvoted_sentences_never_become_training_targets (test_model_runtime.RuntimeIntegrationTests.test_pending_and_downvoted_sentences_never_become_training_targets) ... ok
+test_second_worker_waits_for_lease_then_uses_latest_checkpoint (test_model_runtime.RuntimeIntegrationTests.test_second_worker_waits_for_lease_then_uses_latest_checkpoint) ... ok
+test_waiting_worker_does_not_consume_or_replace_a_broken_pointer (test_model_runtime.RuntimeIntegrationTests.test_waiting_worker_does_not_consume_or_replace_a_broken_pointer) ... garbage-1 load failed; rule generator remains available
+Traceback (most recent call last):
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 118, in __init__
+    entry = json.loads(pointer.read_text())
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+garbage-1 load failed; rule generator remains available
+Traceback (most recent call last):
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 118, in __init__
+    entry = json.loads(pointer.read_text())
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+ok
 test_worker_checkpoint_persists_and_recovered_job_does_not_apply_gradient_twice (test_model_runtime.RuntimeIntegrationTests.test_worker_checkpoint_persists_and_recovered_job_does_not_apply_gradient_twice) ... ok
 test_worker_retries_a_transient_claim_error_and_continues (test_model_runtime.RuntimeIntegrationTests.test_worker_retries_a_transient_claim_error_and_continues) ... Queue read failed; retrying without losing annotations
 Traceback (most recent call last):
-  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 246, in _run
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 298, in _consume
     job = self.store.claim_job()
-  File "/Users/karas/+Python mac/垃圾话/tests/test_model_runtime.py", line 308, in fail_first_claim
+  File "/Users/karas/+Python mac/垃圾话/tests/test_model_runtime.py", line 339, in fail_first_claim
     raise RuntimeError("injected one-time claim failure")
 RuntimeError: injected one-time claim failure
 ok
 test_worker_retries_transient_ack_without_relearning (test_model_runtime.RuntimeIntegrationTests.test_worker_retries_transient_ack_without_relearning) ... Queue acknowledgement failed; keeping original training result
 Traceback (most recent call last):
-  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 268, in _run
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 320, in _consume
     self.store.finish_job(job["id"], result, error=error)
     ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/karas/+Python mac/垃圾话/tests/test_model_runtime.py", line 336, in fail_first_finish
+  File "/Users/karas/+Python mac/垃圾话/tests/test_model_runtime.py", line 367, in fail_first_finish
     raise RuntimeError("injected one-time SQLite acknowledgement failure")
 RuntimeError: injected one-time SQLite acknowledgement failure
+ok
+test_wrapped_training_assets_reject_bad_count_or_format (test_model_runtime.RuntimeIntegrationTests.test_wrapped_training_assets_reject_bad_count_or_format) ... garbage-1 load failed; rule generator remains available
+Traceback (most recent call last):
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 137, in __init__
+    self.prefixes = _load_examples(data_dir / "prefixes.json", prefixes=True)
+                    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 84, in _load_examples
+    raise ValueError(f"{path.name} 的版本、计数或 examples 无效")
+ValueError: prefixes.json 的版本、计数或 examples 无效
+garbage-1 load failed; rule generator remains available
+Traceback (most recent call last):
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 138, in __init__
+    self.replay = _load_examples(data_dir / "seed_replay.json")
+                  ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 84, in _load_examples
+    raise ValueError(f"{path.name} 的版本、计数或 examples 无效")
+ValueError: seed_replay.json 的版本、计数或 examples 无效
 ok
 test_additive_schema_migration_keeps_existing_feedback_data (test_training_queue.TrainingQueueTests.test_additive_schema_migration_keeps_existing_feedback_data) ... ok
 test_changed_ratings_enqueue_once_per_event_in_the_same_transaction (test_training_queue.TrainingQueueTests.test_changed_ratings_enqueue_once_per_event_in_the_same_transaction) ... ok
@@ -65,6 +112,6 @@ test_positive_examples_include_theme_and_legacy_text_api_is_preserved (test_trai
 test_recovery_requeues_interrupted_work_and_finish_persists_result (test_training_queue.TrainingQueueTests.test_recovery_requeues_interrupted_work_and_finish_persists_result) ... ok
 
 ----------------------------------------------------------------------
-Ran 50 tests in 3.397s
+Ran 53 tests in 7.665s
 
 OK

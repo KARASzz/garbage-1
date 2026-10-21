@@ -1,0 +1,162 @@
+{
+  "status": "passed",
+  "isolated_temporary_copy": true,
+  "initial": {
+    "name": "garbage-1",
+    "parameters": 100000,
+    "dtype": "float32",
+    "temperature": 0,
+    "backend": "mlx",
+    "ready": true,
+    "step": 6000,
+    "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+    "architecture": "dense_transformer_v1",
+    "error": null,
+    "counts": {
+      "up": 0,
+      "down": 0,
+      "pending": 0,
+      "total_samples": 0
+    },
+    "queue": {
+      "pending": 0,
+      "running": 0,
+      "done": 0,
+      "error": 0
+    }
+  },
+  "draw": {
+    "text": "团战指挥，你这位指挥把好局打成了他妈的回放素材，结果对面顺手把优势接走了。",
+    "id": "78e5d44072e9",
+    "theme": "game",
+    "block_count": 4,
+    "sample_id": "00194e9d18b74599853473439dc5c7f3",
+    "source": "rule",
+    "rating": 0,
+    "model": {
+      "name": "garbage-1",
+      "parameters": 100000,
+      "dtype": "float32",
+      "temperature": 0,
+      "backend": "mlx",
+      "ready": true,
+      "step": 6000,
+      "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+      "architecture": "dense_transformer_v1",
+      "error": null
+    }
+  },
+  "feedback_response_ms": 2.008249999562395,
+  "after_like": {
+    "name": "garbage-1",
+    "parameters": 100000,
+    "dtype": "float32",
+    "temperature": 0,
+    "backend": "mlx",
+    "ready": true,
+    "step": 6001,
+    "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+    "architecture": "dense_transformer_v1",
+    "error": null,
+    "counts": {
+      "up": 1,
+      "down": 0,
+      "pending": 0,
+      "total_samples": 1
+    },
+    "queue": {
+      "pending": 0,
+      "running": 0,
+      "done": 1,
+      "error": 0
+    }
+  },
+  "default_ai": {
+    "text": "比赛进入关键节点时，你这位辅助菜得跟傻逼操作教学似的，你还顺便给自己点了个赞。",
+    "theme": "game",
+    "id": "e998eff90be34226983f63cc3cbe7f0c",
+    "block_count": 0,
+    "model": {
+      "name": "garbage-1",
+      "parameters": 100000,
+      "dtype": "float32",
+      "temperature": 0,
+      "backend": "mlx",
+      "ready": true,
+      "step": 6001,
+      "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+      "architecture": "dense_transformer_v1",
+      "error": null
+    },
+    "prompt": "比赛进入",
+    "generated_tokens": 36,
+    "sample_id": "f2d3d5d823d0417397a9ad86e8e0d9be",
+    "source": "garbage-1",
+    "rating": 0
+  },
+  "after_dislike": {
+    "name": "garbage-1",
+    "parameters": 100000,
+    "dtype": "float32",
+    "temperature": 0,
+    "backend": "mlx",
+    "ready": true,
+    "step": 6001,
+    "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+    "architecture": "dense_transformer_v1",
+    "error": null,
+    "counts": {
+      "up": 1,
+      "down": 1,
+      "pending": 0,
+      "total_samples": 2
+    },
+    "queue": {
+      "pending": 0,
+      "running": 0,
+      "done": 2,
+      "error": 0
+    }
+  },
+  "weight_before": "87ef7ee06f1226272889bf9fc64101ece1d11d2f1b8c389bbba0c48485851338",
+  "weight_after": "7a0296c8f0ee8ba79105a4bcee5e3d3b267fe17e47699b602c205f27bc5327cd",
+  "training_events": [
+    [
+      1,
+      6000,
+      6001,
+      1,
+      13,
+      0.5496326088905334,
+      "7a0296c8f0ee8ba79105a4bcee5e3d3b267fe17e47699b602c205f27bc5327cd"
+    ],
+    [
+      2,
+      6001,
+      6001,
+      0,
+      0,
+      null,
+      "7a0296c8f0ee8ba79105a4bcee5e3d3b267fe17e47699b602c205f27bc5327cd"
+    ]
+  ],
+  "reloaded_model": {
+    "name": "garbage-1",
+    "parameters": 100000,
+    "dtype": "float32",
+    "temperature": 0,
+    "backend": "mlx",
+    "ready": true,
+    "step": 6001,
+    "run_id": "61517a33-a14f-4ba9-b02d-01e86b710992",
+    "architecture": "dense_transformer_v1",
+    "error": null
+  },
+  "reloaded_counts": {
+    "up": 1,
+    "down": 1,
+    "pending": 0,
+    "total_samples": 2
+  },
+  "annotation_database_modified": false
+}
