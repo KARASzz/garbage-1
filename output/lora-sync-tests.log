@@ -1,0 +1,80 @@
+test_config_or_tokenizer_mismatch_is_saved_and_keeps_legacy_pointer (tests.test_lora_sync.LoRASyncTests.test_config_or_tokenizer_mismatch_is_saved_and_keeps_legacy_pointer) ... garbage-1 load failed; rule generator remains available
+Traceback (most recent call last):
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 141, in __init__
+    self.backend = BACKEND_REGISTRY[backend](self.config, weights)
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 45, in _cpu
+    return TorchBackend(config, weights, device="cpu")
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/torch_backend.py", line 23, in __init__
+    self.model = build_model(config).to(self.device)
+                 ~~~~~~~~~~~^^^^^^^^
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/garbage_model.py", line 512, in build_model
+    raise ValueError(
+        f"配置声明 {config.target_parameters} 个参数，实际模型有 {actual} 个"
+    )
+ValueError: 配置声明 100000 个参数，实际模型有 100048 个
+
+  test_config_or_tokenizer_mismatch_is_saved_and_keeps_legacy_pointer (tests.test_lora_sync.LoRASyncTests.test_config_or_tokenizer_mismatch_is_saved_and_keeps_legacy_pointer) (incompatibility='config') ... FAIL
+LoRA sync failed for mouthy
+Traceback (most recent call last):
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/lora_sync.py", line 257, in _run
+    result = worker.call_exclusive(lambda: self._adapt(runtime, store, target, ref, job, item))
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 286, in call_exclusive
+    raise request["error"]
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 340, in _consume
+    request["result"] = request["fn"]()
+                        ~~~~~~~~~~~~~^^
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/lora_sync.py", line 257, in <lambda>
+    result = worker.call_exclusive(lambda: self._adapt(runtime, store, target, ref, job, item))
+                                           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/lora_sync.py", line 173, in _adapt
+    raise ValueError("底座架构或词表映射改变，需要另行转换；旧角色保持可用")
+ValueError: 底座架构或词表映射改变，需要另行转换；旧角色保持可用
+test_sync_rebases_all_checkpointed_styles_reload_and_skip_same_target (tests.test_lora_sync.LoRASyncTests.test_sync_rebases_all_checkpointed_styles_reload_and_skip_same_target) ... ERROR
+test_validation_regression_is_recorded_without_replacing_style_pointer (tests.test_lora_sync.LoRASyncTests.test_validation_regression_is_recorded_without_replacing_style_pointer) ... LoRA sync failed for mouthy
+Traceback (most recent call last):
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/lora_sync.py", line 257, in _run
+    result = worker.call_exclusive(lambda: self._adapt(runtime, store, target, ref, job, item))
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 286, in call_exclusive
+    raise request["error"]
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/model_runtime.py", line 340, in _consume
+    request["result"] = request["fn"]()
+                        ~~~~~~~~~~~~~^^
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/lora_sync.py", line 257, in <lambda>
+    result = worker.call_exclusive(lambda: self._adapt(runtime, store, target, ref, job, item))
+                                           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/karas/+Python mac/垃圾话/trash_talk/lora_sync.py", line 214, in _adapt
+    raise RuntimeError(f"迁移验证退化：旧 {old_loss:.4f}，新 {best_loss:.4f}；保留旧角色")
+RuntimeError: 迁移验证退化：旧 1.0000，新 2.0000；保留旧角色
+ok
+
+======================================================================
+ERROR: test_sync_rebases_all_checkpointed_styles_reload_and_skip_same_target (tests.test_lora_sync.LoRASyncTests.test_sync_rebases_all_checkpointed_styles_reload_and_skip_same_target)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karas/+Python mac/垃圾话/tests/test_lora_sync.py", line 157, in test_sync_rebases_all_checkpointed_styles_reload_and_skip_same_target
+    self.assertEqual(json.loads((target_base / "current.json").read_text(encoding="utf-8")), {"checkpoint": "base.json"})
+                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py", line 787, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/karas/+Hermes/tmpccpy3olf/app/models/garbage-1/lora/bases/b1d8acdaf170a5a366c299a5eabb7663e9d3bfc03ac70cd1c0d61505a32097c1/current.json'
+
+======================================================================
+FAIL: test_config_or_tokenizer_mismatch_is_saved_and_keeps_legacy_pointer (tests.test_lora_sync.LoRASyncTests.test_config_or_tokenizer_mismatch_is_saved_and_keeps_legacy_pointer) (incompatibility='config')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/karas/+Python mac/垃圾话/tests/test_lora_sync.py", line 198, in test_config_or_tokenizer_mismatch_is_saved_and_keeps_legacy_pointer
+    hub, manager = _start_hub(root)
+                   ~~~~~~~~~~^^^^^^
+  File "/Users/karas/+Python mac/垃圾话/tests/test_lora_sync.py", line 71, in _start_hub
+    raise AssertionError(base_runtime.error)
+AssertionError: 配置声明 100000 个参数，实际模型有 100048 个
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.249s
+
+FAILED (failures=1, errors=1)

@@ -13,6 +13,8 @@
   const feedButton = document.querySelector("#feedButton");
   const feedStatus = document.querySelector("#feedStatus");
   const styleSelect = document.querySelector("#styleSelect");
+  const syncButton = document.querySelector("#syncButton");
+  const syncStatus = document.querySelector("#syncStatus");
   const styleStatus = document.querySelector("#styleStatus");
   const styleHelp = document.querySelector("#styleHelp");
 
@@ -31,6 +33,8 @@
     !feedButton ||
     !feedStatus ||
     !styleSelect ||
+    !syncButton ||
+    !syncStatus ||
     !styleStatus ||
     !styleHelp
   ) {
@@ -70,6 +74,11 @@
   let isFeeding = false;
   let activeSampleId = null;
   let activeRating = 0;
+  let syncSubmitPending = false;
+  let syncInFlight = false;
+  let syncPollTimer = null;
+  let syncRequestToken = 0;
+  let latestBaseStep = null;
 
   function currentStyleRecord() {
     return styleRecords.get(styleSelect.value) || styleRecords.get("base");
@@ -79,6 +88,7 @@
     const selectedStyleReady = currentStyleRecord()?.ready === true;
     drawButton.disabled = isGenerating;
     aiButton.disabled = isGenerating || !selectedStyleReady;
+    syncButton.disabled = syncSubmitPending || syncInFlight;
 
     const activeSamplePending =
       isGenerating || (activeSampleId !== null && pendingFeedbackSamples.has(activeSampleId));
@@ -101,6 +111,7 @@
   function styleTrainingDetails(style) {
     const details = [];
     if (Number.isSafeInteger(style.step) && style.step >= 0) details.push(`step ${style.step}`);
+    if (style.id !== "base" && Number.isSafeInteger(style.base_step)) details.push(`底座 step ${style.base_step}`);
     if (Number.isSafeInteger(style.parameters) && style.parameters > 0) {
       const size = style.parameters >= 1_000_000
         ? `${Number((style.parameters / 1_000_000).toFixed(1))}M`
@@ -134,6 +145,7 @@
       : style.ready
         ? `投喂整句只归入「${style.name}」LoRA，帮助它独立学习。`
         : `该风格未就绪，投喂暂停；就绪后整句会只归入「${style.name}」LoRA。`;
+    styleHelp.textContent += " 同步会适配全部 9 个 LoRA，目标为点击时的最新底座。";
     updateButtonState();
   }
 
@@ -156,6 +168,7 @@
         ready: item.ready,
         step: Number.isSafeInteger(item.step) ? item.step : null,
         parameters: Number.isSafeInteger(item.parameters) ? item.parameters : null,
+        base_step: Number.isSafeInteger(item.base_step) ? item.base_step : null,
         stateKnown: true,
       });
     }
@@ -233,6 +246,215 @@
 
   function isInteger(value) {
     return Number.isInteger(value);
+  }
+
+  const activeSyncStatuses = new Set(["queued", "running"]);
+  const terminalSyncStatuses = new Set(["completed", "partial", "failed", "interrupted"]);
+  const syncResultStatuses = new Set(["pending", "running", "synced", "skipped", "failed"]);
+
+  function validateSyncJob(job) {
+    if (
+      !job ||
+      typeof job.id !== "string" ||
+      !job.id.trim() ||
+      !(activeSyncStatuses.has(job.status) || terminalSyncStatuses.has(job.status)) ||
+      !(job.target_step === null || (Number.isSafeInteger(job.target_step) && job.target_step >= 0)) ||
+      !Number.isSafeInteger(job.completed) ||
+      job.completed < 0 ||
+      !Number.isSafeInteger(job.total) ||
+      job.total < 0 ||
+      job.completed > job.total ||
+      !Array.isArray(job.results) ||
+      !(job.message === undefined || typeof job.message === "string")
+    ) {
+      throw new Error("同步任务状态格式不完整。");
+    }
+
+    for (const result of job.results) {
+      if (
+        !result ||
+        typeof result.style !== "string" ||
+        !result.style.trim() ||
+        typeof result.name !== "string" ||
+        !result.name.trim() ||
+        !syncResultStatuses.has(result.status) ||
+        !(result.message === undefined || typeof result.message === "string")
+      ) {
+        throw new Error("同步任务结果格式不完整。");
+      }
+    }
+    return job;
+  }
+
+  function validateSyncSnapshot(payload) {
+    if (
+      !payload ||
+      !Object.prototype.hasOwnProperty.call(payload, "job") ||
+      !(payload.job === null || typeof payload.job === "object") ||
+      !(payload.latest_base_step === null || (
+        Number.isSafeInteger(payload.latest_base_step) && payload.latest_base_step >= 0
+      ))
+    ) {
+      throw new Error("同步状态响应格式不完整。");
+    }
+    return payload;
+  }
+
+  function stopSyncPolling() {
+    if (syncPollTimer !== null) {
+      window.clearTimeout(syncPollTimer);
+      syncPollTimer = null;
+    }
+  }
+
+  function syncResultLabel(status) {
+    return {
+      pending: "等待中",
+      running: "迁移中",
+      synced: "已同步",
+      skipped: "无需更新",
+      failed: "失败",
+    }[status] || status;
+  }
+
+  function renderSyncJob(job) {
+    const counts = Object.fromEntries(
+      ["synced", "skipped", "failed", "running", "pending"].map((status) => [
+        status,
+        job.results.filter((result) => result.status === status).length,
+      ]),
+    );
+    const target = job.target_step === null ? "目标底座 step 未知" : `点击时目标底座 step ${job.target_step}`;
+    const progress = `${job.completed}/${job.total}`;
+    let summary;
+
+    switch (job.status) {
+      case "queued":
+        summary = `同步任务已排队（${progress}）`;
+        break;
+      case "running":
+        summary = `正在后台同步全部 LoRA（${progress}；已同步 ${counts.synced}，跳过 ${counts.skipped}，失败 ${counts.failed}）`;
+        break;
+      case "completed":
+        summary = counts.synced === 0 && counts.failed === 0
+          ? `检查完成，没有需要切换的 LoRA（${progress}）`
+          : `同步完成（${progress}；已同步 ${counts.synced}，跳过 ${counts.skipped}，失败 ${counts.failed}）`;
+        break;
+      case "partial":
+        summary = `同步部分完成（${progress}；已同步 ${counts.synced}，跳过 ${counts.skipped}，失败 ${counts.failed}）`;
+        break;
+      case "failed":
+        summary = `同步失败（${progress}；已同步 ${counts.synced}，失败 ${counts.failed}）`;
+        break;
+      case "interrupted":
+        summary = `同步任务已中断（${progress}；已同步 ${counts.synced}，失败 ${counts.failed}）`;
+        break;
+      default:
+        summary = `同步状态：${job.status}（${progress}）`;
+    }
+
+    const details = job.results
+      .filter((result) => result.status === "failed" || (
+        (result.status === "skipped" || result.status === "running") && result.message?.trim()
+      ))
+      .map((result) => {
+        const note = typeof result.message === "string" ? result.message.trim() : "";
+        return `${result.name}：${syncResultLabel(result.status)}${note ? `（${note}）` : ""}`;
+      });
+    const notes = [summary, target, job.message?.trim(), ...details].filter(Boolean);
+    if (Number.isSafeInteger(latestBaseStep) && Number.isSafeInteger(job.target_step) && latestBaseStep > job.target_step) {
+      notes.push(`当前底座已到 step ${latestBaseStep}，可在本次结束后再次同步`);
+    }
+    syncStatus.textContent = notes.join("；");
+  }
+
+  function scheduleSyncPoll(token) {
+    stopSyncPolling();
+    syncPollTimer = window.setTimeout(() => {
+      syncPollTimer = null;
+      void loadSyncSnapshot(token);
+    }, 2_000);
+  }
+
+  function applySyncJob(job, token) {
+    const validJob = validateSyncJob(job);
+    syncInFlight = activeSyncStatuses.has(validJob.status);
+    renderSyncJob(validJob);
+    updateButtonState();
+
+    if (syncInFlight) {
+      scheduleSyncPoll(token);
+    } else {
+      stopSyncPolling();
+      void loadStyles();
+      void loadModelStatus();
+    }
+  }
+
+  async function loadSyncSnapshot(token) {
+    try {
+      const payload = validateSyncSnapshot(await requestJson("/api/lora/sync", "GET"));
+      if (token !== syncRequestToken) return;
+      latestBaseStep = payload.latest_base_step;
+
+      if (payload.job === null) {
+        const wasActive = syncInFlight;
+        syncInFlight = false;
+        stopSyncPolling();
+        syncStatus.textContent = wasActive
+          ? "后台未返回同步任务记录，无法确认同步结果。已刷新当前风格状态。"
+          : latestBaseStep === null
+            ? "目前没有同步任务；暂时无法读取最新底座 step。"
+            : `目前没有同步任务；最新底座 step ${latestBaseStep}。`;
+        updateButtonState();
+        if (wasActive) {
+          void loadStyles();
+          void loadModelStatus();
+        }
+        return;
+      }
+
+      applySyncJob(payload.job, token);
+    } catch (error) {
+      if (token !== syncRequestToken) return;
+      const detail = readableError(error, "无法读取同步状态");
+      syncStatus.textContent = syncInFlight
+        ? `同步状态暂时无法读取：${detail}；任务仍在后台，2 秒后重试。`
+        : `无法读取同步状态：${detail}。`;
+      updateButtonState();
+      if (syncInFlight) scheduleSyncPoll(token);
+    }
+  }
+
+  async function startLoraSync() {
+    if (syncSubmitPending || syncInFlight) return;
+    stopSyncPolling();
+    const token = ++syncRequestToken;
+    syncSubmitPending = true;
+    syncStatus.textContent = "正在提交全部 9 个 LoRA 的同步任务…";
+    updateButtonState();
+
+    try {
+      const payload = await requestJson("/api/lora/sync", "POST", {});
+      if (token !== syncRequestToken) return;
+      if (!payload || !payload.job) throw new Error("服务器没有返回同步任务状态。");
+      applySyncJob(payload.job, token);
+    } catch (error) {
+      if (token !== syncRequestToken) return;
+      const detail = readableError(error, "提交同步任务失败");
+      syncStatus.textContent = `未能确认同步任务是否已提交：${detail}。正在检查后台状态…`;
+      await loadSyncSnapshot(token);
+    } finally {
+      if (token === syncRequestToken) {
+        syncSubmitPending = false;
+        updateButtonState();
+      }
+    }
+  }
+
+  function restoreSyncStatus() {
+    const token = ++syncRequestToken;
+    void loadSyncSnapshot(token);
   }
 
   function validateModel(model) {
@@ -464,9 +686,11 @@
   dislikeButton.addEventListener("click", () => rateOutput(-1));
   feedForm.addEventListener("submit", feedSentence);
   styleSelect.addEventListener("change", updateStylePresentation);
+  syncButton.addEventListener("click", startLoraSync);
 
   void loadModelStatus();
   renderStyleOptions();
   updateStylePresentation();
   void loadStyles();
+  restoreSyncStatus();
 })();

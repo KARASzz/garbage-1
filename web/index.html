@@ -80,22 +80,28 @@
           <div class="style-control-row">
             <div class="style-select-group">
               <label class="style-select-label" for="styleSelect">LoRA 风格</label>
-              <select class="style-select" id="styleSelect" aria-describedby="styleStatus styleHelp">
-                <option value="base">原版 · Base</option>
-                <option value="mouthy">嘴臭 · Mouthy · 状态读取中</option>
-                <option value="mad">疯子 · Mad · 状态读取中</option>
-                <option value="sassy">娘炮 · Sassy · 状态读取中</option>
-                <option value="anime">二次元 · Anime · 状态读取中</option>
-                <option value="femboy">伪娘 · Femboy · 状态读取中</option>
-                <option value="office">社畜 · Office · 状态读取中</option>
-                <option value="soldier">兵王 · Soldier · 状态读取中</option>
-                <option value="alien">外星人 · Alien · 状态读取中</option>
-                <option value="hostess">陪酒女 · Hostess · 状态读取中</option>
-              </select>
+              <div class="style-select-actions">
+                <select class="style-select" id="styleSelect" aria-describedby="styleStatus styleHelp">
+                  <option value="base">原版 · Base</option>
+                  <option value="mouthy">嘴臭 · Mouthy · 状态读取中</option>
+                  <option value="mad">疯子 · Mad · 状态读取中</option>
+                  <option value="sassy">娘炮 · Sassy · 状态读取中</option>
+                  <option value="anime">二次元 · Anime · 状态读取中</option>
+                  <option value="femboy">伪娘 · Femboy · 状态读取中</option>
+                  <option value="office">社畜 · Office · 状态读取中</option>
+                  <option value="soldier">兵王 · Soldier · 状态读取中</option>
+                  <option value="alien">外星人 · Alien · 状态读取中</option>
+                  <option value="hostess">陪酒女 · Hostess · 状态读取中</option>
+                </select>
+                <button class="sync-button" id="syncButton" type="button" aria-describedby="syncStatus styleHelp">
+                  <span aria-hidden="true">↻</span><span>同步最新底座</span>
+                </button>
+              </div>
             </div>
             <div class="style-copy">
               <p class="style-status" id="styleStatus" role="status" aria-live="polite">正在读取风格状态；原版可用。</p>
-              <p class="style-help" id="styleHelp">投喂整句会归入当前风格，帮助该风格继续学习。</p>
+              <p class="sync-status" id="syncStatus" role="status" aria-live="polite">正在检查同步状态…</p>
+              <p class="style-help" id="styleHelp">投喂整句仍归入当前风格；同步会更新全部 9 个 LoRA，并使用点击时的最新底座版本。</p>
             </div>
           </div>
 

@@ -1,0 +1,292 @@
+{
+  "sync": {
+    "format": "garbage-1-lora-sync-v1",
+    "id": "61729b73ce1b405b8118258202761047",
+    "status": "completed",
+    "target_checkpoint": "checkpoints/online-00000431-ad33eacbf0.json",
+    "target_step": 431,
+    "target_sha256": "42b194959829dc7054005d9bcf005b4eb153af5900144441eb98e2925a3b09d2",
+    "target_metadata_sha256": "fb138b3c905d0e79b695490c1afc0e2a25e4761990360c5b88df97fa7ba5d65e",
+    "created_at": "2026-10-22T05:06:45.880614+00:00",
+    "completed": 9,
+    "total": 9,
+    "results": [
+      {
+        "style": "mouthy",
+        "name": "嘴臭",
+        "status": "synced",
+        "message": "重新适配并通过验证，已切换",
+        "current_step": 200,
+        "training_steps": 200,
+        "base_step": 431,
+        "validation": {
+          "job_id": "61729b73ce1b405b8118258202761047",
+          "from_base_sha256": "bceaf80a20d3b27f21140eb0c78af47458ab0fa87d5fc1a301e722e60cbc8ee8",
+          "from_base_step": 430,
+          "to_base_sha256": "42b194959829dc7054005d9bcf005b4eb153af5900144441eb98e2925a3b09d2",
+          "to_base_step": 431,
+          "old_validation_loss": 5.533983542646203,
+          "rebased_validation_loss": 5.534195962907232,
+          "new_validation_loss": 5.456346528606361,
+          "attempted_steps": 200,
+          "retained_step": 40,
+          "train_sentences": 52,
+          "positive_sentences": 1,
+          "validation_sentences": 8,
+          "validation_tolerance": 0.2766991771323101
+        }
+      },
+      {
+        "style": "mad",
+        "name": "疯子",
+        "status": "synced",
+        "message": "重新适配并通过验证，已切换",
+        "current_step": 200,
+        "training_steps": 200,
+        "base_step": 431,
+        "validation": {
+          "job_id": "61729b73ce1b405b8118258202761047",
+          "from_base_sha256": "bceaf80a20d3b27f21140eb0c78af47458ab0fa87d5fc1a301e722e60cbc8ee8",
+          "from_base_step": 430,
+          "to_base_sha256": "42b194959829dc7054005d9bcf005b4eb153af5900144441eb98e2925a3b09d2",
+          "to_base_step": 431,
+          "old_validation_loss": 6.033612329168758,
+          "rebased_validation_loss": 6.033643714110566,
+          "new_validation_loss": 5.938761999774048,
+          "attempted_steps": 200,
+          "retained_step": 80,
+          "train_sentences": 48,
+          "positive_sentences": 0,
+          "validation_sentences": 8,
+          "validation_tolerance": 0.3016806164584379
+        }
+      },
+      {
+        "style": "sassy",
+        "name": "娘炮",
+        "status": "synced",
+        "message": "重新适配并通过验证，已切换",
+        "current_step": 200,
+        "training_steps": 200,
+        "base_step": 431,
+        "validation": {
+          "job_id": "61729b73ce1b405b8118258202761047",
+          "from_base_sha256": "bceaf80a20d3b27f21140eb0c78af47458ab0fa87d5fc1a301e722e60cbc8ee8",
+          "from_base_step": 430,
+          "to_base_sha256": "42b194959829dc7054005d9bcf005b4eb153af5900144441eb98e2925a3b09d2",
+          "to_base_step": 431,
+          "old_validation_loss": 5.709597461550913,
+          "rebased_validation_loss": 5.709948114721914,
+          "new_validation_loss": 5.703023114137476,
+          "attempted_steps": 200,
+          "retained_step": 20,
+          "train_sentences": 48,
+          "positive_sentences": 0,
+          "validation_sentences": 8,
+          "validation_tolerance": 0.28547987307754563
+        }
+      },
+      {
+        "style": "anime",
+        "name": "二次元",
+        "status": "synced",
+        "message": "重新适配并通过验证，已切换",
+        "current_step": 200,
+        "training_steps": 200,
+        "base_step": 431,
+        "validation": {
+          "job_id": "61729b73ce1b405b8118258202761047",
+          "from_base_sha256": "bceaf80a20d3b27f21140eb0c78af47458ab0fa87d5fc1a301e722e60cbc8ee8",
+          "from_base_step": 430,
+          "to_base_sha256": "42b194959829dc7054005d9bcf005b4eb153af5900144441eb98e2925a3b09d2",
+          "to_base_step": 431,
+          "old_validation_loss": 6.067432329316824,
+          "rebased_validation_loss": 6.0673373337054555,
+          "new_validation_loss": 6.013778851079953,
+          "attempted_steps": 200,
+          "retained_step": 20,
+          "train_sentences": 48,
+          "positive_sentences": 0,
+          "validation_sentences": 8,
+          "validation_tolerance": 0.3033716164658412
+        }
+      },
+      {
+        "style": "femboy",
+        "name": "伪娘",
+        "status": "synced",
+        "message": "重新适配并通过验证，已切换",
+        "current_step": 200,
+        "training_steps": 200,
+        "base_step": 431,
+        "validation": {
+          "job_id": "61729b73ce1b405b8118258202761047",
+          "from_base_sha256": "bceaf80a20d3b27f21140eb0c78af47458ab0fa87d5fc1a301e722e60cbc8ee8",
+          "from_base_step": 430,
+          "to_base_sha256": "42b194959829dc7054005d9bcf005b4eb153af5900144441eb98e2925a3b09d2",
+          "to_base_step": 431,
+          "old_validation_loss": 5.942193770238099,
+          "rebased_validation_loss": 5.942662500408059,
+          "new_validation_loss": 5.941091306065854,
+          "attempted_steps": 200,
+          "retained_step": 60,
+          "train_sentences": 48,
+          "positive_sentences": 0,
+          "validation_sentences": 8,
+          "validation_tolerance": 0.29710968851190495
+        }
+      },
+      {
+        "style": "office",
+        "name": "社畜",
+        "status": "synced",
+        "message": "重新适配并通过验证，已切换",
+        "current_step": 200,
+        "training_steps": 200,
+        "base_step": 431,
+        "validation": {
+          "job_id": "61729b73ce1b405b8118258202761047",
+          "from_base_sha256": "bceaf80a20d3b27f21140eb0c78af47458ab0fa87d5fc1a301e722e60cbc8ee8",
+          "from_base_step": 430,
+          "to_base_sha256": "42b194959829dc7054005d9bcf005b4eb153af5900144441eb98e2925a3b09d2",
+          "to_base_step": 431,
+          "old_validation_loss": 5.40329531681629,
+          "rebased_validation_loss": 5.403710878510197,
+          "new_validation_loss": 5.355996102510363,
+          "attempted_steps": 200,
+          "retained_step": 20,
+          "train_sentences": 48,
+          "positive_sentences": 0,
+          "validation_sentences": 8,
+          "validation_tolerance": 0.2701647658408145
+        }
+      },
+      {
+        "style": "soldier",
+        "name": "兵王",
+        "status": "synced",
+        "message": "重新适配并通过验证，已切换",
+        "current_step": 200,
+        "training_steps": 200,
+        "base_step": 431,
+        "validation": {
+          "job_id": "61729b73ce1b405b8118258202761047",
+          "from_base_sha256": "bceaf80a20d3b27f21140eb0c78af47458ab0fa87d5fc1a301e722e60cbc8ee8",
+          "from_base_step": 430,
+          "to_base_sha256": "42b194959829dc7054005d9bcf005b4eb153af5900144441eb98e2925a3b09d2",
+          "to_base_step": 431,
+          "old_validation_loss": 6.228191306466504,
+          "rebased_validation_loss": 6.227704380554906,
+          "new_validation_loss": 6.132899467258369,
+          "attempted_steps": 200,
+          "retained_step": 40,
+          "train_sentences": 48,
+          "positive_sentences": 0,
+          "validation_sentences": 8,
+          "validation_tolerance": 0.31140956532332525
+        }
+      },
+      {
+        "style": "alien",
+        "name": "外星人",
+        "status": "synced",
+        "message": "重新适配并通过验证，已切换",
+        "current_step": 200,
+        "training_steps": 200,
+        "base_step": 431,
+        "validation": {
+          "job_id": "61729b73ce1b405b8118258202761047",
+          "from_base_sha256": "bceaf80a20d3b27f21140eb0c78af47458ab0fa87d5fc1a301e722e60cbc8ee8",
+          "from_base_step": 430,
+          "to_base_sha256": "42b194959829dc7054005d9bcf005b4eb153af5900144441eb98e2925a3b09d2",
+          "to_base_step": 431,
+          "old_validation_loss": 6.272994533266974,
+          "rebased_validation_loss": 6.272706257582271,
+          "new_validation_loss": 6.236918115017267,
+          "attempted_steps": 200,
+          "retained_step": 140,
+          "train_sentences": 48,
+          "positive_sentences": 0,
+          "validation_sentences": 8,
+          "validation_tolerance": 0.3136497266633487
+        }
+      },
+      {
+        "style": "hostess",
+        "name": "陪酒女",
+        "status": "synced",
+        "message": "重新适配并通过验证，已切换",
+        "current_step": 200,
+        "training_steps": 200,
+        "base_step": 431,
+        "validation": {
+          "job_id": "61729b73ce1b405b8118258202761047",
+          "from_base_sha256": "bceaf80a20d3b27f21140eb0c78af47458ab0fa87d5fc1a301e722e60cbc8ee8",
+          "from_base_step": 430,
+          "to_base_sha256": "42b194959829dc7054005d9bcf005b4eb153af5900144441eb98e2925a3b09d2",
+          "to_base_step": 431,
+          "old_validation_loss": 6.066905060417719,
+          "rebased_validation_loss": 6.066716189195839,
+          "new_validation_loss": 6.066716189195839,
+          "attempted_steps": 200,
+          "retained_step": 0,
+          "train_sentences": 48,
+          "positive_sentences": 0,
+          "validation_sentences": 8,
+          "validation_tolerance": 0.303345253020886
+        }
+      }
+    ],
+    "message": "同步结束：9 个已同步，0 个跳过，0 个失败保留旧版",
+    "finished_at": "2026-10-22T05:06:57.040895+00:00"
+  },
+  "baseStep": 432,
+  "styleBases": [
+    {
+      "id": "mouthy",
+      "base_step": 431,
+      "ready": true
+    },
+    {
+      "id": "mad",
+      "base_step": 431,
+      "ready": true
+    },
+    {
+      "id": "sassy",
+      "base_step": 431,
+      "ready": true
+    },
+    {
+      "id": "anime",
+      "base_step": 431,
+      "ready": true
+    },
+    {
+      "id": "femboy",
+      "base_step": 431,
+      "ready": true
+    },
+    {
+      "id": "office",
+      "base_step": 431,
+      "ready": true
+    },
+    {
+      "id": "soldier",
+      "base_step": 431,
+      "ready": true
+    },
+    {
+      "id": "alien",
+      "base_step": 431,
+      "ready": true
+    },
+    {
+      "id": "hostess",
+      "base_step": 431,
+      "ready": true
+    }
+  ],
+  "ui": "同步完成（9/9；已同步 9，跳过 0，失败 0）；点击时目标底座 step 431；同步结束：9 个已同步，0 个跳过，0 个失败保留旧版"
+}
