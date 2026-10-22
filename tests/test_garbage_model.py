@@ -20,6 +20,24 @@ from trash_talk.garbage_model import (
 
 
 class CharacterTokenizerTests(unittest.TestCase):
+    def test_ascii_letter_aliases_preserve_byte_ids_and_checkpoints(self):
+        import string
+        tokenizer = CharacterTokenizer.fit(["中文"], byte_fallback=True)
+        original = tokenizer.to_dict()
+        letters = string.ascii_letters
+        ids = tokenizer.encode(letters, bos=False)
+        self.assertEqual(len(ids), 52)
+        self.assertEqual(len(set(ids)), 52)
+        self.assertEqual(ids, [len(SPECIAL_TOKENS) + ord(c) for c in letters])
+        self.assertEqual(tokenizer.decode(ids), letters)
+        self.assertEqual(tokenizer.latin_letter_ids, dict(zip(letters, ids)))
+        restored = CharacterTokenizer.from_dict(original)
+        self.assertEqual(restored.encode(letters, bos=False), ids)
+        self.assertEqual(restored.to_dict(), original)
+        dedicated = CharacterTokenizer.fit(["Aa中文"], byte_fallback=True)
+        self.assertEqual(dedicated.encode("Aa", bos=False),
+                         [dedicated._char_start + dedicated.characters.index(c) for c in "Aa"])
+
     def test_training_only_fit_unknown_theme_tokens_and_round_trip(self) -> None:
         tokenizer = CharacterTokenizer.fit(["é好", "日常"])
 

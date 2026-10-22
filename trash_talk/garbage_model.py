@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from contextlib import nullcontext
+import string
 import unicodedata
 from typing import Callable, Mapping, Sequence
 
@@ -62,6 +63,16 @@ class CharacterTokenizer:
         self._id_to_char = {
             token_id: char for char, token_id in self._char_to_id.items()
         }
+        # ASCII letters already have one token each in the byte vocabulary.
+        # Register explicit aliases without changing historical token IDs,
+        # checkpoint shapes, or dedicated character IDs in other vocabularies.
+        self.latin_letter_ids = {}
+        if byte_fallback:
+            self.latin_letter_ids = {
+                char: self._char_to_id.get(char, self._byte_start + ord(char))
+                for char in string.ascii_letters
+            }
+            self._char_to_id.update(self.latin_letter_ids)
         self._theme_to_id = {
             theme: _SPECIAL_TO_ID[token]
             for theme, token in THEME_TO_TOKEN.items()
