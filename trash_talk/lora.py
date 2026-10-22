@@ -222,7 +222,13 @@ class LoRARuntime(ModelRuntime):
         self.style = style
         self.style_data = next(item for item in read_catalog(root) if item["id"] == style)
         model_root = Path(root) / "models/garbage-1/lora"
-        super().__init__(root, backend=backend, model_dir=model_root / "base")
+        pointer = model_root / style / "current.json"
+        saved = None
+        if pointer.exists():
+            saved_path = _relative_file(pointer.parent, json.loads(pointer.read_text())["checkpoint"])
+            saved = json.loads(saved_path.read_text())
+        base_ref = saved.get("base_ref", "base") if saved is not None else "base"
+        super().__init__(root, backend=backend, model_dir=_relative_file(model_root, base_ref))
         if not self.ready:
             raise RuntimeError(self.error or "固定底座未准备")
         base_weights = self.backend.export_weights()
@@ -230,8 +236,7 @@ class LoRARuntime(ModelRuntime):
         self.model_dir = model_root / style
         pointer = self.model_dir / "current.json"
         if pointer.exists():
-            metadata_path = _relative_file(self.model_dir, json.loads(pointer.read_text())["checkpoint"])
-            metadata = json.loads(metadata_path.read_text())
+            metadata_path, metadata = saved_path, saved
             if metadata.get("format") != "garbage-1-lora-v1" or metadata.get("style") != style or metadata.get("base_sha256") != self.base_sha:
                 raise ValueError("LoRA 与固定底座不匹配，保留文件")
             with np.load(_relative_file(metadata_path.parent, metadata["weights"]), allow_pickle=False) as data:
@@ -327,6 +332,7 @@ class StyleHub:
         self.base_runtime = base_runtime
         self.entries = {}
         self.lock = threading.Lock()
+        self._sync = None
 
     def status(self):
         base = self.base_runtime.status() if self.base_runtime is not None else {}
@@ -339,14 +345,15 @@ class StyleHub:
                 checkpoint = _relative_file(pointer.parent, json.loads(pointer.read_text())["checkpoint"])
                 with np.load(_relative_file(checkpoint.parent, metadata["weights"]), allow_pickle=False) as archive:
                     arrays = {k: archive[k] for k in archive.files}
-                pinned = self.root / "models/garbage-1/lora/base"
+                pinned = _relative_file(self.root / "models/garbage-1/lora", metadata.get("base_ref", "base"))
                 base_meta = json.loads(_relative_file(pinned, json.loads((pinned / "current.json").read_text())["checkpoint"]).read_text())
                 from .garbage_model import ModelConfig
                 validate_adapter(ModelConfig.from_dict(base_meta["config"]), arrays, metadata["rank"])
                 valid = (metadata["format"] == "garbage-1-lora-v1" and metadata["style"] == style
                          and metadata["base_sha256"] == base_meta["weight_sha256"]
                          and metadata["weight_sha256"] == array_digest(arrays))
-                entry.update(ready=valid, step=metadata["step"], parameters=sum(v.size for v in arrays.values()))
+                entry.update(ready=valid, step=metadata["step"], parameters=sum(v.size for v in arrays.values()),
+                             base_step=metadata.get("base_step"), base_sha256=metadata.get("base_sha256"))
             except (OSError, KeyError, ValueError):
                 pass
             styles.append(entry)
@@ -381,5 +388,21 @@ class StyleHub:
         raise LookupError("样本不存在")
 
     def close(self):
+        if self._sync is not None:
+            self._sync.close()
         for _, _, learner in self.entries.values():
             learner.close()
+
+    @property
+    def sync(self):
+        with self.lock:
+            if self._sync is None:
+                from .lora_sync import LoRASyncManager
+                self._sync = LoRASyncManager(self)
+            return self._sync
+
+    def start_sync(self):
+        return self.sync.start()
+
+    def sync_status(self):
+        return self.sync.status()

@@ -1,0 +1,35 @@
+{
+  "scope": "Tests used an isolated temporary copy; verification issued no production sync POST.",
+  "tests": {
+    "passed": 66,
+    "command": ".venv/bin/python -m unittest discover -s tests -q"
+  },
+  "backend": "mlx",
+  "target_step": 431,
+  "latest_base_after_concurrent_feed": 432,
+  "same_job_after_reload": true,
+  "styles_synced": 9,
+  "failures": 0,
+  "hotloaded_base_step": 431,
+  "durable_queue_after_sync": {
+    "mouthy": {
+      "done": 1
+    },
+    "base": {
+      "done": 2
+    }
+  },
+  "tested_viewports": [
+    1440,
+    390
+  ],
+  "validation_gate": "old validation loss + max(0.05, old loss*0.05)",
+  "cuda_hardware_tested": false,
+  "production_readonly_observation": {
+    "job_id": "5b7c440c4b584138a16596cb4e4356a3",
+    "status": "completed",
+    "target_step": 432,
+    "completed": 9,
+    "latest_base_step": 432
+  }
+}

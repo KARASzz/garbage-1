@@ -567,6 +567,13 @@ button {
   min-width: 0;
 }
 
+.style-select-actions {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+}
+
 .style-select-label {
   color: #596251;
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
@@ -595,6 +602,41 @@ button {
   outline-offset: 2px;
 }
 
+.sync-button {
+  display: inline-flex;
+  min-height: 31px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 9px;
+  border: 1px solid rgba(77, 94, 72, 0.48);
+  border-radius: 6px;
+  color: #e8eddf;
+  background: linear-gradient(180deg, #65725d, #4f5c49);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 0 rgba(255, 255, 255, 0.24);
+  font-size: 9px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 120ms ease, opacity 120ms ease, transform 120ms ease;
+}
+
+.sync-button:hover:not(:disabled) {
+  background: linear-gradient(180deg, #74836a, #596a51);
+  transform: translateY(-1px);
+}
+
+.sync-button:focus-visible {
+  outline: 2px solid #789277;
+  outline-offset: 2px;
+}
+
+.sync-button:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
 .style-copy {
   display: grid;
   min-width: 0;
@@ -602,6 +644,7 @@ button {
 }
 
 .style-status,
+.sync-status,
 .style-help {
   margin: 0;
   font-size: 8px;
@@ -612,6 +655,13 @@ button {
 .style-status {
   color: #4e654c;
   font-weight: 700;
+}
+
+.sync-status {
+  min-height: 11px;
+  color: #50654d;
+  font-size: 8px;
+  font-weight: 600;
 }
 
 .style-help {
@@ -969,8 +1019,12 @@ button {
   }
 
   .style-select-group {
-    grid-template-columns: 72px minmax(0, 1fr);
-    gap: 7px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 5px;
+  }
+
+  .style-select-actions {
+    grid-column: 1 / -1;
   }
 
   .style-select {
@@ -979,6 +1033,7 @@ button {
   }
 
   .style-status,
+  .sync-status,
   .style-help {
     font-size: 8px;
   }

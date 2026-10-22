@@ -105,6 +105,8 @@ def create_server(root: Path, port: int = 8765, *, seed: int | None = None, back
                 self._json(200, {**runtime.status(), "counts": feedback.counts(), "queue": feedback.queue_counts(), "fed_sentences": feedback.corpus_feed_count()}, head=head)
             elif route.path == "/api/styles":
                 self._json(200, styles.status(), head=head)
+            elif route.path == "/api/lora/sync":
+                self._json(200, styles.sync_status(), head=head)
             elif route.path == "/api/draw":
                 if head:
                     self._json(405, {"error": "抽取语料请使用 GET"}, head=True)
@@ -143,7 +145,7 @@ def create_server(root: Path, port: int = 8765, *, seed: int | None = None, back
                 self._json(403, {"error": "提交和生成只接受当前本地页面"})
                 return
             route = urlsplit(self.path).path
-            if route not in ("/api/draw", "/api/ai", "/api/feedback", "/api/feed"):
+            if route not in ("/api/draw", "/api/ai", "/api/feedback", "/api/feed", "/api/lora/sync"):
                 self._json(404, {"error": "这里没有这个频道"})
                 return
             if self.headers.get("Content-Type", "").split(";", 1)[0].strip().lower() != "application/json":
@@ -162,7 +164,11 @@ def create_server(root: Path, port: int = 8765, *, seed: int | None = None, back
                 self._json(400, {"error": "请求格式无效"})
                 return
             try:
-                if route == "/api/feedback":
+                if route == "/api/lora/sync":
+                    result = styles.start_sync()
+                    self._json(202 if result["status"] in ("queued", "running") else 200, {"job": result})
+                    return
+                elif route == "/api/feedback":
                     try:
                         result = feedback.rate(data.get("sample_id"), data.get("rating"))
                         learner.notify()
@@ -210,6 +216,8 @@ def create_server(root: Path, port: int = 8765, *, seed: int | None = None, back
         from .lora import StyleHub
         styles = StyleHub(root, backend, base_runtime=runtime)
         server.style_hub = styles
+        # Recover durable sync work even before a browser reconnects.
+        _ = styles.sync
     except BaseException:
         server.server_close()
         raise

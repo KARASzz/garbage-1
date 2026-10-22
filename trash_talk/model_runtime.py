@@ -14,6 +14,7 @@ import math
 import os
 from pathlib import Path
 import random
+import queue
 import threading
 import uuid
 
@@ -255,6 +256,7 @@ class BackgroundLearner:
         self.wake = threading.Event()
         self.stop = threading.Event()
         self.thread = None
+        self.controls = queue.Queue()
         # One writer across processes/backends, including differently bound ports.
         self._lease = store.path.with_suffix(".learner.lock").open("a")
         self.thread = threading.Thread(target=self._run, name="garbage-1-learner", daemon=True)
@@ -262,6 +264,27 @@ class BackgroundLearner:
 
     def notify(self):
         self.wake.set()
+
+    def call_exclusive(self, callback, timeout=30):
+        """Execute on the actual writer thread, under its cross-process lease."""
+        import time
+        request = {"fn": callback, "started": threading.Event(), "done": threading.Event(),
+                   "cancel": threading.Event(), "guard": threading.Lock(), "result": None, "error": None}
+        self.controls.put(request)
+        self.notify()
+        deadline = time.monotonic() + timeout
+        while not request["done"].wait(.1):
+            if self.stop.is_set():
+                request["cancel"].set()
+                raise RuntimeError("训练 worker 正在关闭，同步等待重试")
+            if time.monotonic() > deadline:
+                with request["guard"]:
+                    if not request["started"].is_set():
+                        request["cancel"].set()
+                        raise RuntimeError("训练写入锁被其他进程占用，请稍后同步")
+        if request["error"] is not None:
+            raise request["error"]
+        return request["result"]
 
     def _run(self):
         try:
@@ -287,6 +310,8 @@ class BackgroundLearner:
                             self.runtime.prefixes = replacement.prefixes
                             self.runtime.replay = replacement.replay
                             self.runtime.error = None
+                            if hasattr(replacement, "base_sha"):
+                                self.runtime.base_sha = replacement.base_sha
                     self._consume()
                     return
                 except BlockingIOError:
@@ -301,6 +326,23 @@ class BackgroundLearner:
 
     def _consume(self):
         while not self.stop.is_set():
+            try:
+                request = self.controls.get_nowait()
+            except queue.Empty:
+                request = None
+            if request is not None:
+                with request["guard"]:
+                    canceled = request["cancel"].is_set()
+                    if not canceled:
+                        request["started"].set()
+                try:
+                    if not canceled:
+                        request["result"] = request["fn"]()
+                except Exception as error:
+                    request["error"] = error
+                finally:
+                    request["done"].set()
+                continue
             if not self.runtime.ready:
                 self.wake.wait(1)
                 self.wake.clear()
