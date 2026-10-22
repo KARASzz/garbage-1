@@ -103,7 +103,8 @@ class ModelRuntime:
         self.root = Path(root)
         self.model_dir = Path(model_dir or self.root / "models" / "garbage-1")
         self.backend_name = backend
-        self.lock = threading.Lock()
+        self.lock = threading.RLock()
+        self.checkpoint_path = None
         self.backend = None
         self.metadata = {}
         self.error = None
@@ -142,6 +143,7 @@ class ModelRuntime:
             if metadata.get("weight_sha256") and metadata["weight_sha256"] != self.backend.weight_digest():
                 raise ValueError("权重摘要不匹配")
             self.metadata = metadata
+            self.checkpoint_path = metadata_path
             data_dir = self.root / "data" / "garbage-1"
             self.prefixes = _load_examples(data_dir / "prefixes.json", prefixes=True)
             self.replay = _load_examples(data_dir / "seed_replay.json")
@@ -180,6 +182,22 @@ class ModelRuntime:
             return {"text": text, "theme": chosen["theme"], "id": uuid.uuid4().hex, "block_count": 0,
                     "model": status, "prompt": prefix_text, "generated_tokens": len(ids) - len(prompt)}
 
+    def preference_context(self, result):
+        """Call under lock with generation so prompt and reference describe the same weights."""
+        if not self.ready or self.checkpoint_path is None:
+            return None
+        theme = result.get("theme")
+        theme = theme if theme in ("game", "logic", "boast", "daily") else "daily"
+        prefix = result.get("prompt", "")
+        return {"prompt_ids": self.tokenizer.encode(prefix, theme=theme),
+                "neutral_prompt_ids": self.tokenizer.encode("", theme=theme), "prefix": prefix,
+                "theme": theme, "reference": {"checkpoint": str(self.checkpoint_path.relative_to(self.root / "models"))},
+                "run_id": self.metadata["run_id"], "step": self.metadata["step"]}
+
+    def learn_preference(self, job, store):
+        from .preference_training import learn_runtime
+        return learn_runtime(self, job, store)
+
     def _save(self, metadata):
         import numpy as np
         directory = self.model_dir / "checkpoints"
@@ -197,6 +215,7 @@ class ModelRuntime:
         _atomic_json(directory / f"{generation}.json", metadata)
         _atomic_json(self.model_dir / "current.json", {"checkpoint": f"checkpoints/{generation}.json"})
         self.metadata = metadata
+        self.checkpoint_path = directory / f"{generation}.json"
 
     def learn(self, job, store):
         if not self.ready:
@@ -257,6 +276,7 @@ class BackgroundLearner:
         self.stop = threading.Event()
         self.thread = None
         self.controls = queue.Queue()
+        self._prefer_corrections = True
         # One writer across processes/backends, including differently bound ports.
         self._lease = store.path.with_suffix(".learner.lock").open("a")
         self.thread = threading.Thread(target=self._run, name="garbage-1-learner", daemon=True)
@@ -292,6 +312,7 @@ class BackgroundLearner:
                 try:
                     fcntl.flock(self._lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
                     self.store.recover_jobs()
+                    self.store.recover_preferences()
                     # A previous process may have updated the pointer while
                     # this process waited for the single-writer lease.
                     replacement = self.runtime.reload()
@@ -310,6 +331,7 @@ class BackgroundLearner:
                             self.runtime.prefixes = replacement.prefixes
                             self.runtime.replay = replacement.replay
                             self.runtime.error = None
+                            self.runtime.checkpoint_path = replacement.checkpoint_path
                             if hasattr(replacement, "base_sha"):
                                 self.runtime.base_sha = replacement.base_sha
                     self._consume()
@@ -348,7 +370,17 @@ class BackgroundLearner:
                 self.wake.clear()
                 continue
             try:
-                job = self.store.claim_job()
+                preference = False
+                if self._prefer_corrections:
+                    job = self.store.claim_preference()
+                    preference = job is not None
+                    if job is None:
+                        job = self.store.claim_job()
+                else:
+                    job = self.store.claim_job()
+                    if job is None:
+                        job = self.store.claim_preference()
+                        preference = job is not None
             except Exception:
                 LOGGER.exception("Queue read failed; retrying without losing annotations")
                 self.stop.wait(1)
@@ -357,8 +389,9 @@ class BackgroundLearner:
                 self.wake.wait(1)
                 self.wake.clear()
                 continue
+            self._prefer_corrections = not preference
             try:
-                result = self.runtime.learn(job, self.store)
+                result = self.runtime.learn_preference(job, self.store) if preference else self.runtime.learn(job, self.store)
                 error = None
             except Exception as failure:
                 LOGGER.exception("Background learning failed; annotations are preserved")
@@ -370,7 +403,10 @@ class BackgroundLearner:
             # Retain the original result and retry; restart uses last_job_result.
             while not self.stop.is_set():
                 try:
-                    self.store.finish_job(job["id"], result, error=error)
+                    if preference:
+                        self.store.finish_preference(job["id"], result, error=error)
+                    else:
+                        self.store.finish_job(job["id"], result, error=error)
                     break
                 except Exception:
                     LOGGER.exception("Queue acknowledgement failed; keeping original training result")

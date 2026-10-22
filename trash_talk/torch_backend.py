@@ -35,6 +35,10 @@ class TorchBackend:
     def generate(self, prompt_ids, max_new_tokens, eos_id):
         return greedy_tokens(self.model, prompt_ids, max_new_tokens, eos_id)
 
+    def logits(self, ids):
+        with torch.no_grad():
+            return self.model(torch.tensor(ids, dtype=torch.long, device=self.device))
+
     def train_step(self, x, y, learning_rate=0.005, pad_id=0):
         self.model.train()
         self.model.zero_grad(set_to_none=True)

@@ -145,7 +145,7 @@ def create_server(root: Path, port: int = 8765, *, seed: int | None = None, back
                 self._json(403, {"error": "提交和生成只接受当前本地页面"})
                 return
             route = urlsplit(self.path).path
-            if route not in ("/api/draw", "/api/ai", "/api/feedback", "/api/feed", "/api/lora/sync"):
+            if route not in ("/api/draw", "/api/ai", "/api/feedback", "/api/feed", "/api/lora/sync", "/api/correct"):
                 self._json(404, {"error": "这里没有这个频道"})
                 return
             if self.headers.get("Content-Type", "").split(";", 1)[0].strip().lower() != "application/json":
@@ -168,6 +168,13 @@ def create_server(root: Path, port: int = 8765, *, seed: int | None = None, back
                     result = styles.start_sync()
                     self._json(202 if result["status"] in ("queued", "running") else 200, {"job": result})
                     return
+                elif route == "/api/correct":
+                    try:
+                        result = feedback.correct(data.get("sample_id"), data.get("text"))
+                        result["style"] = "base"
+                        learner.notify()
+                    except LookupError:
+                        result = styles.correct(data.get("sample_id"), data.get("text"))
                 elif route == "/api/feedback":
                     try:
                         result = feedback.rate(data.get("sample_id"), data.get("rating"))
@@ -186,9 +193,11 @@ def create_server(root: Path, port: int = 8765, *, seed: int | None = None, back
                     source = "rule" if route == "/api/draw" else "garbage-1"
                     style = "base" if source == "rule" else data.get("style", "base")
                     target, store, _ = (runtime, feedback, learner) if style == "base" else styles.get(style)
-                    result = generator.draw() if source == "rule" else target.generate()
-                    model = result.get("model", runtime.status())
-                    sample_id = store.add_sample(result["text"], source, result["theme"], model["step"], model["run_id"])
+                    with target.lock:
+                        result = generator.draw() if source == "rule" else target.generate()
+                        model = result.get("model", runtime.status())
+                        context = target.preference_context(result)
+                        sample_id = store.add_sample(result["text"], source, result["theme"], model["step"], model["run_id"], context=context)
                     from .lora import STYLE_NAMES
                     result = {**result, "sample_id": sample_id, "source": source, "rating": 0, "model": model,
                               "style": style, "style_name": "原版" if style == "base" else STYLE_NAMES[style]}

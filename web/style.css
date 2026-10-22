@@ -352,6 +352,16 @@ button {
   text-wrap: pretty;
 }
 
+.message[contenteditable="plaintext-only"] {
+  cursor: text;
+}
+
+.message:focus-visible {
+  border-radius: 4px;
+  outline: 1px solid rgba(185, 240, 191, 0.72);
+  outline-offset: 6px;
+}
+
 .display-footer {
   color: #54755d;
   font-size: 8px;
@@ -379,6 +389,33 @@ button {
   display: flex;
   justify-content: center;
   gap: 9px;
+}
+
+.correction-tools {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 5px;
+  padding-top: 2px;
+}
+
+.correction-hint {
+  margin: 0;
+  color: #77977e;
+  font-size: 9px;
+  line-height: 1.4;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.correction-actions {
+  display: flex;
+  justify-content: center;
+  gap: 9px;
+}
+
+.correction-actions .feedback-button {
+  min-height: 38px;
 }
 
 .feedback-button {
@@ -1067,6 +1104,10 @@ button {
     min-height: 44px;
     flex: 1 1 0;
     padding: 0 8px;
+  }
+
+  .correction-actions .feedback-button {
+    min-height: 44px;
   }
 
   .feedback-status {

@@ -1,0 +1,54 @@
+{
+  "base": {
+    "preferences": [
+      {
+        "id": 1,
+        "status": "done",
+        "result_json": "{\"loss\":4.750732940690636,\"loss_before\":4.77438693927351,\"beta\":0.1,\"chosen_sft_weight\":0.5,\"anchor_sft_weight\":0.1,\"reference_chosen_logp\":-175.74855254256678,\"reference_rejected_logp\":-21.53412499845585,\"chosen_logp_before\":-175.74855254256678,\"rejected_logp_before\":-21.53412499845585,\"chosen_logp_after\":-175.4372456453135,\"rejected_logp_after\":-21.557173397454424,\"preference_margin_before\":-154.21442754411095,\"preference_margin_after\":-153.8800722478591,\"chosen_token_count\":22.0,\"rejected_token_count\":45.0,\"learning_rate\":0.0005,\"algorithm\":\"dpo+chosen_sft+replay_sft\",\"trained\":true,\"run_id\":\"202a56a3-52d6-43bc-a5ba-7e1b8ffe4f0d\",\"step_before\":432,\"step_after\":433,\"samples\":1,\"preference_id\":1,\"weight_sha256\":\"493b410e7838f23263c572b5c846b3ccc6e42b1a6ffa715e4cbf0986de6fe797\",\"reference\":{\"checkpoint\":\"garbage-1/checkpoints/online-00000432-9e46582b62.json\"},\"prompt_mode\":\"theme_only\"}",
+        "error": null
+      }
+    ],
+    "training": [
+      {
+        "status": "done",
+        "error": null
+      }
+    ]
+  },
+  "mouthy": {
+    "preferences": [
+      {
+        "id": 1,
+        "status": "done",
+        "result_json": "{\"loss\":3.306184917054324,\"loss_before\":3.316630599304755,\"beta\":0.1,\"chosen_sft_weight\":0.5,\"anchor_sft_weight\":0.1,\"reference_chosen_logp\":-72.97595293950822,\"reference_rejected_logp\":-27.884395977971874,\"chosen_logp_before\":-72.97595293950822,\"rejected_logp_before\":-27.884395977971874,\"chosen_logp_after\":-72.90174687190594,\"rejected_logp_after\":-27.976229076273903,\"preference_margin_before\":-45.09155696153634,\"preference_margin_after\":-44.92551779563204,\"chosen_token_count\":17.0,\"rejected_token_count\":19.0,\"learning_rate\":0.001,\"algorithm\":\"dpo+chosen_sft+replay_sft\",\"trained\":true,\"run_id\":\"lora-mouthy-101ab6a08644\",\"step_before\":80,\"step_after\":81,\"samples\":1,\"preference_id\":1,\"weight_sha256\":\"8eab829f6913f5021e66c2ae35a637b955a8deba37dae0297e9c934e4f017988\",\"reference\":{\"checkpoint\":\"garbage-1/lora/mouthy/checkpoints/adapter-00000080-1fb5925a16.json\"},\"prompt_mode\":\"prefix\"}",
+        "error": null
+      }
+    ],
+    "training": []
+  },
+  "alien": {
+    "preferences": [],
+    "training": [
+      {
+        "status": "done",
+        "error": null
+      }
+    ]
+  },
+  "duplicate": {
+    "sample_id": "5f30d286a33a431c93c5b5af86f071b8",
+    "chosen_sample_id": "1e56f104d3274642b96101c2792c219d",
+    "preference_id": 1,
+    "duplicate": true,
+    "queued": false,
+    "training_status": "done",
+    "counts": {
+      "up": 2,
+      "down": 1,
+      "pending": 0,
+      "total_samples": 3
+    },
+    "message": "这条改写已经记录。",
+    "style": "base"
+  }
+}

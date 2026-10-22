@@ -1,0 +1,83 @@
+{
+  "editing": {
+    "editable": "plaintext-only",
+    "likeDisabled": true
+  },
+  "ack": "已保存，后台偏好学习",
+  "posts": [
+    {
+      "url": "/api/ai",
+      "result": {
+        "text": "你这嘴挺点，真他妈的把一份自己的流程绕成了。",
+        "theme": "daily",
+        "id": "5cf9baf1d3b640e29f408cdf2fc989c3",
+        "block_count": 0,
+        "model": {
+          "name": "garbage-1",
+          "parameters": 1000000,
+          "dtype": "float32",
+          "temperature": 0,
+          "backend": "mlx",
+          "ready": true,
+          "step": 80,
+          "run_id": "lora-mouthy-101ab6a08644",
+          "architecture": "dense_transformer_v1",
+          "error": null,
+          "adapter": {
+            "id": "mouthy",
+            "name": "嘴臭",
+            "step": 80,
+            "parameters": 47952,
+            "rank": 8,
+            "base_step": 432,
+            "base_sha256": "be614d4d03e22c368c9bbdbf11ea06c4f970936082ccc5fed6aa946583345a46"
+          }
+        },
+        "prompt": "你这嘴挺",
+        "generated_tokens": 19,
+        "sample_id": "bed2aef9f3e744688b57fab002f80af8",
+        "source": "garbage-1",
+        "rating": 0,
+        "style": "mouthy",
+        "style_name": "嘴臭"
+      }
+    },
+    {
+      "url": "/api/correct",
+      "result": {
+        "sample_id": "bed2aef9f3e744688b57fab002f80af8",
+        "chosen_sample_id": "d66de11bdf0d449ba2d0b9d4f9d7facd",
+        "preference_id": 1,
+        "duplicate": false,
+        "queued": true,
+        "training_status": "pending",
+        "counts": {
+          "up": 1,
+          "down": 1,
+          "pending": 0,
+          "total_samples": 2
+        },
+        "message": "改写已记录，正在等待偏好训练。",
+        "style": "mouthy"
+      }
+    },
+    {
+      "url": "/api/feed",
+      "result": {
+        "sample_id": "c1ee40d4f4094756b5b05eb73352f1e4",
+        "duplicate": false,
+        "job_id": 1,
+        "counts": {
+          "up": 1,
+          "down": 0,
+          "pending": 0,
+          "total_samples": 1
+        },
+        "fed_sentences": 1,
+        "message": "整句已收下，正在后台学习。",
+        "style": "alien"
+      }
+    }
+  ],
+  "editPreserved": "你这嘴挺别光吹牛，先把眼前这点事干明白。"
+}

@@ -244,6 +244,7 @@ class LoRARuntime(ModelRuntime):
             if array_digest(arrays) != metadata["weight_sha256"]:
                 raise ValueError("LoRA 权重摘要不匹配")
             self.metadata = metadata
+            self.checkpoint_path = metadata_path
         else:
             if not allow_untrained:
                 raise RuntimeError("该风格 LoRA 尚未训练")
@@ -283,6 +284,7 @@ class LoRARuntime(ModelRuntime):
         _atomic_json(directory / (name + ".json"), metadata)
         _atomic_json(self.model_dir / "current.json", {"checkpoint": f"checkpoints/{name}.json"})
         self.metadata = metadata
+        self.checkpoint_path = directory / (name + ".json")
 
     def learn(self, job, store):
         with self.lock:
@@ -383,6 +385,23 @@ class StyleHub:
             if found:
                 _, store, learner = self.get(style)
                 result = store.rate(sample_id, rating)
+                learner.notify()
+                return {**result, "style": style}
+        raise LookupError("样本不存在")
+
+    def correct(self, sample_id, text):
+        if not isinstance(sample_id, str):
+            raise ValueError("样本 ID 无效")
+        import sqlite3
+        for style in STYLE_NAMES:
+            path = self.root / "data/lora" / (style + ".sqlite3")
+            if not path.exists():
+                continue
+            with sqlite3.connect(f"file:{path}?mode=ro", uri=True) as connection:
+                found = connection.execute("SELECT 1 FROM samples WHERE id=?", (sample_id,)).fetchone()
+            if found:
+                _, store, learner = self.get(style)
+                result = store.correct(sample_id, text)
                 learner.notify()
                 return {**result, "style": style}
         raise LookupError("样本不存在")
