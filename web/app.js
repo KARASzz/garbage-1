@@ -6,6 +6,9 @@
   const message = document.querySelector("#message");
   const screenStatus = document.querySelector("#screenStatus");
   const feedbackPanel = document.querySelector("#feedbackPanel");
+  const correctionHint = document.querySelector("#correctionHint");
+  const correctionButton = document.querySelector("#correctionButton");
+  const restoreButton = document.querySelector("#restoreButton");
   const feedbackStatus = document.querySelector("#feedbackStatus");
   const modelStatus = document.querySelector("#modelStatus");
   const feedForm = document.querySelector("#feedForm");
@@ -26,6 +29,9 @@
     !message ||
     !screenStatus ||
     !feedbackPanel ||
+    !correctionHint ||
+    !correctionButton ||
+    !restoreButton ||
     !feedbackStatus ||
     !modelStatus ||
     !feedForm ||
@@ -43,7 +49,9 @@
 
   const feedbackButtons = [likeButton, dislikeButton];
   const timeoutMs = 30_000;
+  const maxCorrectionLength = 800;
   const pendingFeedbackSamples = new Set();
+  const pendingCorrectionSamples = new Set();
   const styleDefinitions = [
     { id: "base", name: "原版", english: "Base" },
     { id: "mouthy", name: "嘴臭", english: "Mouthy" },
@@ -73,6 +81,8 @@
   let isGenerating = false;
   let isFeeding = false;
   let activeSampleId = null;
+  let activeOriginalText = "";
+  let activeOriginalFeedbackStatus = "";
   let activeRating = 0;
   let syncSubmitPending = false;
   let syncInFlight = false;
@@ -84,6 +94,44 @@
     return styleRecords.get(styleSelect.value) || styleRecords.get("base");
   }
 
+  function normalizeVisibleText(text) {
+    return String(text || "").replace(/\r\n?/g, "\n").trim();
+  }
+
+  function visibleMessageText() {
+    return typeof message.innerText === "string" ? message.innerText : message.textContent || "";
+  }
+
+  function isActiveOutputEdited() {
+    return activeSampleId !== null && activeOriginalText !== "" &&
+      normalizeVisibleText(visibleMessageText()) !== normalizeVisibleText(activeOriginalText);
+  }
+
+  function updateMessageEditorState(activeSamplePending) {
+    const hasOutput = activeSampleId !== null && activeOriginalText !== "";
+    const canEdit = hasOutput && !activeSamplePending;
+    message.contentEditable = canEdit ? "plaintext-only" : "false";
+
+    if (hasOutput) {
+      message.setAttribute("role", "textbox");
+      message.setAttribute("aria-label", "生成结果，可直接编辑");
+      message.setAttribute("aria-multiline", "true");
+      message.setAttribute("aria-live", "off");
+      message.setAttribute("aria-readonly", String(!canEdit));
+      message.setAttribute("aria-describedby", "correctionHint");
+      message.tabIndex = 0;
+    } else {
+      message.setAttribute("role", "status");
+      message.setAttribute("aria-live", "polite");
+      message.setAttribute("aria-atomic", "true");
+      message.removeAttribute("aria-label");
+      message.removeAttribute("aria-multiline");
+      message.removeAttribute("aria-readonly");
+      message.removeAttribute("aria-describedby");
+      message.removeAttribute("tabindex");
+    }
+  }
+
   function updateButtonState() {
     const selectedStyleReady = currentStyleRecord()?.ready === true;
     drawButton.disabled = isGenerating;
@@ -91,10 +139,17 @@
     syncButton.disabled = syncSubmitPending || syncInFlight;
 
     const activeSamplePending =
-      isGenerating || (activeSampleId !== null && pendingFeedbackSamples.has(activeSampleId));
+      isGenerating || (activeSampleId !== null && (
+        pendingFeedbackSamples.has(activeSampleId) || pendingCorrectionSamples.has(activeSampleId)
+      ));
+    const outputEdited = isActiveOutputEdited();
     feedbackButtons.forEach((button) => {
-      button.disabled = activeSamplePending;
+      button.disabled = activeSamplePending || outputEdited || activeSampleId === null;
     });
+    correctionButton.disabled = activeSamplePending || activeSampleId === null;
+    restoreButton.hidden = !outputEdited;
+    restoreButton.disabled = activeSamplePending;
+    updateMessageEditorState(activeSamplePending);
     feedButton.disabled = isFeeding || !selectedStyleReady;
     feedInput.disabled = isFeeding || !selectedStyleReady;
   }
@@ -505,12 +560,15 @@
   }
 
   function installOutput(result) {
-    message.textContent = result.text.trim();
+    activeOriginalText = result.text.trim();
+    message.textContent = activeOriginalText;
     activeSampleId = result.sample_id;
     activeRating = result.rating;
-    feedbackStatus.textContent = typeof result.style_name === "string" && result.style_name.trim()
+    activeOriginalFeedbackStatus = typeof result.style_name === "string" && result.style_name.trim()
       ? `本句归属风格：${result.style_name}`
       : "";
+    feedbackStatus.textContent = activeOriginalFeedbackStatus;
+    correctionHint.textContent = "直接修改屏幕上的句子，再提交改写";
     paintRating(activeRating);
     feedbackPanel.hidden = false;
     applyModel(result.model);
@@ -558,7 +616,7 @@
   }
 
   async function rateOutput(rating) {
-    if (isGenerating || !activeSampleId || rating === activeRating) return;
+    if (isGenerating || !activeSampleId || isActiveOutputEdited() || rating === activeRating) return;
 
     const sampleId = activeSampleId;
     const previousRating = activeRating;
@@ -604,6 +662,88 @@
       pendingFeedbackSamples.delete(sampleId);
       updateButtonState();
     }
+  }
+
+  function validateCorrectionResult(result, sampleId) {
+    if (
+      !result ||
+      result.sample_id !== sampleId ||
+      typeof result.chosen_sample_id !== "string" ||
+      !result.chosen_sample_id.trim() ||
+      typeof result.preference_id !== "number" ||
+      !Number.isFinite(result.preference_id) ||
+      typeof result.duplicate !== "boolean" ||
+      typeof result.queued !== "boolean" ||
+      typeof result.style !== "string" ||
+      !result.style.trim() ||
+      typeof result.message !== "string" ||
+      !result.counts || typeof result.counts !== "object" || Array.isArray(result.counts)
+    ) {
+      throw new Error("改写结果格式不完整，内容仍保留，可重试。");
+    }
+    return result;
+  }
+
+  async function submitCorrection() {
+    if (isGenerating || !activeSampleId || pendingCorrectionSamples.has(activeSampleId)) return;
+
+    const sampleId = activeSampleId;
+    const text = normalizeVisibleText(visibleMessageText());
+    if (!text) {
+      feedbackStatus.textContent = "改写内容不能为空，请先输入一句话。";
+      return;
+    }
+    if (text === normalizeVisibleText(activeOriginalText)) {
+      feedbackStatus.textContent = "请先修改原句，再提交改写。";
+      return;
+    }
+    if (Array.from(text).length > maxCorrectionLength) {
+      feedbackStatus.textContent = `改写内容不能超过 ${maxCorrectionLength} 字，请删减后重试。`;
+      return;
+    }
+
+    pendingCorrectionSamples.add(sampleId);
+    feedbackStatus.textContent = "正在保存改写…";
+    updateButtonState();
+
+    try {
+      const result = validateCorrectionResult(
+        await requestJson("/api/correct", "POST", { sample_id: sampleId, text }),
+        sampleId,
+      );
+      if (activeSampleId === sampleId) {
+        activeRating = -1;
+        paintRating(activeRating);
+        activeOriginalFeedbackStatus = "原输出已记为较差答案；改写句已作为优选答案保存。";
+        feedbackStatus.textContent = result.training_status === "done"
+          ? "这条改写已经完成过偏好训练，没有重复训练。"
+          : result.queued ? "已保存，后台偏好学习" : result.message;
+      }
+      return result;
+    } catch (error) {
+      if (activeSampleId === sampleId) {
+        feedbackStatus.textContent = readableError(error, "改写保存失败，内容仍保留，可重试。");
+      }
+    } finally {
+      pendingCorrectionSamples.delete(sampleId);
+      updateButtonState();
+    }
+  }
+
+  function onMessageInput() {
+    if (isActiveOutputEdited()) {
+      feedbackStatus.textContent = "当前显示改写稿；点赞和点踩已停用，恢复原文后可评价原输出。";
+    } else {
+      feedbackStatus.textContent = activeOriginalFeedbackStatus;
+    }
+    updateButtonState();
+  }
+
+  function restoreOriginalOutput() {
+    if (isGenerating || !activeSampleId || pendingCorrectionSamples.has(activeSampleId)) return;
+    message.textContent = activeOriginalText;
+    feedbackStatus.textContent = activeOriginalFeedbackStatus || "原文已恢复，可评价原输出。";
+    updateButtonState();
   }
 
   async function feedSentence(event) {
@@ -684,6 +824,9 @@
   aiButton.addEventListener("click", () => generate("garbage-1"));
   likeButton.addEventListener("click", () => rateOutput(1));
   dislikeButton.addEventListener("click", () => rateOutput(-1));
+  correctionButton.addEventListener("click", () => { void submitCorrection(); });
+  restoreButton.addEventListener("click", restoreOriginalOutput);
+  message.addEventListener("input", onMessageInput);
   feedForm.addEventListener("submit", feedSentence);
   styleSelect.addEventListener("change", updateStylePresentation);
   syncButton.addEventListener("click", startLoraSync);

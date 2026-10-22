@@ -35,7 +35,7 @@
                 <span class="signal-state"><i class="signal-dot" aria-hidden="true"></i><span id="screenStatus" aria-live="polite">READY · 等你开口</span></span>
                 <span class="channel-mark" aria-hidden="true">CH&nbsp;01</span>
               </div>
-              <p class="message" id="message" role="status" aria-live="polite" aria-atomic="true">系统已就绪，等你嘴硬。</p>
+              <p class="message" id="message" contenteditable="false" role="status" aria-live="polite" aria-atomic="true">系统已就绪，等你嘴硬。</p>
               <div class="feedback-panel" id="feedbackPanel" hidden>
                 <div class="feedback-actions" role="group" aria-label="评价这条垃圾话">
                   <button class="feedback-button" id="likeButton" type="button" aria-pressed="false">
@@ -44,6 +44,13 @@
                   <button class="feedback-button" id="dislikeButton" type="button" aria-pressed="false">
                     <span aria-hidden="true">👎</span><span>点踩</span>
                   </button>
+                </div>
+                <div class="correction-tools">
+                  <p class="correction-hint" id="correctionHint">直接修改屏幕上的句子，再提交改写</p>
+                  <div class="correction-actions" role="group" aria-label="提交或恢复改写">
+                    <button class="feedback-button correction-button" id="correctionButton" type="button">提交改写</button>
+                    <button class="feedback-button restore-button" id="restoreButton" type="button" hidden>恢复原文</button>
+                  </div>
                 </div>
                 <p class="feedback-status" id="feedbackStatus" role="status" aria-live="polite"></p>
               </div>

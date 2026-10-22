@@ -1,0 +1,105 @@
+{
+  "generation": {
+    "text": "你这张排时间规划师，简直他妈把一份简单流程拆成了十个待办清单，待办清单比执行进度长得快。",
+    "theme": "daily",
+    "id": "8162ab3d36a8445da4fee32db1eaa040",
+    "block_count": 0,
+    "model": {
+      "name": "garbage-1",
+      "parameters": 1000000,
+      "dtype": "float32",
+      "temperature": 0,
+      "backend": "mlx",
+      "ready": true,
+      "step": 432,
+      "run_id": "202a56a3-52d6-43bc-a5ba-7e1b8ffe4f0d",
+      "architecture": "dense_transformer_v1",
+      "error": null
+    },
+    "prompt": "你这张排",
+    "generated_tokens": 41,
+    "sample_id": "5f30d286a33a431c93c5b5af86f071b8",
+    "source": "garbage-1",
+    "rating": 0,
+    "style": "base",
+    "style_name": "原版"
+  },
+  "posts": [
+    {
+      "url": "/api/ai",
+      "body": {
+        "style": "base"
+      },
+      "result": {
+        "text": "你这张排时间规划师，简直他妈把一份简单流程拆成了十个待办清单，待办清单比执行进度长得快。",
+        "theme": "daily",
+        "id": "8162ab3d36a8445da4fee32db1eaa040",
+        "block_count": 0,
+        "model": {
+          "name": "garbage-1",
+          "parameters": 1000000,
+          "dtype": "float32",
+          "temperature": 0,
+          "backend": "mlx",
+          "ready": true,
+          "step": 432,
+          "run_id": "202a56a3-52d6-43bc-a5ba-7e1b8ffe4f0d",
+          "architecture": "dense_transformer_v1",
+          "error": null
+        },
+        "prompt": "你这张排",
+        "generated_tokens": 41,
+        "sample_id": "5f30d286a33a431c93c5b5af86f071b8",
+        "source": "garbage-1",
+        "rating": 0,
+        "style": "base",
+        "style_name": "原版"
+      }
+    },
+    {
+      "url": "/api/correct",
+      "body": {
+        "sample_id": "5f30d286a33a431c93c5b5af86f071b8",
+        "text": "先把事情说清楚，再来展示你的脾气。"
+      },
+      "result": {
+        "sample_id": "5f30d286a33a431c93c5b5af86f071b8",
+        "chosen_sample_id": "1e56f104d3274642b96101c2792c219d",
+        "preference_id": 1,
+        "duplicate": false,
+        "queued": true,
+        "training_status": "pending",
+        "counts": {
+          "up": 1,
+          "down": 1,
+          "pending": 0,
+          "total_samples": 2
+        },
+        "message": "改写已记录，正在等待偏好训练。",
+        "style": "base"
+      }
+    },
+    {
+      "url": "/api/feed",
+      "body": {
+        "text": "你这张嘴跑得快，办起事来却总在原地打转。",
+        "style": "base"
+      },
+      "result": {
+        "sample_id": "fa7c9f1b86e144cba56837b652967ac5",
+        "duplicate": false,
+        "job_id": 1,
+        "counts": {
+          "up": 2,
+          "down": 1,
+          "pending": 0,
+          "total_samples": 3
+        },
+        "fed_sentences": 1,
+        "message": "整句已收下，正在后台学习。",
+        "style": "base"
+      }
+    }
+  ],
+  "feedback": "已保存，后台偏好学习"
+}

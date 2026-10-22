@@ -1,0 +1,124 @@
+{
+  "viewport": 390,
+  "pageWidth": 390,
+  "correctionButton": true,
+  "feed": true,
+  "model": {
+    "name": "garbage-1",
+    "parameters": 1000000,
+    "dtype": "float32",
+    "temperature": 0,
+    "backend": "mlx",
+    "ready": true,
+    "step": 432,
+    "run_id": "202a56a3-52d6-43bc-a5ba-7e1b8ffe4f0d",
+    "architecture": "dense_transformer_v1",
+    "error": null,
+    "counts": {
+      "up": 18,
+      "down": 2,
+      "pending": 26,
+      "total_samples": 47
+    },
+    "queue": {
+      "pending": 0,
+      "running": 0,
+      "done": 20,
+      "error": 0
+    },
+    "fed_sentences": 6
+  },
+  "styles": {
+    "styles": [
+      {
+        "id": "base",
+        "name": "原版",
+        "ready": true,
+        "step": 432,
+        "parameters": 1000000
+      },
+      {
+        "id": "mouthy",
+        "name": "嘴臭",
+        "ready": true,
+        "step": 80,
+        "parameters": 47952,
+        "base_step": 432,
+        "base_sha256": "be614d4d03e22c368c9bbdbf11ea06c4f970936082ccc5fed6aa946583345a46"
+      },
+      {
+        "id": "mad",
+        "name": "疯子",
+        "ready": true,
+        "step": 60,
+        "parameters": 47952,
+        "base_step": 432,
+        "base_sha256": "be614d4d03e22c368c9bbdbf11ea06c4f970936082ccc5fed6aa946583345a46"
+      },
+      {
+        "id": "sassy",
+        "name": "娘炮",
+        "ready": true,
+        "step": 120,
+        "parameters": 47952,
+        "base_step": 432,
+        "base_sha256": "be614d4d03e22c368c9bbdbf11ea06c4f970936082ccc5fed6aa946583345a46"
+      },
+      {
+        "id": "anime",
+        "name": "二次元",
+        "ready": true,
+        "step": 80,
+        "parameters": 47952,
+        "base_step": 432,
+        "base_sha256": "be614d4d03e22c368c9bbdbf11ea06c4f970936082ccc5fed6aa946583345a46"
+      },
+      {
+        "id": "femboy",
+        "name": "伪娘",
+        "ready": true,
+        "step": 221,
+        "parameters": 47952,
+        "base_step": 432,
+        "base_sha256": "be614d4d03e22c368c9bbdbf11ea06c4f970936082ccc5fed6aa946583345a46"
+      },
+      {
+        "id": "office",
+        "name": "社畜",
+        "ready": true,
+        "step": 121,
+        "parameters": 47952,
+        "base_step": 432,
+        "base_sha256": "be614d4d03e22c368c9bbdbf11ea06c4f970936082ccc5fed6aa946583345a46"
+      },
+      {
+        "id": "soldier",
+        "name": "兵王",
+        "ready": true,
+        "step": 80,
+        "parameters": 47952,
+        "base_step": 432,
+        "base_sha256": "be614d4d03e22c368c9bbdbf11ea06c4f970936082ccc5fed6aa946583345a46"
+      },
+      {
+        "id": "alien",
+        "name": "外星人",
+        "ready": true,
+        "step": 80,
+        "parameters": 47952,
+        "base_step": 432,
+        "base_sha256": "be614d4d03e22c368c9bbdbf11ea06c4f970936082ccc5fed6aa946583345a46"
+      },
+      {
+        "id": "hostess",
+        "name": "陪酒女",
+        "ready": true,
+        "step": 160,
+        "parameters": 47952,
+        "base_step": 432,
+        "base_sha256": "be614d4d03e22c368c9bbdbf11ea06c4f970936082ccc5fed6aa946583345a46"
+      }
+    ],
+    "default": "base"
+  }
+}
