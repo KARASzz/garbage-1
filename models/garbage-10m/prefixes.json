@@ -1,0 +1,806 @@
+{
+  "format_version": 1,
+  "count": 200,
+  "examples": [
+    {
+      "text": "你这次因",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位论",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位气",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位复",
+      "theme": "game"
+    },
+    {
+      "text": "概念艺术",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位概",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位复",
+      "theme": "game"
+    },
+    {
+      "text": "龙坑那波",
+      "theme": "game"
+    },
+    {
+      "text": "你这个玩",
+      "theme": "game"
+    },
+    {
+      "text": "你刚说完",
+      "theme": "boast"
+    },
+    {
+      "text": "你这段领",
+      "theme": "boast"
+    },
+    {
+      "text": "话题刚转",
+      "theme": "boast"
+    },
+    {
+      "text": "你这次豪",
+      "theme": "boast"
+    },
+    {
+      "text": "待办顾问",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位选",
+      "theme": "game"
+    },
+    {
+      "text": "大家等你",
+      "theme": "daily"
+    },
+    {
+      "text": "生活总监",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位辅",
+      "theme": "game"
+    },
+    {
+      "text": "每次需要",
+      "theme": "logic"
+    },
+    {
+      "text": "气场选手",
+      "theme": "boast"
+    },
+    {
+      "text": "讨论绕回",
+      "theme": "logic"
+    },
+    {
+      "text": "对面推到",
+      "theme": "game"
+    },
+    {
+      "text": "电竞教练",
+      "theme": "game"
+    },
+    {
+      "text": "你这位开",
+      "theme": "game"
+    },
+    {
+      "text": "你这位项",
+      "theme": "daily"
+    },
+    {
+      "text": "你这个操",
+      "theme": "game"
+    },
+    {
+      "text": "你这句结",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位队",
+      "theme": "game"
+    },
+    {
+      "text": "你这位预",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位项",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位评",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位辩",
+      "theme": "logic"
+    },
+    {
+      "text": "你他妈把",
+      "theme": "daily"
+    },
+    {
+      "text": "对面推到",
+      "theme": "game"
+    },
+    {
+      "text": "你这位后",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位后",
+      "theme": "daily"
+    },
+    {
+      "text": "气场选手",
+      "theme": "boast"
+    },
+    {
+      "text": "收尾顾问",
+      "theme": "daily"
+    },
+    {
+      "text": "你这个玩",
+      "theme": "game"
+    },
+    {
+      "text": "你这位项",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位项",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位严",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位辩",
+      "theme": "logic"
+    },
+    {
+      "text": "只要一到",
+      "theme": "game"
+    },
+    {
+      "text": "你这位流",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位家",
+      "theme": "daily"
+    },
+    {
+      "text": "闹钟刚响",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位执",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位庆",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位复",
+      "theme": "game"
+    },
+    {
+      "text": "你这位主",
+      "theme": "daily"
+    },
+    {
+      "text": "队友刚喊",
+      "theme": "game"
+    },
+    {
+      "text": "你这位气",
+      "theme": "boast"
+    },
+    {
+      "text": "大家等你",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位自",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位概",
+      "theme": "logic"
+    },
+    {
+      "text": "你这句回",
+      "theme": "logic"
+    },
+    {
+      "text": "流程刚走",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位打",
+      "theme": "game"
+    },
+    {
+      "text": "大家等你",
+      "theme": "daily"
+    },
+    {
+      "text": "你这个论",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位领",
+      "theme": "boast"
+    },
+    {
+      "text": "每逢计划",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位提",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位队",
+      "theme": "game"
+    },
+    {
+      "text": "你这位未",
+      "theme": "boast"
+    },
+    {
+      "text": "你这套解",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位负",
+      "theme": "daily"
+    },
+    {
+      "text": "团战指挥",
+      "theme": "game"
+    },
+    {
+      "text": "问题代言",
+      "theme": "logic"
+    },
+    {
+      "text": "团战指挥",
+      "theme": "game"
+    },
+    {
+      "text": "你这个提",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位待",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位队",
+      "theme": "game"
+    },
+    {
+      "text": "你这次收",
+      "theme": "daily"
+    },
+    {
+      "text": "预言家，",
+      "theme": "boast"
+    },
+    {
+      "text": "你这句回",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位准",
+      "theme": "boast"
+    },
+    {
+      "text": "你这个操",
+      "theme": "game"
+    },
+    {
+      "text": "你这位吹",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位项",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位自",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位主",
+      "theme": "daily"
+    },
+    {
+      "text": "话题一转",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位队",
+      "theme": "game"
+    },
+    {
+      "text": "只要有人",
+      "theme": "daily"
+    },
+    {
+      "text": "事情还没",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位收",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位主",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位流",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位辅",
+      "theme": "game"
+    },
+    {
+      "text": "你这位发",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位吹",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位气",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位逻",
+      "theme": "logic"
+    },
+    {
+      "text": "你这套因",
+      "theme": "logic"
+    },
+    {
+      "text": "你刚说马",
+      "theme": "daily"
+    },
+    {
+      "text": "逻辑大师",
+      "theme": "logic"
+    },
+    {
+      "text": "你这名队",
+      "theme": "game"
+    },
+    {
+      "text": "你这位自",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位逻",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位生",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位生",
+      "theme": "daily"
+    },
+    {
+      "text": "只要计划",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位庆",
+      "theme": "boast"
+    },
+    {
+      "text": "对面推到",
+      "theme": "game"
+    },
+    {
+      "text": "你这位执",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位队",
+      "theme": "game"
+    },
+    {
+      "text": "你这位严",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位主",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位讲",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位自",
+      "theme": "boast"
+    },
+    {
+      "text": "你这次分",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位打",
+      "theme": "game"
+    },
+    {
+      "text": "你这次立",
+      "theme": "boast"
+    },
+    {
+      "text": "只要待办",
+      "theme": "daily"
+    },
+    {
+      "text": "每逢现实",
+      "theme": "boast"
+    },
+    {
+      "text": "对面刚露",
+      "theme": "game"
+    },
+    {
+      "text": "你这位气",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位气",
+      "theme": "boast"
+    },
+    {
+      "text": "每逢安排",
+      "theme": "daily"
+    },
+    {
+      "text": "每逢现实",
+      "theme": "boast"
+    },
+    {
+      "text": "每逢队友",
+      "theme": "game"
+    },
+    {
+      "text": "人三天不",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位庆",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位预",
+      "theme": "boast"
+    },
+    {
+      "text": "你这次因",
+      "theme": "logic"
+    },
+    {
+      "text": "键盘车手",
+      "theme": "game"
+    },
+    {
+      "text": "只要事情",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位流",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位家",
+      "theme": "daily"
+    },
+    {
+      "text": "你这套因",
+      "theme": "logic"
+    },
+    {
+      "text": "预言家，",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位执",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位负",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位家",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位领",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位流",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位上",
+      "theme": "game"
+    },
+    {
+      "text": "你这位大",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位严",
+      "theme": "logic"
+    },
+    {
+      "text": "你这手指",
+      "theme": "game"
+    },
+    {
+      "text": "庆功宴还",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位自",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位结",
+      "theme": "logic"
+    },
+    {
+      "text": "比赛进入",
+      "theme": "game"
+    },
+    {
+      "text": "你这张待",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位领",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位目",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位打",
+      "theme": "game"
+    },
+    {
+      "text": "你这股气",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位后",
+      "theme": "daily"
+    },
+    {
+      "text": "细节总监",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位上",
+      "theme": "game"
+    },
+    {
+      "text": "每逢有人",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位排",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位野",
+      "theme": "game"
+    },
+    {
+      "text": "你这位气",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位队",
+      "theme": "game"
+    },
+    {
+      "text": "每逢有人",
+      "theme": "boast"
+    },
+    {
+      "text": "你这个提",
+      "theme": "logic"
+    },
+    {
+      "text": "只要聊到",
+      "theme": "boast"
+    },
+    {
+      "text": "目标还没",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位自",
+      "theme": "boast"
+    },
+    {
+      "text": "你这个玩",
+      "theme": "game"
+    },
+    {
+      "text": "你这张待",
+      "theme": "daily"
+    },
+    {
+      "text": "队友刚喊",
+      "theme": "game"
+    },
+    {
+      "text": "排期师，",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位辅",
+      "theme": "game"
+    },
+    {
+      "text": "你这位开",
+      "theme": "game"
+    },
+    {
+      "text": "你这位逻",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位开",
+      "theme": "game"
+    },
+    {
+      "text": "你这位大",
+      "theme": "boast"
+    },
+    {
+      "text": "你这位领",
+      "theme": "boast"
+    },
+    {
+      "text": "会议主持",
+      "theme": "daily"
+    },
+    {
+      "text": "结论保管",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位项",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位气",
+      "theme": "boast"
+    },
+    {
+      "text": "庆功宴还",
+      "theme": "boast"
+    },
+    {
+      "text": "你这个操",
+      "theme": "game"
+    },
+    {
+      "text": "你这套逻",
+      "theme": "logic"
+    },
+    {
+      "text": "只要话题",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位家",
+      "theme": "daily"
+    },
+    {
+      "text": "只要掌声",
+      "theme": "boast"
+    },
+    {
+      "text": "只要事情",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位排",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位待",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位家",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位团",
+      "theme": "game"
+    },
+    {
+      "text": "你这位执",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位准",
+      "theme": "boast"
+    },
+    {
+      "text": "收尾顾问",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位论",
+      "theme": "logic"
+    },
+    {
+      "text": "你这位准",
+      "theme": "boast"
+    },
+    {
+      "text": "流程专家",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位评",
+      "theme": "logic"
+    },
+    {
+      "text": "你刚说马",
+      "theme": "daily"
+    },
+    {
+      "text": "你这份时",
+      "theme": "daily"
+    },
+    {
+      "text": "你这套流",
+      "theme": "daily"
+    },
+    {
+      "text": "你这位气",
+      "theme": "boast"
+    }
+  ]
+}

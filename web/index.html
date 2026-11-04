@@ -13,6 +13,8 @@
   <body>
     <main class="room">
       <div class="room-light" aria-hidden="true"></div>
+      <img class="side-dancer side-dancer--left" src="./dance-left.gif" alt="" aria-hidden="true">
+      <img class="side-dancer side-dancer--right" src="./dance-right.gif" alt="" aria-hidden="true">
       <section class="terminal" aria-label="嘴硬终端">
         <div class="monitor-case">
           <header class="case-header">
@@ -61,6 +63,11 @@
             </section>
           </div>
 
+          <div class="prompt-row">
+            <label class="visually-hidden" for="promptInput">指定开头或挑衅前缀</label>
+            <input class="prompt-input" id="promptInput" type="text" maxlength="64" placeholder="指定开头 / 挑衅它（如：人吃了毒药、虽然你很有钱；留空随机）" autocomplete="off">
+          </div>
+
           <div class="control-row">
             <div class="console-left" aria-hidden="true">
               <span class="power-cluster"><i class="power-light"></i><span>POWER</span></span>
@@ -87,28 +94,28 @@
           <div class="style-control-row">
             <div class="style-select-group">
               <label class="style-select-label" for="styleSelect">LoRA 风格</label>
-              <div class="style-select-actions">
-                <select class="style-select" id="styleSelect" aria-describedby="styleStatus styleHelp">
-                  <option value="base">原版 · Base</option>
-                  <option value="mouthy">嘴臭 · Mouthy · 状态读取中</option>
-                  <option value="mad">疯子 · Mad · 状态读取中</option>
-                  <option value="sassy">娘炮 · Sassy · 状态读取中</option>
-                  <option value="anime">二次元 · Anime · 状态读取中</option>
-                  <option value="femboy">伪娘 · Femboy · 状态读取中</option>
-                  <option value="office">社畜 · Office · 状态读取中</option>
-                  <option value="soldier">兵王 · Soldier · 状态读取中</option>
-                  <option value="alien">外星人 · Alien · 状态读取中</option>
-                  <option value="hostess">陪酒女 · Hostess · 状态读取中</option>
-                </select>
-                <button class="sync-button" id="syncButton" type="button" aria-describedby="syncStatus styleHelp">
-                  <span aria-hidden="true">↻</span><span>同步最新底座</span>
-                </button>
-              </div>
+              <select class="style-select" id="styleSelect" aria-describedby="styleStatus styleHelp">
+                <option value="base">原版 · Base</option>
+                <option value="mouthy">嘴臭 · Mouthy · 状态读取中</option>
+                <option value="mad">疯子 · Mad · 状态读取中</option>
+                <option value="sassy">娘炮 · Sassy · 状态读取中</option>
+                <option value="anime">二次元 · Anime · 状态读取中</option>
+                <option value="femboy">伪娘 · Femboy · 状态读取中</option>
+                <option value="office">社畜 · Office · 状态读取中</option>
+                <option value="soldier">兵王 · Soldier · 状态读取中</option>
+                <option value="alien">外星人 · Alien · 状态读取中</option>
+                <option value="hostess">陪酒女 · Hostess · 状态读取中</option>
+                <option value="greentea">绿茶婊 · GreenTea · 状态读取中</option>
+                <option value="queen">高冷御姐 · Queen · 状态读取中</option>
+              </select>
+              <button class="sync-button" id="syncButton" type="button" aria-describedby="syncStatus styleHelp">
+                <span aria-hidden="true">↻</span><span>同步最新底座</span>
+              </button>
             </div>
             <div class="style-copy">
               <p class="style-status" id="styleStatus" role="status" aria-live="polite">正在读取风格状态；原版可用。</p>
               <p class="sync-status" id="syncStatus" role="status" aria-live="polite">正在检查同步状态…</p>
-              <p class="style-help" id="styleHelp">投喂整句仍归入当前风格；同步会更新全部 9 个 LoRA，并使用点击时的最新底座版本。</p>
+              <p class="style-help" id="styleHelp">投喂整句仍归入当前风格；同步会更新全部 11 个 LoRA，并使用点击时的最新底座版本。</p>
             </div>
           </div>
 

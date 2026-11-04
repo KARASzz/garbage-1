@@ -161,10 +161,10 @@ class MLXBackend:
         if config.vocab_size < 1 or config.d_model % config.heads:
             raise ValueError("模型词表或 heads 配置无效")
         ffn_dims = getattr(config, "ffn_dims", None)
-        if not isinstance(ffn_dims, (list, tuple)) or len(ffn_dims) != 2:
-            raise ValueError("当前 dense 架构要求两层 ffn_dims")
+        if not isinstance(ffn_dims, (list, tuple)) or len(ffn_dims) < 1:
+            raise ValueError("ffn_dims 必须是非空正整数列表")
         if any(type(width) is not int or width <= 0 for width in ffn_dims):
-            raise ValueError("ffn_dims 必须是两层正整数列表")
+            raise ValueError("ffn_dims 必须是非空正整数列表")
         self._ffn = FFN_REGISTRY[ffn_type]
 
         expected = _linear_parameter_shapes(config)
@@ -214,7 +214,7 @@ class MLXBackend:
 
         position_ids = mx.arange(length, dtype=mx.int32)
         causal_mask = position_ids[None, :] <= position_ids[:, None]
-        for index in range(2):
+        for index in range(len(self.config.ffn_dims)):
             prefix = f"blocks.{index}"
             normalized = _layer_norm(
                 value,
@@ -261,9 +261,16 @@ class MLXBackend:
         return result
 
     def generate(
-        self, prompt_ids: list[int], max_new_tokens: int, eos_id: int
+        self,
+        prompt_ids: list[int],
+        max_new_tokens: int,
+        eos_id: int,
+        *,
+        temperature: float = 0.0,
+        top_p: float = 0.9,
+        repetition_penalty: float = 1.0,
     ) -> list[int]:
-        """Greedily append full-vocabulary argmax tokens until EOS or limit."""
+        """Append tokens until EOS or limit using argmax or temperature/top-p sampling."""
         if not isinstance(prompt_ids, list) or not prompt_ids:
             raise ValueError("prompt_ids 必须是非空列表")
         if any(type(token_id) is not int or token_id < 0 for token_id in prompt_ids):
@@ -279,7 +286,18 @@ class MLXBackend:
             return result
         for _ in range(max_new_tokens):
             active = result[-self.config.context :]
-            next_id = int(self.logits([active])[0, -1].argmax(axis=-1).item())
+            last_logits = self.logits([active])[0, -1]
+            if temperature <= 1e-6 and repetition_penalty <= 1.0:
+                next_id = int(last_logits.argmax(axis=-1).item())
+            else:
+                from .sampling import sample_next_token
+                next_id = sample_next_token(
+                    last_logits,
+                    temperature=temperature,
+                    top_p=top_p,
+                    repetition_penalty=repetition_penalty,
+                    history=active,
+                )
             result.append(next_id)
             if next_id == eos_id:
                 break

@@ -43,6 +43,8 @@ def main() -> int:
     parser.add_argument("--port", type=int, default=8765, help="首选端口，默认 8765")
     parser.add_argument("--open", action="store_true", help="启动后打开默认浏览器")
     parser.add_argument("--backend", choices=("mlx", "cuda", "torch-cpu"), default="mlx", help="默认本机 MLX；CUDA 需要另一台具有 CUDA 的机器")
+    default_model = "models/garbage-10m" if (ROOT / "models/garbage-10m/current.json").exists() else "models/garbage-1"
+    parser.add_argument("--model-dir", type=str, default=default_model, help="模型目录，默认优先使用 garbage-10m")
     args = parser.parse_args()
     if not 1024 <= args.port <= 65525:
         parser.error("端口必须在 1024 到 65525 之间")
@@ -71,7 +73,7 @@ def main() -> int:
         if url is None:
             for port in range(args.port, args.port + 10):
                 try:
-                    server = create_server(ROOT, port, backend=args.backend)
+                    server = create_server(ROOT, port, backend=args.backend, model_dir=ROOT / args.model_dir)
                     break
                 except OSError as error:
                     if error.errno not in (48, 98, 10048):

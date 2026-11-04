@@ -1,0 +1,13 @@
+{
+  "format": "garbage-1-lora-v1",
+  "style": "soldier",
+  "base_sha256": "bb2cfc074042999f308dc8d7f99ae9203134afc9ceba9436db7269f122dfbb38",
+  "base_step": 300,
+  "step": 0,
+  "last_job_id": 0,
+  "run_id": "lora-10m-soldier-92304598",
+  "rank": 8,
+  "alpha": 16,
+  "weights": "adapter_init.npz",
+  "weight_sha256": "b01f86669e11ee95e4edf0738a0a5ebd6fbf6974296f94bdc7c405478053a69c"
+}

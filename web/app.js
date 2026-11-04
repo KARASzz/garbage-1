@@ -15,6 +15,7 @@
   const feedInput = document.querySelector("#feedInput");
   const feedButton = document.querySelector("#feedButton");
   const feedStatus = document.querySelector("#feedStatus");
+  const promptInput = document.querySelector("#promptInput");
   const styleSelect = document.querySelector("#styleSelect");
   const syncButton = document.querySelector("#syncButton");
   const syncStatus = document.querySelector("#syncStatus");
@@ -63,6 +64,8 @@
     { id: "soldier", name: "兵王", english: "Soldier" },
     { id: "alien", name: "外星人", english: "Alien" },
     { id: "hostess", name: "陪酒女", english: "Hostess" },
+    { id: "greentea", name: "绿茶婊", english: "GreenTea" },
+    { id: "queen", name: "高冷御姐", english: "Queen" },
   ];
   const styleRecords = new Map(
     styleDefinitions.map((style) => [
@@ -591,7 +594,8 @@
 
     try {
       const endpoint = source === "rule" ? "/api/draw" : "/api/ai";
-      const body = source === "rule" ? {} : { style: requestedStyle };
+      const customPrefix = promptInput ? promptInput.value.trim() : "";
+      const body = source === "rule" ? {} : { style: requestedStyle, prefix: customPrefix || null };
       const result = await requestJson(endpoint, "POST", body);
 
       if (!validateGeneration(result, source, requestedStyle)) {
@@ -601,7 +605,7 @@
       installOutput(result);
       screenStatus.textContent = source === "rule"
         ? "规则抽卡 · 完成"
-        : `${result.style_name} · GARBAGE-1 · 贪心输出`;
+        : `${result.style_name} · GARBAGE-1 · 灵性生成`;
     } catch (error) {
       screenStatus.textContent = "SIGNAL LOST · 再试一次";
       if (!activeSampleId) {

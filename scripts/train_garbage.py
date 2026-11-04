@@ -408,7 +408,7 @@ def main() -> None:
     parser.add_argument("--output", type=Path, default=None, help="输出目录；默认 <root>/models/garbage-1")
     parser.add_argument("--steps", type=int, default=None, help="固定训练步数；与 --epochs 二选一")
     parser.add_argument("--epochs", type=int, default=None, help="按 packed train stream 完整覆盖次数训练")
-    parser.add_argument("--target-parameters", type=int, choices=(100_000, 1_000_000), default=100_000)
+    parser.add_argument("--target-parameters", type=int, choices=(100_000, 1_000_000, 10_000_000), default=100_000)
     parser.add_argument("--batch-size", type=int, default=16)
     parser.add_argument("--device", choices=("cpu", "mps", "cuda"), default="cpu")
     parser.add_argument("--threads", type=int, default=4)

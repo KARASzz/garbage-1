@@ -1,0 +1,13 @@
+{
+  "format": "garbage-1-lora-v1",
+  "style": "queen",
+  "base_sha256": "bceaf80a20d3b27f21140eb0c78af47458ab0fa87d5fc1a301e722e60cbc8ee8",
+  "base_step": 430,
+  "step": 0,
+  "last_job_id": 0,
+  "run_id": "lora-1m-queen-5d51b9bc",
+  "rank": 8,
+  "alpha": 16,
+  "weights": "adapter_init.npz",
+  "weight_sha256": "6e839d38399a211cd0a0c09a887a45d686d1c399122c08aa07a129e4d07b7625"
+}

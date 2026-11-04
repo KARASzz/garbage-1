@@ -77,7 +77,7 @@ button {
   min-height: 100vh;
   min-height: 100svh;
   place-items: center;
-  padding: clamp(18px, 4.2vw, 56px);
+  padding: clamp(8px, 1.8vh, 18px) clamp(14px, 3vw, 36px);
   isolation: isolate;
 }
 
@@ -94,17 +94,50 @@ button {
   transform: translate(-50%, -57%);
 }
 
+.side-dancer {
+  display: none;
+}
+
+@media (min-width: 1320px) and (min-height: 600px) {
+  .side-dancer {
+    --dancer-width: min(500px, 48vh, calc(50vw - 460px));
+    position: fixed;
+    z-index: 0;
+    top: 50%;
+    display: block;
+    width: var(--dancer-width);
+    height: auto;
+    filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.36));
+    pointer-events: none;
+    transform: translateY(-50%);
+    user-select: none;
+  }
+
+  .side-dancer--left {
+    left: calc((50vw - 450px - var(--dancer-width)) / 2);
+  }
+
+  .side-dancer--right {
+    right: calc((50vw - 450px - var(--dancer-width)) / 2);
+  }
+
+  .terminal {
+    position: relative;
+    z-index: 1;
+  }
+}
+
 .terminal {
-  width: min(100%, 900px);
-  filter: drop-shadow(0 36px 38px rgba(0, 0, 0, 0.34));
+  width: min(100%, 840px);
+  filter: drop-shadow(0 22px 24px rgba(0, 0, 0, 0.34));
 }
 
 .monitor-case {
   position: relative;
-  padding: clamp(16px, 2.7vw, 25px) clamp(15px, 3vw, 28px) 16px;
+  padding: clamp(10px, 1.4vh, 16px) clamp(14px, 2.4vw, 24px) 10px;
   overflow: hidden;
   border: 1px solid rgba(248, 245, 224, 0.64);
-  border-radius: 31px 31px 35px 35px;
+  border-radius: 26px 26px 30px 30px;
   background:
     linear-gradient(112deg, rgba(255, 255, 255, 0.5), transparent 24% 68%, rgba(64, 67, 59, 0.2)),
     linear-gradient(155deg, #d6d4c7 0%, #bdbcaf 31%, #aaa99e 73%, #92948b 100%);
@@ -127,11 +160,11 @@ button {
 
 .case-header {
   display: flex;
-  min-height: 54px;
+  min-height: 38px;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
-  padding: 0 5px 15px;
+  gap: 14px;
+  padding: 0 4px 6px;
   color: var(--ink);
 }
 
@@ -139,21 +172,21 @@ button {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 11px;
+  gap: 10px;
 }
 
 .brand-glyph {
   display: grid;
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   flex: 0 0 auto;
   place-items: center;
   border: 1px solid rgba(59, 63, 54, 0.36);
-  border-radius: 11px 11px 13px 11px;
+  border-radius: 9px;
   color: #e6e4d7;
   background: linear-gradient(145deg, #58624f, #354336);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 1px 2px rgba(50, 53, 46, 0.18);
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 700;
   line-height: 1;
 }
@@ -162,14 +195,14 @@ button {
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 
 .brand-name {
   overflow: hidden;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 800;
-  letter-spacing: 0.17em;
+  letter-spacing: 0.15em;
   line-height: 1.15;
   white-space: nowrap;
 }
@@ -229,9 +262,9 @@ button {
 
 .display-frame {
   position: relative;
-  padding: clamp(8px, 1.25vw, 12px);
+  padding: clamp(6px, 1vw, 9px);
   border: 1px solid rgba(67, 71, 62, 0.58);
-  border-radius: 23px 23px 27px 27px;
+  border-radius: 19px 19px 23px 23px;
   background:
     linear-gradient(145deg, #656960, #343a33 34%, #444a42 76%, #72746a);
   box-shadow:
@@ -243,14 +276,14 @@ button {
 .display-glass {
   position: relative;
   display: flex;
-  min-height: clamp(280px, 35vw, 382px);
+  min-height: clamp(160px, 22vh, 230px);
   flex-direction: column;
   justify-content: space-between;
-  gap: 14px;
+  gap: 8px;
   overflow: hidden;
-  padding: clamp(19px, 4.1vw, 37px) clamp(19px, 5.1vw, 54px) clamp(16px, 3.2vw, 28px);
+  padding: clamp(10px, 1.5vh, 16px) clamp(14px, 3.2vw, 36px) clamp(8px, 1.2vh, 12px);
   border: 1px solid rgba(99, 146, 111, 0.34);
-  border-radius: 17px 17px 23px 23px / 17px 17px 27px 27px;
+  border-radius: 14px 14px 19px 19px / 14px 14px 21px 21px;
   background:
     radial-gradient(ellipse at 47% 42%, rgba(24, 65, 39, 0.45) 0, rgba(9, 31, 18, 0.22) 51%, transparent 78%),
     linear-gradient(148deg, #07150c 0%, #0a1d11 40%, #06130b 100%);
@@ -303,10 +336,10 @@ button {
   justify-content: space-between;
   gap: 12px;
   color: var(--phosphor-dim);
-  font-size: 9px;
+  font-size: 8.5px;
   font-weight: 600;
-  letter-spacing: 0.13em;
-  line-height: 1.4;
+  letter-spacing: 0.12em;
+  line-height: 1.35;
 }
 
 .signal-state {
@@ -343,10 +376,10 @@ button {
   align-items: center;
   margin: 0;
   color: var(--phosphor);
-  font-size: clamp(1rem, 2.8vw, 2rem);
+  font-size: clamp(0.95rem, 2.1vw, 1.5rem);
   font-weight: 620;
   letter-spacing: 0.015em;
-  line-height: 1.48;
+  line-height: 1.38;
   overflow-wrap: anywhere;
   text-shadow: 0 0 5px rgba(154, 248, 169, 0.4), 0 0 21px rgba(94, 221, 117, 0.17);
   text-wrap: pretty;
@@ -377,8 +410,8 @@ button {
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
-  gap: 4px;
-  padding-top: 2px;
+  gap: 3px;
+  padding-top: 1px;
 }
 
 .feedback-panel[hidden] {
@@ -388,22 +421,22 @@ button {
 .feedback-actions {
   display: flex;
   justify-content: center;
-  gap: 9px;
+  gap: 8px;
 }
 
 .correction-tools {
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
-  gap: 5px;
-  padding-top: 2px;
+  gap: 3px;
+  padding-top: 1px;
 }
 
 .correction-hint {
   margin: 0;
   color: #77977e;
-  font-size: 9px;
-  line-height: 1.4;
+  font-size: 8.5px;
+  line-height: 1.35;
   text-align: center;
   overflow-wrap: anywhere;
 }
@@ -411,26 +444,26 @@ button {
 .correction-actions {
   display: flex;
   justify-content: center;
-  gap: 9px;
+  gap: 8px;
 }
 
 .correction-actions .feedback-button {
-  min-height: 38px;
+  min-height: 28px;
 }
 
 .feedback-button {
   display: inline-flex;
-  min-width: 104px;
-  min-height: 42px;
+  min-width: 88px;
+  min-height: 30px;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  padding: 0 13px;
+  gap: 6px;
+  padding: 0 10px;
   border: 1px solid rgba(127, 178, 136, 0.31);
-  border-radius: 9px;
+  border-radius: 7px;
   color: #8eaf94;
   background: rgba(8, 27, 15, 0.72);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 650;
   cursor: pointer;
   transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
@@ -461,22 +494,51 @@ button {
 }
 
 .feedback-status {
-  min-height: 13px;
+  min-height: 12px;
   margin: 0;
   color: #77977e;
-  font-size: 9px;
-  line-height: 1.45;
+  font-size: 8.5px;
+  line-height: 1.35;
   text-align: center;
   overflow-wrap: anywhere;
 }
 
+.prompt-row {
+  margin: 5px 4px 2px;
+}
+
+.prompt-input {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid rgba(80, 105, 80, 0.35);
+  border-radius: 6px;
+  outline: none;
+  color: #313f30;
+  background: rgba(235, 238, 222, 0.7);
+  font-family: inherit;
+  font-size: 10.5px;
+  transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+}
+
+.prompt-input::placeholder {
+  color: #7b8577;
+}
+
+.prompt-input:focus {
+  border-color: rgba(72, 120, 75, 0.75);
+  background: rgba(245, 248, 235, 0.95);
+  box-shadow: 0 0 0 2px rgba(80, 140, 85, 0.15);
+}
+
 .control-row {
   display: flex;
-  min-height: 73px;
+  min-height: 48px;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
-  padding: 13px 5px 11px;
+  gap: 14px;
+  padding: 6px 4px 5px;
 }
 
 .console-left {
@@ -484,23 +546,23 @@ button {
   min-width: 0;
   flex: 0 0 auto;
   align-items: center;
-  gap: clamp(15px, 3.8vw, 30px);
+  gap: clamp(12px, 2.5vw, 22px);
 }
 
 .power-cluster {
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   color: #5c6057;
-  font-size: 8px;
+  font-size: 7.5px;
   font-weight: 700;
   letter-spacing: 0.1em;
 }
 
 .power-light {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border: 1px solid #667d5f;
   border-radius: 50%;
   background: #8fce86;
@@ -508,9 +570,9 @@ button {
 }
 
 .speaker-grille {
-  width: clamp(45px, 9vw, 76px);
-  height: 25px;
-  border-radius: 10px;
+  width: clamp(38px, 6vw, 58px);
+  height: 18px;
+  border-radius: 8px;
   opacity: 0.62;
   background: repeating-linear-gradient(
     to bottom,
@@ -525,22 +587,22 @@ button {
 .generation-actions {
   display: flex;
   min-width: 0;
-  flex: 0 1 600px;
-  gap: 10px;
+  flex: 0 1 560px;
+  gap: 8px;
 }
 
 .draw-button {
   position: relative;
   display: inline-flex;
-  min-height: 48px;
+  min-height: 38px;
   min-width: 0;
   flex: 1 1 0;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 0 13px;
+  gap: 8px;
+  padding: 0 10px;
   border: 1px solid #7d8176;
-  border-radius: 11px;
+  border-radius: 9px;
   color: #30392e;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent 50%),
@@ -548,8 +610,8 @@ button {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.78),
     inset 0 -2px 0 rgba(85, 87, 78, 0.19),
-    0 3px 0 #85877d,
-    0 5px 9px rgba(50, 52, 46, 0.18);
+    0 2px 0 #85877d,
+    0 4px 7px rgba(50, 52, 46, 0.18);
   cursor: pointer;
   transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
   -webkit-tap-highlight-color: transparent;
@@ -572,8 +634,8 @@ button {
 
 .draw-button:focus-visible {
   outline: 3px solid #b5f0bd;
-  outline-offset: 5px;
-  box-shadow: 0 0 0 6px rgba(39, 62, 44, 0.65), 0 3px 0 #85877d;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 5px rgba(39, 62, 44, 0.65), 0 2px 0 #85877d;
 }
 
 .draw-button:disabled {
@@ -584,13 +646,13 @@ button {
 
 .style-control-row {
   display: grid;
-  grid-template-columns: minmax(245px, 0.8fr) minmax(0, 1.2fr);
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: 13px;
-  margin: 0 5px 10px;
-  padding: 8px 10px;
+  gap: 16px;
+  margin: 0 4px 5px;
+  padding: 6px 10px;
   border: 1px solid rgba(84, 96, 77, 0.24);
-  border-radius: 9px;
+  border-radius: 8px;
   color: #586052;
   background: linear-gradient(135deg, rgba(248, 247, 230, 0.26), rgba(105, 112, 97, 0.08));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -598,39 +660,39 @@ button {
 
 .style-select-group {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: auto auto;
   align-items: center;
-  gap: 9px;
+  row-gap: 4px;
+  column-gap: 8px;
   min-width: 0;
-}
-
-.style-select-actions {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 6px;
+  flex: 0 0 auto;
 }
 
 .style-select-label {
+  grid-column: 1;
+  grid-row: 1;
   color: #596251;
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 8px;
+  font-size: 7.5px;
   font-weight: 800;
   letter-spacing: 0.08em;
   white-space: nowrap;
 }
 
 .style-select {
-  width: 100%;
-  min-width: 0;
-  min-height: 31px;
-  padding: 0 26px 0 9px;
+  grid-column: 2;
+  grid-row: 1;
+  width: 245px;
+  min-width: 220px;
+  max-width: 260px;
+  min-height: 27px;
+  padding: 0 20px 0 8px;
   border: 1px solid rgba(77, 94, 72, 0.48);
-  border-radius: 6px;
+  border-radius: 5px;
   color: #3d493a;
   background: linear-gradient(180deg, rgba(247, 247, 232, 0.9), rgba(220, 222, 204, 0.9));
   box-shadow: inset 0 1px 2px rgba(53, 61, 49, 0.12), 0 1px 0 rgba(255, 255, 255, 0.38);
-  font: 600 10px "SFMono-Regular", Consolas, "Liberation Mono", "PingFang SC", sans-serif;
+  font: 600 9.5px "SFMono-Regular", Consolas, "Liberation Mono", "PingFang SC", sans-serif;
   cursor: pointer;
 }
 
@@ -640,19 +702,21 @@ button {
 }
 
 .sync-button {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: start;
   display: inline-flex;
-  min-height: 31px;
-  flex: 0 0 auto;
+  min-height: 24px;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 4px;
   padding: 0 9px;
   border: 1px solid rgba(77, 94, 72, 0.48);
-  border-radius: 6px;
+  border-radius: 5px;
   color: #e8eddf;
   background: linear-gradient(180deg, #65725d, #4f5c49);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 0 rgba(255, 255, 255, 0.24);
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
   white-space: nowrap;
   cursor: pointer;
@@ -677,15 +741,15 @@ button {
 .style-copy {
   display: grid;
   min-width: 0;
-  gap: 3px;
+  gap: 2px;
 }
 
 .style-status,
 .sync-status,
 .style-help {
   margin: 0;
-  font-size: 8px;
-  line-height: 1.4;
+  font-size: 7.5px;
+  line-height: 1.35;
   overflow-wrap: anywhere;
 }
 
@@ -695,9 +759,9 @@ button {
 }
 
 .sync-status {
-  min-height: 11px;
+  min-height: 10px;
   color: #50654d;
-  font-size: 8px;
+  font-size: 7.5px;
   font-weight: 600;
 }
 
@@ -708,7 +772,7 @@ button {
 .button-symbol {
   flex: 0 0 auto;
   color: #52664e;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 800;
   line-height: 1;
 }
@@ -718,22 +782,22 @@ button {
   min-width: 0;
   flex-direction: column;
   align-items: flex-start;
-  gap: 3px;
+  gap: 2px;
   text-align: left;
 }
 
 .button-label {
-  font-size: 14px;
+  font-size: 12.5px;
   font-weight: 800;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   white-space: nowrap;
 }
 
 .button-hint {
   color: #77796f;
-  font-size: 8px;
+  font-size: 7.5px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: none;
   white-space: nowrap;
 }
@@ -747,18 +811,18 @@ button {
 
 .ai-button .button-symbol {
   color: #586f5e;
-  font-size: 20px;
+  font-size: 16px;
 }
 
 .model-status-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(250px, 0.9fr);
+  grid-template-columns: minmax(0, 1fr) minmax(230px, 0.9fr);
   min-width: 0;
   align-items: center;
-  column-gap: 12px;
-  row-gap: 5px;
-  margin: 0 5px;
-  padding: 0 5px 9px;
+  column-gap: 10px;
+  row-gap: 3px;
+  margin: 0 4px;
+  padding: 0 4px 4px;
   color: #64685f;
 }
 
@@ -782,10 +846,10 @@ button {
   overflow: hidden;
   color: #666a61;
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 8px;
+  font-size: 7.5px;
   font-weight: 600;
-  letter-spacing: 0.06em;
-  line-height: 1.35;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -794,7 +858,7 @@ button {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 .visually-hidden {
@@ -810,15 +874,15 @@ button {
 .feed-input {
   width: 100%;
   min-width: 0;
-  min-height: 34px;
+  min-height: 27px;
   flex: 1 1 auto;
-  padding: 0 10px;
+  padding: 0 8px;
   border: 1px solid rgba(91, 111, 89, 0.35);
-  border-radius: 7px;
+  border-radius: 6px;
   outline: none;
   color: #3d4a3c;
   background: rgba(239, 239, 222, 0.58);
-  font-size: 11px;
+  font-size: 10px;
   transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
 }
 
@@ -837,14 +901,14 @@ button {
 }
 
 .feed-button {
-  min-height: 34px;
+  min-height: 27px;
   flex: 0 0 auto;
-  padding: 0 11px;
+  padding: 0 9px;
   border: 1px solid rgba(84, 105, 80, 0.52);
-  border-radius: 7px;
+  border-radius: 6px;
   color: #e7ecda;
   background: linear-gradient(180deg, #626d59, #4f5b49);
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
   cursor: pointer;
   transition: background-color 120ms ease, opacity 120ms ease, transform 120ms ease;
@@ -866,18 +930,18 @@ button {
 
 .feed-status {
   grid-column: 1 / -1;
-  min-height: 12px;
+  min-height: 10px;
   margin: -2px 0 0;
   color: #667b63;
-  font-size: 9px;
-  line-height: 1.4;
+  font-size: 8px;
+  line-height: 1.35;
 }
 
 .case-rim {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  padding: 9px 5px 1px;
+  padding: 5px 4px 1px;
   border-top: 1px solid rgba(84, 86, 78, 0.2);
   color: #686b62;
   font-size: 7px;
@@ -888,24 +952,24 @@ button {
 .monitor-neck {
   position: relative;
   z-index: -1;
-  width: 30%;
-  height: clamp(30px, 5vw, 49px);
+  width: 26%;
+  height: clamp(12px, 1.8vh, 20px);
   margin: -1px auto 0;
   background: linear-gradient(90deg, #8e9086, #c1c0b3 23%, #b7b7aa 76%, #82847a);
   clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
-  filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
 }
 
 .monitor-foot {
   position: relative;
   z-index: -1;
-  width: 48%;
-  height: 17px;
+  width: 42%;
+  height: 10px;
   margin: -1px auto 0;
   border: 1px solid rgba(245, 244, 222, 0.28);
-  border-radius: 3px 3px 13px 13px;
+  border-radius: 2px 2px 9px 9px;
   background: linear-gradient(180deg, #b8b8ab, #888a80);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.39), 0 8px 16px rgba(0, 0, 0, 0.28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.39), 0 5px 10px rgba(0, 0, 0, 0.24);
 }
 
 @keyframes crt-warmup {
@@ -928,95 +992,105 @@ button {
 
 @media (max-width: 540px) {
   .room {
-    padding: 20px 14px 30px;
+    padding: 8px 10px 14px;
   }
 
   .monitor-case {
-    padding: 14px 13px 13px;
-    border-radius: 24px 24px 29px 29px;
+    padding: 10px 10px 8px;
+    border-radius: 20px 20px 24px 24px;
   }
 
   .case-header {
-    min-height: 45px;
-    padding: 0 3px 12px;
+    min-height: 34px;
+    padding: 0 3px 6px;
   }
 
   .brand-glyph {
-    width: 33px;
-    height: 33px;
-    border-radius: 9px 9px 11px 9px;
-    font-size: 18px;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    font-size: 15px;
   }
 
   .brand-lockup {
-    gap: 8px;
+    gap: 7px;
   }
 
   .brand-name {
-    font-size: 15px;
+    font-size: 14px;
   }
 
   .brand-model {
     font-size: 7px;
-    letter-spacing: 0.09em;
-  }
-
-  .case-edition {
-    font-size: 7px;
     letter-spacing: 0.08em;
   }
 
+  .case-edition {
+    font-size: 6.5px;
+    letter-spacing: 0.07em;
+  }
+
   .edition-number {
-    font-size: 8px;
+    font-size: 7.5px;
   }
 
   .display-frame {
-    padding: 7px;
-    border-radius: 19px 19px 23px 23px;
+    padding: 5px;
+    border-radius: 16px 16px 20px 20px;
   }
 
   .display-glass {
-    min-height: 286px;
-    gap: 13px;
-    padding: 20px 18px 17px;
-    border-radius: 14px 14px 20px 20px / 14px 14px 24px 24px;
+    min-height: 150px;
+    gap: 7px;
+    padding: 10px 12px 8px;
+    border-radius: 12px 12px 16px 16px / 12px 12px 18px 18px;
   }
 
   .message {
-    font-size: clamp(1rem, 5.15vw, 1.42rem);
-    line-height: 1.45;
+    font-size: clamp(0.9rem, 4.2vw, 1.25rem);
+    line-height: 1.35;
   }
 
   .display-meta {
-    font-size: 8px;
-    letter-spacing: 0.1em;
+    font-size: 7.5px;
+    letter-spacing: 0.08em;
   }
 
   .display-footer {
-    font-size: 7px;
+    font-size: 6.5px;
+  }
+
+  .prompt-row {
+    margin: 4px 2px 2px;
+  }
+
+  .prompt-input {
+    min-height: 26px;
+    padding: 0 8px;
+    font-size: 10px;
   }
 
   .control-row {
     min-height: 0;
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
-    padding: 12px 3px 10px;
+    gap: 7px;
+    padding: 6px 2px 5px;
   }
 
   .console-left {
     justify-content: center;
-    gap: 13px;
+    gap: 10px;
   }
 
   .power-cluster {
-    gap: 5px;
-    font-size: 7px;
+    gap: 4px;
+    font-size: 6.5px;
   }
 
   .speaker-grille {
-    width: 34px;
-    height: 22px;
+    width: 30px;
+    height: 15px;
   }
 
   .generation-actions {
@@ -1024,107 +1098,138 @@ button {
     width: 100%;
     flex: 0 0 auto;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+    gap: 6px;
   }
 
   .draw-button {
-    min-height: 49px;
-    gap: 7px;
+    min-height: 36px;
+    gap: 6px;
     justify-content: flex-start;
-    padding: 0 12px;
+    padding: 0 10px;
   }
 
   .button-label {
-    font-size: 12px;
+    font-size: 11.5px;
     letter-spacing: 0.02em;
   }
 
   .button-symbol {
-    font-size: 15px;
+    font-size: 13px;
   }
 
   .button-hint {
-    font-size: 7px;
-    letter-spacing: 0.07em;
+    font-size: 6.5px;
+    letter-spacing: 0.06em;
   }
 
   .style-control-row {
     grid-template-columns: minmax(0, 1fr);
-    gap: 6px;
-    margin: 0 3px 9px;
-    padding: 8px;
+    gap: 5px;
+    margin: 0 2px 5px;
+    padding: 5px 7px;
   }
 
   .style-select-group {
     grid-template-columns: minmax(0, 1fr);
-    gap: 5px;
+    gap: 4px;
   }
 
-  .style-select-actions {
-    grid-column: 1 / -1;
+  .style-select-label {
+    grid-column: 1;
+    grid-row: auto;
   }
 
   .style-select {
-    min-height: 34px;
-    font-size: 10px;
+    grid-column: 1;
+    grid-row: auto;
+    min-height: 26px;
+    font-size: 9px;
+  }
+
+  .sync-button {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+    min-height: 24px;
+    font-size: 8px;
   }
 
   .style-status,
   .sync-status,
   .style-help {
-    font-size: 8px;
+    font-size: 7px;
   }
 
   .model-status-row {
     grid-template-columns: minmax(0, 1fr);
-    row-gap: 7px;
-    margin: 0 3px;
-    padding: 0 3px 8px;
+    row-gap: 4px;
+    margin: 0 2px;
+    padding: 0 2px 4px;
+  }
+
+  .feed-input {
+    min-height: 26px;
+    font-size: 9.5px;
+  }
+
+  .feed-button {
+    min-height: 26px;
+    font-size: 8.5px;
   }
 
   .feed-status {
-    margin-top: -5px;
+    margin-top: -3px;
+    font-size: 7.5px;
   }
 
   .model-status {
-    font-size: 7px;
-    letter-spacing: 0.035em;
+    font-size: 6.5px;
+    letter-spacing: 0.03em;
   }
 
   .model-status-icons {
-    font-size: 8px;
+    font-size: 7.5px;
   }
 
   .feedback-actions {
-    gap: 7px;
+    gap: 6px;
   }
 
   .feedback-button {
     min-width: 0;
-    min-height: 44px;
+    min-height: 28px;
     flex: 1 1 0;
-    padding: 0 8px;
+    padding: 0 6px;
+    font-size: 10px;
   }
 
   .correction-actions .feedback-button {
-    min-height: 44px;
+    min-height: 28px;
   }
 
   .feedback-status {
-    font-size: 8px;
+    font-size: 7.5px;
   }
 
   .case-rim {
-    padding: 8px 3px 1px;
+    padding: 5px 2px 1px;
     font-size: 6px;
-    letter-spacing: 0.07em;
+    letter-spacing: 0.06em;
+  }
+
+  .monitor-neck {
+    height: 12px;
+  }
+
+  .monitor-foot {
+    height: 8px;
   }
 }
 
 @media (max-width: 340px) {
   .room {
-    padding-right: 10px;
-    padding-left: 10px;
+    padding-right: 6px;
+    padding-left: 6px;
   }
 
   .case-edition {
@@ -1133,11 +1238,11 @@ button {
 
   .generation-actions {
     grid-template-columns: minmax(0, 1fr);
-    gap: 7px;
+    gap: 5px;
   }
 
   .draw-button {
-    min-height: 46px;
+    min-height: 34px;
     justify-content: center;
   }
 
@@ -1145,28 +1250,81 @@ button {
     align-items: flex-start;
   }
 
-  .button-label { font-size: 13px; }
-  .button-hint { font-size: 7px; }
+  .button-label { font-size: 11px; }
+  .button-hint { font-size: 6.5px; }
 
-  .feedback-button { min-height: 42px; }
+  .feedback-button { min-height: 28px; }
 }
 
-@media (max-height: 680px) and (min-width: 541px) {
+@media (max-height: 750px) {
   .room {
-    padding-top: 20px;
-    padding-bottom: 25px;
+    padding-top: 6px;
+    padding-bottom: 8px;
   }
 
   .display-glass {
-    min-height: 290px;
+    min-height: 140px;
+    padding-top: 8px;
+    padding-bottom: 8px;
   }
 
   .message {
-    font-size: clamp(1rem, 2.5vw, 1.8rem);
+    font-size: clamp(0.85rem, 1.8vw, 1.25rem);
+    line-height: 1.3;
+  }
+
+  .monitor-neck {
+    height: 10px;
+  }
+
+  .monitor-foot {
+    height: 6px;
+  }
+}
+
+@media (max-height: 620px) {
+  .case-header {
+    min-height: 28px;
+    padding-bottom: 3px;
+  }
+
+  .brand-glyph {
+    width: 24px;
+    height: 24px;
+    font-size: 13px;
+  }
+
+  .brand-name {
+    font-size: 12px;
+  }
+
+  .case-edition {
+    display: none;
+  }
+
+  .prompt-row {
+    margin: 3px 2px 1px;
+  }
+
+  .control-row {
+    min-height: 36px;
+    padding: 2px 2px;
+  }
+
+  .draw-button {
+    min-height: 30px;
+  }
+
+  .display-glass {
+    min-height: 115px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .side-dancer {
+    display: none;
+  }
+
   *,
   *::before,
   *::after {

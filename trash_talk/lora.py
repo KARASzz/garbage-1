@@ -15,8 +15,8 @@ from .feedback import FeedbackStore, text_digest
 from .model_runtime import ModelRuntime, BackgroundLearner, _atomic_json, _relative_file, _sync_directory
 
 STYLE_NAMES = dict(zip(
-    ("mouthy", "mad", "sassy", "anime", "femboy", "office", "soldier", "alien", "hostess"),
-    ("嘴臭", "疯子", "娘炮", "二次元", "伪娘", "社畜", "兵王", "外星人", "陪酒女"), strict=True))
+    ("mouthy", "mad", "sassy", "anime", "femboy", "office", "soldier", "alien", "hostess", "greentea", "queen"),
+    ("嘴臭", "疯子", "娘炮", "二次元", "伪娘", "社畜", "兵王", "外星人", "陪酒女", "绿茶婊", "高冷御姐"), strict=True))
 
 
 def array_digest(arrays):
@@ -32,7 +32,8 @@ def initial_adapter(config, rank=4, seed=42, include_ffn=False):
         raise ValueError("LoRA rank 必须为正整数")
     rng = np.random.default_rng(seed)
     result = {}
-    for i in range(2):
+    num_layers = len(getattr(config, "ffn_dims", [0, 0]))
+    for i in range(num_layers):
         for name, out in (("qkv", 3 * config.d_model), ("attn_out", config.d_model)):
             prefix = f"blocks.{i}.{name}"
             result[prefix + ".A"] = (rng.normal(size=(rank, config.d_model)) * .02).astype(np.float32)
@@ -90,10 +91,22 @@ class MLXLoRA:
         mx.eval(result)
         return result
 
-    def generate(self, prompt_ids, max_new_tokens, eos_id):
+    def generate(self, prompt_ids, max_new_tokens, eos_id, *, temperature=0.0, top_p=0.9, repetition_penalty=1.0):
         result = list(prompt_ids)
         for _ in range(max_new_tokens):
-            next_id = int(self.logits([result[-self.config.context:]])[0, -1].argmax().item())
+            active = result[-self.config.context:]
+            last_logits = self.logits([active])[0, -1]
+            if temperature <= 1e-6 and repetition_penalty <= 1.0:
+                next_id = int(last_logits.argmax().item())
+            else:
+                from .sampling import sample_next_token
+                next_id = sample_next_token(
+                    last_logits,
+                    temperature=temperature,
+                    top_p=top_p,
+                    repetition_penalty=repetition_penalty,
+                    history=active,
+                )
             result.append(next_id)
             if next_id == eos_id:
                 break
@@ -159,10 +172,22 @@ class TorchLoRA:
         with torch.no_grad():
             return self._logits(torch.tensor(ids, dtype=torch.long, device=self.base.device))
 
-    def generate(self, prompt_ids, max_new_tokens, eos_id):
+    def generate(self, prompt_ids, max_new_tokens, eos_id, *, temperature=0.0, top_p=0.9, repetition_penalty=1.0):
         result = list(prompt_ids)
         for _ in range(max_new_tokens):
-            next_id = int(self.logits([result[-self.config.context:]])[0, -1].argmax().item())
+            active = result[-self.config.context:]
+            last_logits = self.logits([active])[0, -1]
+            if temperature <= 1e-6 and repetition_penalty <= 1.0:
+                next_id = int(last_logits.argmax().item())
+            else:
+                from .sampling import sample_next_token
+                next_id = sample_next_token(
+                    last_logits,
+                    temperature=temperature,
+                    top_p=top_p,
+                    repetition_penalty=repetition_penalty,
+                    history=active,
+                )
             result.append(next_id)
             if next_id == eos_id:
                 break
@@ -216,12 +241,13 @@ def read_catalog(root):
 
 
 class LoRARuntime(ModelRuntime):
-    def __init__(self, root, style, *, backend="mlx", allow_untrained=False):
+    def __init__(self, root, style, *, backend="mlx", allow_untrained=False, model_dir=None):
         if not isinstance(style, str) or style not in STYLE_NAMES:
             raise ValueError("未知 LoRA 风格")
         self.style = style
         self.style_data = next(item for item in read_catalog(root) if item["id"] == style)
-        model_root = Path(root) / "models/garbage-1/lora"
+        self.model_root = Path(model_dir or Path(root) / "models/garbage-1") / "lora"
+        model_root = self.model_root
         pointer = model_root / style / "current.json"
         saved = None
         if pointer.exists():
@@ -329,9 +355,11 @@ def training_batch(tokenizer, context, texts):
 
 
 class StyleHub:
-    def __init__(self, root, backend, base_runtime=None):
+    def __init__(self, root, backend, base_runtime=None, model_dir=None):
         self.root, self.backend = Path(root), backend
         self.base_runtime = base_runtime
+        self.model_dir = Path(model_dir or (base_runtime.model_dir if base_runtime else Path(root) / "models/garbage-1"))
+        self.lora_root = self.model_dir / "lora"
         self.entries = {}
         self.lock = threading.Lock()
         self._sync = None
@@ -340,14 +368,14 @@ class StyleHub:
         base = self.base_runtime.status() if self.base_runtime is not None else {}
         styles = [{"id": "base", "name": "原版", "ready": base.get("ready", False), "step": base.get("step"), "parameters": base.get("parameters", 0)}]
         for style, name in STYLE_NAMES.items():
-            pointer = self.root / "models/garbage-1/lora" / style / "current.json"
+            pointer = self.lora_root / style / "current.json"
             entry = {"id": style, "name": name, "ready": False, "step": 0, "parameters": 0}
             try:
                 metadata = json.loads(_relative_file(pointer.parent, json.loads(pointer.read_text())["checkpoint"]).read_text())
                 checkpoint = _relative_file(pointer.parent, json.loads(pointer.read_text())["checkpoint"])
                 with np.load(_relative_file(checkpoint.parent, metadata["weights"]), allow_pickle=False) as archive:
                     arrays = {k: archive[k] for k in archive.files}
-                pinned = _relative_file(self.root / "models/garbage-1/lora", metadata.get("base_ref", "base"))
+                pinned = _relative_file(self.lora_root, metadata.get("base_ref", "base"))
                 base_meta = json.loads(_relative_file(pinned, json.loads((pinned / "current.json").read_text())["checkpoint"]).read_text())
                 from .garbage_model import ModelConfig
                 validate_adapter(ModelConfig.from_dict(base_meta["config"]), arrays, metadata["rank"])
@@ -366,7 +394,7 @@ class StyleHub:
             raise ValueError("未知 LoRA 风格")
         with self.lock:
             if style not in self.entries:
-                runtime = LoRARuntime(self.root, style, backend=self.backend)
+                runtime = LoRARuntime(self.root, style, backend=self.backend, model_dir=self.model_dir)
                 store = FeedbackStore(self.root / "data/lora" / (style + ".sqlite3"))
                 learner = BackgroundLearner(runtime, store)
                 self.entries[style] = (runtime, store, learner)

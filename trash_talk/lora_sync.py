@@ -48,7 +48,9 @@ class LoRASyncManager:
     def __init__(self, hub, steps=200, batch_size=8):
         if type(steps) is not int or steps < 1 or type(batch_size) is not int or batch_size < 1:
             raise ValueError("同步步数与批量必须为正整数")
-        self.hub, self.root = hub, Path(hub.root)
+        self.hub = hub
+        self.root = Path(hub.root).resolve()
+        self.model_dir = Path(getattr(hub, "model_dir", None) or (self.root / "models/garbage-1")).resolve()
         self.steps, self.batch_size = steps, batch_size
         self.path = self.root / "data/lora/sync-state.json"
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -73,7 +75,9 @@ class LoRASyncManager:
         return result
 
     def _latest(self):
-        parent = self.root / "models/garbage-1"
+        parent = self.model_dir
+        if not (parent / "current.json").exists():
+            parent = (self.root / "models/garbage-1").resolve()
         path = _relative_file(parent, json.loads((parent / "current.json").read_text())["checkpoint"])
         metadata = json.loads(path.read_text())
         if metadata.get("format") != "garbage-1-checkpoint-v1":
@@ -114,8 +118,10 @@ class LoRASyncManager:
                     self._launch(old, lease)
                     return old
                 path, metadata = self._latest()
+                parent = self.model_dir.resolve()
+                checkpoint_rel = str(path.resolve().relative_to(parent))
                 job = {"format": "garbage-1-lora-sync-v1", "id": uuid.uuid4().hex,
-                       "status": "queued", "target_checkpoint": str(path.relative_to(self.root / "models/garbage-1")),
+                       "status": "queued", "target_checkpoint": checkpoint_rel,
                        "target_step": metadata["step"], "target_sha256": metadata["weight_sha256"],
                        "target_metadata_sha256": metadata_digest(metadata),
                        "created_at": datetime.now(timezone.utc).isoformat(), "completed": 0, "total": len(STYLE_NAMES),
@@ -143,7 +149,7 @@ class LoRASyncManager:
             _atomic_json(self.path, job)
 
     def _pin(self, job):
-        parent = self.root / "models/garbage-1"
+        parent = self.model_dir.resolve()
         source = _relative_file(parent, job["target_checkpoint"])
         metadata = json.loads(source.read_text())
         if metadata["weight_sha256"] != job["target_sha256"]:
@@ -250,7 +256,7 @@ class LoRASyncManager:
                 if item["status"] in ("synced", "skipped"):
                     continue
                 style = item["style"]
-                if not (self.root / "models/garbage-1/lora" / style / "current.json").exists():
+                if not (self.model_dir.resolve() / "lora" / style / "current.json").exists():
                     item.update(status="skipped", message="尚无适配器，跳过")
                 else:
                     item.update(status="running", message="等待角色训练写入锁")

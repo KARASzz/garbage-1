@@ -17,7 +17,15 @@ from .model_runtime import BackgroundLearner, ModelRuntime
 from .storage import CorpusDatabase, CorpusError
 
 LOGGER = logging.getLogger(__name__)
-ASSETS = {"/": ("index.html", "text/html; charset=utf-8"), "/index.html": ("index.html", "text/html; charset=utf-8"), "/style.css": ("style.css", "text/css; charset=utf-8"), "/app.js": ("app.js", "text/javascript; charset=utf-8"), "/favicon.svg": ("favicon.svg", "image/svg+xml")}
+ASSETS = {
+    "/": ("index.html", "text/html; charset=utf-8"),
+    "/index.html": ("index.html", "text/html; charset=utf-8"),
+    "/style.css": ("style.css", "text/css; charset=utf-8"),
+    "/app.js": ("app.js", "text/javascript; charset=utf-8"),
+    "/favicon.svg": ("favicon.svg", "image/svg+xml"),
+    "/dance-left.gif": ("dance-left.gif", "image/gif"),
+    "/dance-right.gif": ("dance-right.gif", "image/gif"),
+}
 
 
 class LocalHTTPServer(ThreadingHTTPServer):
@@ -64,7 +72,7 @@ def project_identity(root: Path) -> str:
     return hashlib.sha256(str(root.resolve()).encode()).hexdigest()[:16]
 
 
-def create_server(root: Path, port: int = 8765, *, seed: int | None = None, backend: str = "mlx") -> ThreadingHTTPServer:
+def create_server(root: Path, port: int = 8765, *, seed: int | None = None, backend: str = "mlx", model_dir: Path | str | None = None) -> ThreadingHTTPServer:
     root = root.resolve()
     database = CorpusDatabase(root / "data" / "trash_talk.sqlite3")
     stats = database.initialize(root / "data" / "corpus.json")
@@ -194,7 +202,15 @@ def create_server(root: Path, port: int = 8765, *, seed: int | None = None, back
                     style = "base" if source == "rule" else data.get("style", "base")
                     target, store, _ = (runtime, feedback, learner) if style == "base" else styles.get(style)
                     with target.lock:
-                        result = generator.draw() if source == "rule" else target.generate()
+                        if source == "rule":
+                            result = generator.draw()
+                        else:
+                            prefix = data.get("prefix")
+                            if isinstance(prefix, str):
+                                prefix = prefix.strip() or None
+                            temp = data.get("temperature")
+                            temperature = float(temp) if temp is not None else 0.85
+                            result = target.generate(prefix=prefix, temperature=temperature)
                         model = result.get("model", runtime.status())
                         context = target.preference_context(result)
                         sample_id = store.add_sample(result["text"], source, result["theme"], model["step"], model["run_id"], context=context)
@@ -217,13 +233,14 @@ def create_server(root: Path, port: int = 8765, *, seed: int | None = None, back
 
     server = LocalHTTPServer(("127.0.0.1", port), Handler)
     try:
-        runtime = ModelRuntime(root, backend=backend)
+        model_dir_path = Path(model_dir) if model_dir else None
+        runtime = ModelRuntime(root, backend=backend, model_dir=model_dir_path)
         learner = BackgroundLearner(runtime, feedback)
         server.learner = learner
         server.model_runtime = runtime
         server.feedback_store = feedback
         from .lora import StyleHub
-        styles = StyleHub(root, backend, base_runtime=runtime)
+        styles = StyleHub(root, backend, base_runtime=runtime, model_dir=model_dir_path)
         server.style_hub = styles
         # Recover durable sync work even before a browser reconnects.
         _ = styles.sync

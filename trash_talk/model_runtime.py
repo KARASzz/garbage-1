@@ -167,19 +167,38 @@ class ModelRuntime:
                 "run_id": metadata.get("run_id", "uninitialized"), "architecture": metadata.get("config", {}).get("architecture", "dense_transformer_v1"),
                 "error": self.error}
 
-    def generate(self, *, prefix=None, theme=None, max_new_tokens=64):
+    def generate(
+        self,
+        *,
+        prefix=None,
+        theme=None,
+        max_new_tokens=64,
+        temperature=0.85,
+        top_p=0.9,
+        repetition_penalty=1.15,
+    ):
         if not self.ready:
             raise RuntimeError(self.error or "模型未就绪")
         with self.lock:
             chosen = random.SystemRandom().choice(self.prefixes) if prefix is None else {"text": prefix, "theme": theme}
             prefix_text = chosen.get("text", chosen.get("prefix"))
-            prompt = self.tokenizer.encode(prefix_text, theme=chosen["theme"], bos=True)
-            ids = self.backend.generate(prompt, max_new_tokens, self.tokenizer.eos_id)
+            theme_choice = chosen.get("theme")
+            if theme_choice not in ("game", "logic", "boast", "daily"):
+                theme_choice = "daily"
+            prompt = self.tokenizer.encode(prefix_text, theme=theme_choice, bos=True)
+            ids = self.backend.generate(
+                prompt,
+                max_new_tokens,
+                self.tokenizer.eos_id,
+                temperature=temperature,
+                top_p=top_p,
+                repetition_penalty=repetition_penalty,
+            )
             text = self.tokenizer.decode(ids)
             if not text.strip():
                 raise RuntimeError("模型生成了空输出")
             status = self.status()
-            return {"text": text, "theme": chosen["theme"], "id": uuid.uuid4().hex, "block_count": 0,
+            return {"text": text, "theme": theme_choice, "id": uuid.uuid4().hex, "block_count": 0,
                     "model": status, "prompt": prefix_text, "generated_tokens": len(ids) - len(prompt)}
 
     def preference_context(self, result):

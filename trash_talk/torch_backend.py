@@ -32,8 +32,16 @@ class TorchBackend:
                 parameter.copy_(torch.from_numpy(array.copy()).to(self.device))
         self.model.eval()
 
-    def generate(self, prompt_ids, max_new_tokens, eos_id):
-        return greedy_tokens(self.model, prompt_ids, max_new_tokens, eos_id)
+    def generate(self, prompt_ids, max_new_tokens, eos_id, *, temperature=0.0, top_p=0.9, repetition_penalty=1.0):
+        return greedy_tokens(
+            self.model,
+            prompt_ids,
+            max_new_tokens,
+            eos_id,
+            temperature=temperature,
+            top_p=top_p,
+            repetition_penalty=repetition_penalty,
+        )
 
     def logits(self, ids):
         with torch.no_grad():

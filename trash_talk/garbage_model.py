@@ -270,10 +270,10 @@ class ModelConfig:
             raise ValueError(f"vocab_size 至少为 {len(SPECIAL_TOKENS)}")
         if self.d_model % self.heads:
             raise ValueError("d_model 必须能被 heads 整除")
-        if not isinstance(self.ffn_dims, list) or len(self.ffn_dims) != 2:
-            raise ValueError("ffn_dims 必须是两层正整数列表")
+        if not isinstance(self.ffn_dims, list) or len(self.ffn_dims) < 1:
+            raise ValueError("ffn_dims 必须是非空正整数列表")
         if any(type(width) is not int or width <= 0 for width in self.ffn_dims):
-            raise ValueError("ffn_dims 必须是两层正整数列表")
+            raise ValueError("ffn_dims 必须是非空正整数列表")
 
     def to_dict(self) -> dict:
         result = asdict(self)
@@ -304,17 +304,15 @@ def _parameter_count_for(
     d_model: int,
     ffn_dims: Sequence[int],
 ) -> int:
-    """Count unique trainable values for the tied, two-layer dense model."""
-    if len(ffn_dims) != 2:
-        raise ValueError("当前 dense 架构固定为两层")
-    # Tied token/output matrix is counted once; include its vocabulary bias.
-    # Each block has QKV and output projections with biases, two affine
-    # LayerNorms, and two biased FFN linears; the model ends with affine LN.
+    """Count unique trainable values for the tied causal Transformer."""
+    layers = len(ffn_dims)
+    if layers < 1:
+        raise ValueError("当前 dense 架构至少需要一层")
     return (
         vocab_size * (d_model + 1)
         + context * d_model
-        + 8 * d_model * d_model
-        + 20 * d_model
+        + 2 * d_model
+        + layers * (4 * d_model * d_model + 9 * d_model)
         + (2 * d_model + 1) * sum(ffn_dims)
     )
 
@@ -324,7 +322,7 @@ def _candidate_architectures() -> tuple[tuple[int, int], ...]:
     # larger widths let the same exact-budget builder support the 1M variant.
     return (
         (48, 6), (56, 7), (40, 5), (32, 4), (64, 8), (49, 7), (24, 4),
-        (128, 8), (160, 8), (192, 8), (256, 8),
+        (128, 8), (160, 8), (192, 8), (256, 8), (320, 8), (368, 8), (384, 8),
     )
 
 
@@ -334,7 +332,7 @@ def solve_config(
     min_context: int = 96,
     max_context: int = 512,
 ) -> ModelConfig:
-    """Find an exact two-layer dense configuration without spare parameters."""
+    """Find an exact dense configuration without spare parameters."""
     for name, value in (("vocab_size", vocab_size), ("target", target), ("min_context", min_context), ("max_context", max_context)):
         if type(value) is not int or value <= 0:
             raise ValueError(f"{name} 必须是正整数")
@@ -343,37 +341,46 @@ def solve_config(
     if min_context > max_context:
         raise ValueError("min_context 不能大于 max_context")
 
-    for d_model, heads in _candidate_architectures():
-        if d_model % heads:
-            continue
-        coefficient = 2 * d_model + 1
-        for context in range(min_context, max_context + 1):
-            fixed = (
-                vocab_size * (d_model + 1)
-                + context * d_model
-                + 8 * d_model * d_model
-                + 20 * d_model
-            )
-            remainder = target - fixed
-            if remainder <= 0 or remainder % coefficient:
+    candidate_layers = (8, 6) if target >= 5_000_000 else (2,)
+    candidate_archs = (
+        ((320, 8), (368, 8), (384, 8), (304, 8), (336, 8))
+        if target >= 5_000_000
+        else _candidate_architectures()
+    )
+
+    for num_layers in candidate_layers:
+        for d_model, heads in candidate_archs:
+            if d_model % heads:
                 continue
-            total_ffn = remainder // coefficient
-            first = total_ffn // 2
-            second = total_ffn - first
-            if first < d_model or second < d_model:
-                continue
-            if max(first, second) > 8 * d_model:
-                continue
-            config = ModelConfig(
-                vocab_size=vocab_size,
-                context=context,
-                d_model=d_model,
-                heads=heads,
-                ffn_dims=[first, second],
-                target_parameters=target,
-            )
-            assert _parameter_count_for(vocab_size, context, d_model, config.ffn_dims) == target
-            return config
+            coefficient = 2 * d_model + 1
+            for context in range(min_context, max_context + 1):
+                fixed = (
+                    vocab_size * (d_model + 1)
+                    + context * d_model
+                    + 2 * d_model
+                    + num_layers * (4 * d_model * d_model + 9 * d_model)
+                )
+                remainder = target - fixed
+                if remainder <= 0 or remainder % coefficient:
+                    continue
+                total_ffn = remainder // coefficient
+                if total_ffn < num_layers * d_model:
+                    continue
+                base_ffn = total_ffn // num_layers
+                extra = total_ffn % num_layers
+                ffn_dims = [base_ffn + (1 if i < extra else 0) for i in range(num_layers)]
+                if min(ffn_dims) < d_model or max(ffn_dims) > 8 * d_model:
+                    continue
+                config = ModelConfig(
+                    vocab_size=vocab_size,
+                    context=context,
+                    d_model=d_model,
+                    heads=heads,
+                    ffn_dims=ffn_dims,
+                    target_parameters=target,
+                )
+                assert _parameter_count_for(vocab_size, context, d_model, config.ffn_dims) == target
+                return config
     raise ValueError(
         f"无法在 {min_context}–{max_context} 上下文内为词表 {vocab_size} 找到 "
         f"FFN 宽度不超过 8×d_model 的精确 {target} 参数配置"
@@ -531,8 +538,12 @@ def greedy_tokens(
     prompt_ids: list[int],
     max_new_tokens: int,
     eos_id: int,
+    *,
+    temperature: float = 0.0,
+    top_p: float = 0.9,
+    repetition_penalty: float = 1.0,
 ) -> list[int]:
-    """Append deterministic full-vocabulary argmax tokens until EOS or limit."""
+    """Append full-vocabulary tokens until EOS or limit using argmax or sampling."""
     if not isinstance(prompt_ids, list) or not prompt_ids:
         raise ValueError("prompt_ids 必须是非空列表")
     if any(type(token_id) is not int or token_id < 0 for token_id in prompt_ids):
@@ -568,7 +579,18 @@ def greedy_tokens(
                 logits = model(ids)
                 if not isinstance(logits, Tensor) or logits.ndim != 3:
                     raise ValueError("model.forward 必须返回 [B,T,V] logits")
-                next_id = int(logits[0, -1].argmax(dim=-1).item())
+                last_logits = logits[0, -1]
+                if temperature <= 1e-6 and repetition_penalty <= 1.0:
+                    next_id = int(last_logits.argmax(dim=-1).item())
+                else:
+                    from .sampling import sample_next_token
+                    next_id = sample_next_token(
+                        last_logits,
+                        temperature=temperature,
+                        top_p=top_p,
+                        repetition_penalty=repetition_penalty,
+                        history=active,
+                    )
                 result.append(next_id)
                 if next_id == eos_id:
                     break
