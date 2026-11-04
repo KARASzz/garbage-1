@@ -22,6 +22,7 @@ from .feedback import text_digest
 
 LOGGER = logging.getLogger(__name__)
 BACKEND_REGISTRY = {}
+MAX_CHECKPOINTS = 10
 
 
 def register_backend(name, factory):
@@ -75,6 +76,57 @@ def _sync_directory(path):
         os.fsync(descriptor)
     finally:
         os.close(descriptor)
+
+
+def prune_checkpoints(directory, keep=MAX_CHECKPOINTS):
+    """Keep the current checkpoint and newest complete metadata/weight pairs."""
+    directory = Path(directory)
+    if type(keep) is not int or keep < 1:
+        raise ValueError("checkpoint 保留数量必须是正整数")
+    if not directory.is_dir():
+        return 0
+
+    current = None
+    pointer = directory.parent / "current.json"
+    try:
+        entry = json.loads(pointer.read_text(encoding="utf-8"))
+        current = _relative_file(directory.parent, entry.get("checkpoint"))
+    except (OSError, ValueError, TypeError, json.JSONDecodeError):
+        pass
+
+    pairs = []
+    for metadata_path in directory.glob("*.json"):
+        try:
+            metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+            weights_path = _relative_file(directory, metadata.get("weights"))
+            if not weights_path.is_file():
+                continue
+            modified = max(metadata_path.stat().st_mtime_ns, weights_path.stat().st_mtime_ns)
+            pairs.append((modified, metadata_path, weights_path))
+        except (OSError, ValueError, TypeError, json.JSONDecodeError):
+            continue
+
+    pairs.sort(key=lambda pair: (pair[0], pair[1].name), reverse=True)
+    current_pair = next((pair for pair in pairs if current == pair[1].resolve()), None)
+    retained = [current_pair] if current_pair is not None else []
+    for pair in pairs:
+        if pair in retained:
+            continue
+        if len(retained) >= keep:
+            break
+        retained.append(pair)
+
+    removed = 0
+    for _, metadata_path, weights_path in pairs:
+        if any(metadata_path == pair[1] for pair in retained):
+            continue
+        try:
+            metadata_path.unlink(missing_ok=True)
+            weights_path.unlink(missing_ok=True)
+            removed += 1
+        except OSError:
+            LOGGER.warning("checkpoint 清理失败：%s", metadata_path, exc_info=True)
+    return removed
 
 
 def _load_examples(path, *, prefixes=False):
@@ -235,6 +287,7 @@ class ModelRuntime:
         _atomic_json(self.model_dir / "current.json", {"checkpoint": f"checkpoints/{generation}.json"})
         self.metadata = metadata
         self.checkpoint_path = directory / f"{generation}.json"
+        prune_checkpoints(directory)
 
     def learn(self, job, store):
         if not self.ready:

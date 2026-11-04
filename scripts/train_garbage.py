@@ -29,6 +29,7 @@ from trash_talk.garbage_model import (
     build_model,
     solve_config,
 )
+from trash_talk.model_runtime import prune_checkpoints
 
 
 def utc_now() -> str:
@@ -207,6 +208,7 @@ def save_checkpoint(
         output_dir / "current.json",
         json.dumps(current, ensure_ascii=False, indent=2).encode("utf-8") + b"\n",
     )
+    prune_checkpoints(checkpoint_dir)
     return {
         "generation": generation,
         "weights": str(weights_path),

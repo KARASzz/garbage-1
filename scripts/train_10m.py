@@ -39,7 +39,7 @@ from trash_talk.garbage_model import (
     solve_config,
 )
 from trash_talk.lora import initial_adapter, STYLE_NAMES
-from trash_talk.model_runtime import _atomic_json, _sync_directory
+from trash_talk.model_runtime import _atomic_json, _sync_directory, prune_checkpoints
 
 
 def utc_now() -> str:
@@ -204,6 +204,7 @@ def main():
     meta_file = checkpoint_dir / f"{generation_id}.json"
     _atomic_json(meta_file, metadata)
     _atomic_json(output_dir / "current.json", {"checkpoint": f"checkpoints/{meta_file.name}"})
+    prune_checkpoints(checkpoint_dir)
 
     # 保存与此底座配套的 prefixes 与 seed_replay
     prefixes = [{"text": r["text"][:4], "theme": r.get("theme", "daily")} for r in all_train[:200]]

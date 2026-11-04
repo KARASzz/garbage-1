@@ -163,13 +163,21 @@ def load_reference(runtime, context):
     from .garbage_model import ModelConfig, CharacterTokenizer
     from .lora import make_backend
     path = _relative_file(runtime.root / "models", context["reference"]["checkpoint"])
-    metadata = json.loads(path.read_text())
+    try:
+        metadata = json.loads(path.read_text())
+    except FileNotFoundError:
+        # Old annotations can outlive the ten-checkpoint retention window.
+        # Use the live pre-update model as a valid reference in that case.
+        return runtime.backend
     config = ModelConfig.from_dict(metadata["config"])
     tokenizer = CharacterTokenizer.from_dict(metadata["tokenizer"])
     if config.to_dict() != runtime.config.to_dict() or tokenizer.to_dict() != runtime.tokenizer.to_dict():
         raise ValueError("这条改写的网络或词表版本不兼容，已保留偏好数据")
-    with np.load(_relative_file(path.parent, metadata["weights"]), allow_pickle=False) as data:
-        weights = {k: data[k] for k in data.files}
+    try:
+        with np.load(_relative_file(path.parent, metadata["weights"]), allow_pickle=False) as data:
+            weights = {k: data[k] for k in data.files}
+    except FileNotFoundError:
+        return runtime.backend
     if metadata["format"] == "garbage-1-lora-v1":
         pinned = _relative_file(runtime.root / "models/garbage-1/lora", metadata.get("base_ref", "base"))
         base = ModelRuntime(runtime.root, backend=runtime.backend_name, model_dir=pinned)

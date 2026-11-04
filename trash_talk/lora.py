@@ -12,7 +12,7 @@ import uuid
 import numpy as np
 
 from .feedback import FeedbackStore, text_digest
-from .model_runtime import ModelRuntime, BackgroundLearner, _atomic_json, _relative_file, _sync_directory
+from .model_runtime import ModelRuntime, BackgroundLearner, _atomic_json, _relative_file, _sync_directory, prune_checkpoints
 
 STYLE_NAMES = dict(zip(
     ("mouthy", "mad", "sassy", "anime", "femboy", "office", "soldier", "alien", "hostess", "greentea", "queen"),
@@ -311,6 +311,7 @@ class LoRARuntime(ModelRuntime):
         _atomic_json(self.model_dir / "current.json", {"checkpoint": f"checkpoints/{name}.json"})
         self.metadata = metadata
         self.checkpoint_path = directory / (name + ".json")
+        prune_checkpoints(directory)
 
     def learn(self, job, store):
         with self.lock:
