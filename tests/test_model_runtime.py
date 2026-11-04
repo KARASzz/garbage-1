@@ -655,6 +655,7 @@ class HttpRuntimeIntegrationTests(TemporaryRuntimeCase):
             {
                 "text", "theme", "id", "block_count", "model", "prompt",
                 "generated_tokens", "sample_id", "source", "rating", "style", "style_name",
+                "microscope",
             },
         )
         self.assertEqual(generated["source"], "garbage-1")

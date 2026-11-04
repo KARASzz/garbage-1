@@ -16,6 +16,9 @@
   const feedButton = document.querySelector("#feedButton");
   const feedStatus = document.querySelector("#feedStatus");
   const promptInput = document.querySelector("#promptInput");
+  const tempInput = document.querySelector("#tempInput");
+  const tempValue = document.querySelector("#tempValue");
+  const microscopePopover = document.querySelector("#microscopePopover");
   const styleSelect = document.querySelector("#styleSelect");
   const syncButton = document.querySelector("#syncButton");
   const syncStatus = document.querySelector("#syncStatus");
@@ -87,6 +90,10 @@
   let activeOriginalText = "";
   let activeOriginalFeedbackStatus = "";
   let activeRating = 0;
+  let activeMicroscope = null;
+  let activeOriginalMicroscope = null;
+  let activeBaseScreenStatus = "";
+  let activePopoverTimeout = null;
   let syncSubmitPending = false;
   let syncInFlight = false;
   let syncPollTimer = null;
@@ -102,7 +109,7 @@
   }
 
   function visibleMessageText() {
-    return typeof message.innerText === "string" ? message.innerText : message.textContent || "";
+    return typeof message.textContent === "string" ? message.textContent : message.innerText || "";
   }
 
   function isActiveOutputEdited() {
@@ -562,9 +569,177 @@
     modelStatus.textContent = `${model.name.toUpperCase()} · ${size} · FP32 · ZH · ${backend}`;
   }
 
+  function hideMicroscopePopover(immediate = false) {
+    if (!microscopePopover || microscopePopover.hidden) return;
+    if (activePopoverTimeout) {
+      clearTimeout(activePopoverTimeout);
+      activePopoverTimeout = null;
+    }
+    if (immediate) {
+      microscopePopover.hidden = true;
+      microscopePopover.classList.remove("is-fading");
+      return;
+    }
+    microscopePopover.classList.add("is-fading");
+    activePopoverTimeout = setTimeout(() => {
+      if (microscopePopover) {
+        microscopePopover.hidden = true;
+        microscopePopover.classList.remove("is-fading");
+      }
+      activePopoverTimeout = null;
+    }, 150);
+  }
+
+  function clearAttnHighlights() {
+    if (!message) return;
+    const chars = message.querySelectorAll(".attn-char");
+    chars.forEach((span) => {
+      span.classList.remove("is-hovered", "is-attended");
+      span.style.removeProperty("--attn-alpha");
+    });
+    if (activeBaseScreenStatus && screenStatus) {
+      screenStatus.textContent = activeBaseScreenStatus;
+    }
+  }
+
+  function renderMicroscopeMessage(microscope, fallbackText) {
+    message.innerHTML = "";
+    if (
+      !microscope ||
+      !Array.isArray(microscope.chars) ||
+      microscope.chars.length === 0
+    ) {
+      message.textContent = fallbackText;
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    microscope.chars.forEach((char, idx) => {
+      const span = document.createElement("span");
+      span.className = "attn-char";
+      span.dataset.idx = String(idx);
+      span.textContent = char;
+      fragment.appendChild(span);
+    });
+    message.appendChild(fragment);
+  }
+
+  function handleCharHover(targetSpan) {
+    if (!activeMicroscope || isActiveOutputEdited()) return;
+    const idx = parseInt(targetSpan.dataset.idx, 10);
+    if (Number.isNaN(idx)) return;
+
+    if (microscopePopover && !microscopePopover.hidden && microscopePopover.dataset.activeIdx !== String(idx)) {
+      hideMicroscopePopover(true);
+    }
+
+    const allSpans = message.querySelectorAll(".attn-char");
+    const weights = activeMicroscope.attentions?.[idx] || [];
+
+    allSpans.forEach((span, j) => {
+      if (j === idx) {
+        span.classList.add("is-hovered");
+        span.classList.remove("is-attended");
+        span.style.removeProperty("--attn-alpha");
+      } else if (j < idx) {
+        span.classList.remove("is-hovered");
+        const w = weights[j] ?? 0;
+        if (w >= 0.05) {
+          span.classList.add("is-attended");
+          const alpha = Math.min(1.0, w * 2.2).toFixed(3);
+          span.style.setProperty("--attn-alpha", alpha);
+        } else {
+          span.classList.remove("is-attended");
+          span.style.removeProperty("--attn-alpha");
+        }
+      } else {
+        span.classList.remove("is-hovered", "is-attended");
+        span.style.removeProperty("--attn-alpha");
+      }
+    });
+
+    const char = activeMicroscope.chars[idx];
+    const attended = weights
+      .map((w, j) => ({ char: activeMicroscope.chars[j], w, j }))
+      .filter((item) => item.j !== idx && item.w >= 0.08)
+      .sort((a, b) => b.w - a.w)
+      .slice(0, 2);
+
+    if (attended.length > 0) {
+      const topStr = attended.map((it) => `【${it.char}】${Math.round(it.w * 100)}%`).join("、");
+      screenStatus.textContent = `🔬「${char}」注意力聚焦：${topStr}`;
+    } else {
+      screenStatus.textContent = `🔬「${char}」注意力自回归聚焦`;
+    }
+  }
+
+  function handleCharClick(targetSpan) {
+    if (!activeMicroscope || isActiveOutputEdited() || !microscopePopover) return;
+    const idx = parseInt(targetSpan.dataset.idx, 10);
+    if (Number.isNaN(idx)) return;
+
+    // Toggle off if clicking the already open character
+    if (!microscopePopover.hidden && microscopePopover.dataset.activeIdx === String(idx)) {
+      hideMicroscopePopover(true);
+      return;
+    }
+
+    const char = activeMicroscope.chars[idx];
+    const cands = activeMicroscope.top_candidates?.[idx] || [];
+
+    if (cands.length === 0) return;
+
+    const itemsHtml = cands
+      .map(
+        (c) =>
+          `<span class="cand-item"><span class="cand-char">${c.char}</span><span class="cand-prob">${Math.round(c.prob * 100)}%</span></span>`,
+      )
+      .join(" · ");
+
+    microscopePopover.innerHTML = `<span>「${char}」候选:</span> ${itemsHtml}`;
+    microscopePopover.dataset.activeIdx = String(idx);
+    microscopePopover.classList.remove("is-fading");
+    microscopePopover.hidden = false;
+
+    // Do NOT alter screenStatus.textContent here - keep only the hover status visible above!
+
+    const spanRect = targetSpan.getBoundingClientRect();
+    const glass = targetSpan.closest(".display-glass");
+    if (!glass) return;
+    const glassRect = glass.getBoundingClientRect();
+
+    let topPos = spanRect.top - glassRect.top - 6;
+    let isBelow = false;
+    if (topPos < 38) {
+      topPos = spanRect.bottom - glassRect.top + 6;
+      isBelow = true;
+    }
+    microscopePopover.classList.toggle("is-below", isBelow);
+
+    const popoverWidth = microscopePopover.offsetWidth || 140;
+    const glassPadding = 12;
+    const targetCenterX = spanRect.left - glassRect.left + spanRect.width / 2;
+    const minCenterX = glassPadding + popoverWidth / 2;
+    const maxCenterX = Math.max(minCenterX, glassRect.width - glassPadding - popoverWidth / 2);
+    const clampedCenterX = Math.max(minCenterX, Math.min(maxCenterX, targetCenterX));
+
+    microscopePopover.style.left = `${clampedCenterX}px`;
+    microscopePopover.style.top = `${topPos}px`;
+
+    const arrowLeft = targetCenterX - (clampedCenterX - popoverWidth / 2);
+    const clampedArrow = Math.max(10, Math.min(popoverWidth - 10, arrowLeft));
+    microscopePopover.style.setProperty("--arrow-left", `${clampedArrow}px`);
+
+    if (activePopoverTimeout) clearTimeout(activePopoverTimeout);
+    activePopoverTimeout = setTimeout(() => {
+      hideMicroscopePopover();
+    }, 3000);
+  }
+
   function installOutput(result) {
     activeOriginalText = result.text.trim();
-    message.textContent = activeOriginalText;
+    activeMicroscope = result.microscope || null;
+    activeOriginalMicroscope = result.microscope || null;
     activeSampleId = result.sample_id;
     activeRating = result.rating;
     activeOriginalFeedbackStatus = typeof result.style_name === "string" && result.style_name.trim()
@@ -576,6 +751,12 @@
     feedbackPanel.hidden = false;
     applyModel(result.model);
     updateButtonState();
+
+    if (activeMicroscope && Array.isArray(activeMicroscope.chars) && activeMicroscope.chars.length > 0) {
+      renderMicroscopeMessage(activeMicroscope, activeOriginalText);
+    } else {
+      message.textContent = activeOriginalText;
+    }
   }
 
   async function generate(source) {
@@ -595,7 +776,15 @@
     try {
       const endpoint = source === "rule" ? "/api/draw" : "/api/ai";
       const customPrefix = promptInput ? promptInput.value.trim() : "";
-      const body = source === "rule" ? {} : { style: requestedStyle, prefix: customPrefix || null };
+      const currentTemp = tempInput ? parseFloat(tempInput.value) : 0.85;
+      const body =
+        source === "rule"
+          ? {}
+          : {
+              style: requestedStyle,
+              prefix: customPrefix || null,
+              temperature: Number.isFinite(currentTemp) ? currentTemp : 0.85,
+            };
       const result = await requestJson(endpoint, "POST", body);
 
       if (!validateGeneration(result, source, requestedStyle)) {
@@ -603,9 +792,11 @@
       }
 
       installOutput(result);
-      screenStatus.textContent = source === "rule"
-        ? "规则抽卡 · 完成"
-        : `${result.style_name} · GARBAGE-1 · 灵性生成`;
+      activeBaseScreenStatus =
+        source === "rule"
+          ? "规则抽卡 · 完成"
+          : `${result.style_name} · GARBAGE-1 · 显微镜就绪`;
+      screenStatus.textContent = activeBaseScreenStatus;
     } catch (error) {
       screenStatus.textContent = "SIGNAL LOST · 再试一次";
       if (!activeSampleId) {
@@ -735,6 +926,8 @@
   }
 
   function onMessageInput() {
+    activeMicroscope = null;
+    clearAttnHighlights();
     if (isActiveOutputEdited()) {
       feedbackStatus.textContent = "当前显示改写稿；点赞和点踩已停用，恢复原文后可评价原输出。";
     } else {
@@ -745,7 +938,12 @@
 
   function restoreOriginalOutput() {
     if (isGenerating || !activeSampleId || pendingCorrectionSamples.has(activeSampleId)) return;
-    message.textContent = activeOriginalText;
+    activeMicroscope = activeOriginalMicroscope;
+    if (activeMicroscope && Array.isArray(activeMicroscope.chars) && activeMicroscope.chars.length > 0) {
+      renderMicroscopeMessage(activeMicroscope, activeOriginalText);
+    } else {
+      message.textContent = activeOriginalText;
+    }
     feedbackStatus.textContent = activeOriginalFeedbackStatus || "原文已恢复，可评价原输出。";
     updateButtonState();
   }
@@ -831,9 +1029,48 @@
   correctionButton.addEventListener("click", () => { void submitCorrection(); });
   restoreButton.addEventListener("click", restoreOriginalOutput);
   message.addEventListener("input", onMessageInput);
+  message.addEventListener("mouseover", (event) => {
+    const span = event.target.closest(".attn-char");
+    if (span) handleCharHover(span);
+  });
+  message.addEventListener("mouseout", (event) => {
+    const span = event.target.closest(".attn-char");
+    if (span) {
+      const nextSpan = event.relatedTarget?.closest?.(".attn-char");
+      if (!nextSpan) {
+        clearAttnHighlights();
+      }
+    }
+  });
+  message.addEventListener("click", (event) => {
+    const span = event.target.closest(".attn-char");
+    if (span) handleCharClick(span);
+  });
+  const dismissPopoverIfOutside = (event) => {
+    if (!microscopePopover || microscopePopover.hidden) return;
+    if (!event.target.closest(".attn-char")) {
+      hideMicroscopePopover(true);
+    }
+  };
+  document.addEventListener("pointerdown", dismissPopoverIfOutside);
+  document.addEventListener("click", dismissPopoverIfOutside);
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" || event.key === "Esc") {
+      hideMicroscopePopover(true);
+      clearAttnHighlights();
+    }
+  });
   feedForm.addEventListener("submit", feedSentence);
   styleSelect.addEventListener("change", updateStylePresentation);
   syncButton.addEventListener("click", startLoraSync);
+  if (tempInput && tempValue) {
+    const syncTempValue = () => {
+      const val = parseFloat(tempInput.value);
+      tempValue.textContent = Number.isFinite(val) ? val.toFixed(2) : "0.85";
+    };
+    tempInput.addEventListener("input", syncTempValue);
+    tempInput.addEventListener("change", syncTempValue);
+  }
 
   void loadModelStatus();
   renderStyleOptions();

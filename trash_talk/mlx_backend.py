@@ -203,7 +203,13 @@ class MLXBackend:
         """Return the one canonical dictionary of trainable FP32 parameters."""
         return self._parameters
 
-    def _forward(self, parameters: Mapping[str, Array], ids: Array) -> Array:
+    def _forward(
+        self,
+        parameters: Mapping[str, Array],
+        ids: Array,
+        *,
+        return_attention: bool = False,
+    ) -> Array | tuple[Array, Array]:
         batch, length = ids.shape
         width = self.config.d_model
         heads = self.config.heads
@@ -214,6 +220,7 @@ class MLXBackend:
 
         position_ids = mx.arange(length, dtype=mx.int32)
         causal_mask = position_ids[None, :] <= position_ids[:, None]
+        last_probabilities: Array | None = None
         for index in range(len(self.config.ffn_dims)):
             prefix = f"blocks.{index}"
             normalized = _layer_norm(
@@ -233,6 +240,7 @@ class MLXBackend:
             scores = (query @ key.transpose(0, 1, 3, 2)) * (1.0 / math.sqrt(head_dim))
             scores = mx.where(causal_mask[None, None, :, :], scores, float("-inf"))
             probabilities = mx.softmax(scores, axis=-1)
+            last_probabilities = probabilities
             attended = probabilities @ val
             attended = attended.transpose(0, 2, 1, 3).reshape(batch, length, width)
             value = value + _linear(
@@ -251,7 +259,10 @@ class MLXBackend:
         value = _layer_norm(
             value, parameters["final_ln.weight"], parameters["final_ln.bias"]
         )
-        return value @ parameters["token_embedding.weight"].T + parameters["lm_bias"]
+        logits = value @ parameters["token_embedding.weight"].T + parameters["lm_bias"]
+        if return_attention:
+            return logits, last_probabilities
+        return logits
 
     def logits(self, ids: Any) -> Array:
         """Return full-vocabulary logits with shape ``[B,T,V]``."""
@@ -259,6 +270,37 @@ class MLXBackend:
         result = self._forward(self._parameters, token_ids)
         mx.eval(result)
         return result
+
+    def inspect_sequence(self, ids: list[int], top_k: int = 3) -> dict:
+        """Inspect token sequence returning attention map and top next-token candidates."""
+        token_ids = _token_array([ids], self.config)
+        logits, last_probabilities = self._forward(
+            self._parameters, token_ids, return_attention=True
+        )
+        mx.eval(logits, last_probabilities)
+
+        attn_matrix = np.array(last_probabilities[0].mean(axis=0))
+        logits_np = np.array(logits[0])
+        length = len(ids)
+
+        step_candidates = []
+        for t in range(length):
+            if t == 0:
+                step_candidates.append([])
+                continue
+            step_logits = logits_np[t - 1]
+            exp_logits = np.exp(step_logits - np.max(step_logits))
+            step_probs = exp_logits / np.sum(exp_logits)
+            top_indices = np.argsort(step_probs)[-top_k:][::-1]
+            step_candidates.append([
+                {"id": int(idx), "prob": round(float(step_probs[idx]), 4)}
+                for idx in top_indices
+            ])
+
+        return {
+            "attention": [[round(float(val), 4) for val in row] for row in attn_matrix],
+            "step_candidates": step_candidates,
+        }
 
     def generate(
         self,

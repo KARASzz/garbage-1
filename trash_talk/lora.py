@@ -91,6 +91,38 @@ class MLXLoRA:
         mx.eval(result)
         return result
 
+    def inspect_sequence(self, ids, top_k=3):
+        import mlx.core as mx
+        import numpy as np
+        token_ids = mx.array([ids], dtype=mx.int32)
+        logits, last_probabilities = self.base._forward(
+            self._effective(self.adapter), token_ids, return_attention=True
+        )
+        mx.eval(logits, last_probabilities)
+
+        attn_matrix = np.array(last_probabilities[0].mean(axis=0))
+        logits_np = np.array(logits[0])
+        length = len(ids)
+
+        step_candidates = []
+        for t in range(length):
+            if t == 0:
+                step_candidates.append([])
+                continue
+            step_logits = logits_np[t - 1]
+            exp_logits = np.exp(step_logits - np.max(step_logits))
+            step_probs = exp_logits / np.sum(exp_logits)
+            top_indices = np.argsort(step_probs)[-top_k:][::-1]
+            step_candidates.append([
+                {"id": int(idx), "prob": round(float(step_probs[idx]), 4)}
+                for idx in top_indices
+            ])
+
+        return {
+            "attention": [[round(float(val), 4) for val in row] for row in attn_matrix],
+            "step_candidates": step_candidates,
+        }
+
     def generate(self, prompt_ids, max_new_tokens, eos_id, *, temperature=0.0, top_p=0.9, repetition_penalty=1.0):
         result = list(prompt_ids)
         for _ in range(max_new_tokens):
@@ -171,6 +203,31 @@ class TorchLoRA:
         import torch
         with torch.no_grad():
             return self._logits(torch.tensor(ids, dtype=torch.long, device=self.base.device))
+
+    def inspect_sequence(self, ids, top_k=3):
+        import torch
+        orig_weights = {
+            k: v.clone()
+            for k, v in self.base.model.named_parameters()
+            if any(k.startswith(p[:-2]) for p in self.adapter if p.endswith(".A"))
+        }
+        try:
+            with torch.no_grad():
+                for name in self.adapter:
+                    if name.endswith(".A"):
+                        prefix = name[:-2]
+                        weight_name = prefix + ".weight"
+                        delta = self.scale * (self.adapter[prefix + ".B"] @ self.adapter[name])
+                        for k, v in self.base.model.named_parameters():
+                            if k == weight_name:
+                                v.add_(delta.to(v.device))
+                tensor_ids = torch.tensor([ids], dtype=torch.long, device=self.base.device)
+                return self.base.model.inspect_sequence(tensor_ids, top_k=top_k)
+        finally:
+            with torch.no_grad():
+                for k, v in self.base.model.named_parameters():
+                    if k in orig_weights:
+                        v.copy_(orig_weights[k])
 
     def generate(self, prompt_ids, max_new_tokens, eos_id, *, temperature=0.0, top_p=0.9, repetition_penalty=1.0):
         result = list(prompt_ids)

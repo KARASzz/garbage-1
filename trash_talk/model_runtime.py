@@ -250,8 +250,59 @@ class ModelRuntime:
             if not text.strip():
                 raise RuntimeError("模型生成了空输出")
             status = self.status()
-            return {"text": text, "theme": theme_choice, "id": uuid.uuid4().hex, "block_count": 0,
-                    "model": status, "prompt": prefix_text, "generated_tokens": len(ids) - len(prompt)}
+
+            microscope = None
+            if hasattr(self.backend, "inspect_sequence"):
+                try:
+                    inspect = self.backend.inspect_sequence(ids, top_k=3)
+                    A = inspect.get("attention")
+                    cands = inspect.get("step_candidates", [])
+                    visible_indices = []
+                    visible_chars = []
+                    for idx, token_id in enumerate(ids):
+                        char = self.tokenizer.decode([token_id])
+                        if char:
+                            visible_indices.append(idx)
+                            visible_chars.append(char)
+
+                    if visible_chars and A:
+                        attentions = []
+                        top_candidates = []
+                        for i, (idx_i, char) in enumerate(zip(visible_indices, visible_chars)):
+                            raw = [A[idx_i][visible_indices[j]] for j in range(i + 1)]
+                            s = sum(raw)
+                            norm = [round(w / s, 3) for w in raw] if s > 0 else [round(1 / (i + 1), 3)] * (i + 1)
+                            attentions.append(norm)
+
+                            step_cands = cands[idx_i] if idx_i < len(cands) else []
+                            mapped_cands = [
+                                {
+                                    "char": self.tokenizer.decode([c["id"]]) or f"<{c['id']}>",
+                                    "prob": round(float(c["prob"]), 3),
+                                }
+                                for c in step_cands
+                            ]
+                            top_candidates.append(mapped_cands)
+
+                        microscope = {
+                            "chars": visible_chars,
+                            "attentions": attentions,
+                            "top_candidates": top_candidates,
+                        }
+                except Exception:
+                    LOGGER.warning("Microscope inspection failed", exc_info=True)
+                    microscope = None
+
+            return {
+                "text": text,
+                "theme": theme_choice,
+                "id": uuid.uuid4().hex,
+                "block_count": 0,
+                "model": status,
+                "prompt": prefix_text,
+                "generated_tokens": len(ids) - len(prompt),
+                "microscope": microscope,
+            }
 
     def preference_context(self, result):
         """Call under lock with generation so prompt and reference describe the same weights."""

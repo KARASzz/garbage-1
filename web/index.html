@@ -35,8 +35,9 @@
             <section class="display-glass" aria-label="垃圾话显示屏">
               <div class="display-meta">
                 <span class="signal-state"><i class="signal-dot" aria-hidden="true"></i><span id="screenStatus" aria-live="polite">READY · 等你开口</span></span>
-                <span class="channel-mark" aria-hidden="true">CH&nbsp;01</span>
+                <span class="channel-mark" id="channelMark" aria-hidden="true">CH&nbsp;01</span>
               </div>
+              <div class="microscope-popover" id="microscopePopover" hidden aria-hidden="true"></div>
               <p class="message" id="message" contenteditable="false" role="status" aria-live="polite" aria-atomic="true">系统已就绪，等你嘴硬。</p>
               <div class="feedback-panel" id="feedbackPanel" hidden>
                 <div class="feedback-actions" role="group" aria-label="评价这条垃圾话">
@@ -64,8 +65,17 @@
           </div>
 
           <div class="prompt-row">
-            <label class="visually-hidden" for="promptInput">指定开头或挑衅前缀</label>
-            <input class="prompt-input" id="promptInput" type="text" maxlength="64" placeholder="指定开头 / 挑衅它（如：人吃了毒药、虽然你很有钱；留空随机）" autocomplete="off">
+            <div class="prompt-input-wrapper">
+              <label class="visually-hidden" for="promptInput">指定开头或挑衅前缀</label>
+              <input class="prompt-input" id="promptInput" type="text" maxlength="64" placeholder="指定开头 / 挑衅它（如：人吃了毒药、虽然你很有钱；留空随机）" autocomplete="off">
+            </div>
+            <div class="temp-control" title="采样随机度：0.0 确定死板，0.85 适中灵性，1.5 狂野发散">
+              <label class="temp-label" for="tempInput">
+                <span class="temp-title">温度</span>
+                <span class="temp-val" id="tempValue">0.85</span>
+              </label>
+              <input class="temp-slider" id="tempInput" type="range" min="0.0" max="1.5" step="0.05" value="0.85" aria-label="采样温度">
+            </div>
           </div>
 
           <div class="control-row">

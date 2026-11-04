@@ -370,16 +370,16 @@ button {
 }
 
 .message {
-  display: flex;
+  display: block;
   width: 100%;
-  flex: 1 1 auto;
-  align-items: center;
-  margin: 0;
+  flex: 0 0 auto;
+  margin: auto 0;
   color: var(--phosphor);
   font-size: clamp(0.95rem, 2.1vw, 1.5rem);
   font-weight: 620;
   letter-spacing: 0.015em;
   line-height: 1.38;
+  word-break: break-word;
   overflow-wrap: anywhere;
   text-shadow: 0 0 5px rgba(154, 248, 169, 0.4), 0 0 21px rgba(94, 221, 117, 0.17);
   text-wrap: pretty;
@@ -393,6 +393,104 @@ button {
   border-radius: 4px;
   outline: 1px solid rgba(185, 240, 191, 0.72);
   outline-offset: 6px;
+}
+
+.attn-char {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 0 1.5px;
+  margin: 0;
+  transition: background-color 140ms ease, box-shadow 140ms ease, color 140ms ease, transform 100ms ease;
+  user-select: text;
+}
+
+.attn-char:hover,
+.attn-char.is-hovered {
+  color: #ffffff;
+  background-color: rgba(140, 240, 160, 0.4);
+  box-shadow: 0 0 8px rgba(160, 255, 175, 0.75);
+  outline: 1px solid rgba(190, 255, 200, 0.85);
+  transform: translateY(-1px);
+}
+
+.attn-char.is-attended {
+  background-color: rgba(240, 185, 75, calc(var(--attn-alpha, 0) * 0.72));
+  box-shadow: 0 0 calc(var(--attn-alpha, 0) * 11px) rgba(255, 205, 100, calc(var(--attn-alpha, 0) * 0.85));
+  color: #fffdec;
+}
+
+.microscope-popover {
+  position: absolute;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 9px;
+  border: 1px solid rgba(145, 235, 160, 0.65);
+  border-radius: 5px;
+  background: rgba(10, 28, 16, 0.95);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.6), 0 0 10px rgba(95, 225, 120, 0.28);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 9.5px;
+  color: #d8fada;
+  pointer-events: none;
+  white-space: nowrap;
+  backdrop-filter: blur(4px);
+  transform: translate(-50%, -100%);
+  margin-top: -6px;
+  opacity: 1;
+  transition: opacity 160ms ease;
+}
+
+.microscope-popover[hidden] {
+  display: none !important;
+}
+
+.microscope-popover.is-fading {
+  opacity: 0;
+}
+
+.microscope-popover::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: var(--arrow-left, 50%);
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid rgba(145, 235, 160, 0.65);
+}
+
+.microscope-popover.is-below {
+  transform: translate(-50%, 0);
+  margin-top: 0;
+}
+
+.microscope-popover.is-below::after {
+  top: -4px;
+  bottom: auto;
+  border-top: none;
+  border-bottom: 4px solid rgba(145, 235, 160, 0.65);
+}
+
+.microscope-popover .cand-item {
+  display: inline-flex;
+  gap: 3px;
+  align-items: baseline;
+}
+
+.microscope-popover .cand-char {
+  color: #7aff96;
+  font-weight: 700;
+}
+
+.microscope-popover .cand-prob {
+  color: #8fa895;
+  font-size: 8px;
 }
 
 .display-footer {
@@ -504,7 +602,15 @@ button {
 }
 
 .prompt-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin: 5px 4px 2px;
+}
+
+.prompt-input-wrapper {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .prompt-input {
@@ -530,6 +636,81 @@ button {
   border-color: rgba(72, 120, 75, 0.75);
   background: rgba(245, 248, 235, 0.95);
   box-shadow: 0 0 0 2px rgba(80, 140, 85, 0.15);
+}
+
+.temp-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 0 9px;
+  height: 28px;
+  border: 1px solid rgba(80, 105, 80, 0.35);
+  border-radius: 6px;
+  background: rgba(235, 238, 222, 0.65);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.temp-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 8px;
+  font-weight: 700;
+  color: #52604d;
+  white-space: nowrap;
+  user-select: none;
+  cursor: pointer;
+}
+
+.temp-title {
+  letter-spacing: 0.05em;
+}
+
+.temp-val {
+  color: #274026;
+  font-weight: 800;
+  min-width: 24px;
+}
+
+.temp-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 90px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(90, 110, 85, 0.32);
+  outline: none;
+  cursor: pointer;
+  margin: 0;
+}
+
+.temp-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #718868, #45573e);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: transform 100ms ease;
+}
+
+.temp-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.temp-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #718868, #45573e);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
 }
 
 .control-row {
@@ -660,12 +841,11 @@ button {
 
 .style-select-group {
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
+  align-self: start;
   row-gap: 4px;
-  column-gap: 8px;
   min-width: 0;
-  flex: 0 0 auto;
 }
 
 .style-select-label {
@@ -680,11 +860,11 @@ button {
 }
 
 .style-select {
-  grid-column: 2;
-  grid-row: 1;
+  grid-column: 1;
+  grid-row: 2;
   width: 245px;
-  min-width: 220px;
-  max-width: 260px;
+  min-width: 0;
+  max-width: 100%;
   min-height: 27px;
   padding: 0 20px 0 8px;
   border: 1px solid rgba(77, 94, 72, 0.48);
@@ -702,8 +882,8 @@ button {
 }
 
 .sync-button {
-  grid-column: 2;
-  grid-row: 2;
+  grid-column: 1;
+  grid-row: 3;
   justify-self: start;
   display: inline-flex;
   min-height: 24px;
@@ -1061,7 +1241,24 @@ button {
   }
 
   .prompt-row {
+    flex-wrap: wrap;
+    gap: 6px;
     margin: 4px 2px 2px;
+  }
+
+  .prompt-input-wrapper {
+    flex: 1 1 100%;
+  }
+
+  .temp-control {
+    width: 100%;
+    justify-content: space-between;
+    height: 26px;
+  }
+
+  .temp-slider {
+    flex: 1 1 auto;
+    width: auto;
   }
 
   .prompt-input {

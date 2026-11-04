@@ -9,6 +9,8 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from contextlib import nullcontext
+import math
+import numpy as np
 import string
 import unicodedata
 from typing import Callable, Mapping, Sequence
@@ -503,6 +505,60 @@ class _DenseTransformer(nn.Module):
             self.aux_loss = torch.stack(auxiliary_losses).sum() if auxiliary_losses else None
             value = self.final_ln(value)
             return F.linear(value, self.lm_head.weight, self.lm_bias)
+
+    @torch.no_grad()
+    def inspect_sequence(self, ids: Tensor, top_k: int = 3) -> dict:
+        if ids.ndim != 2 or ids.shape[1] == 0:
+            raise ValueError("ids 必须是非空的 [B,T] token ID 张量")
+        length = ids.shape[1]
+        positions = torch.arange(length, device=ids.device)
+        value = self.token_embedding(ids) + self.position_embedding(positions)[None, :, :]
+        last_probabilities = None
+
+        causal_mask = torch.ones((length, length), device=ids.device, dtype=torch.bool).tril()
+        for block in self.blocks:
+            batch, blen, width = value.shape
+            qkv = block.qkv(block.ln1(value)).view(
+                batch, blen, 3, block.heads, block.head_dim
+            )
+            query, key, val = qkv.unbind(dim=2)
+            query = query.transpose(1, 2)
+            key = key.transpose(1, 2)
+            val = val.transpose(1, 2)
+
+            scores = (query @ key.transpose(-2, -1)) * (1.0 / math.sqrt(block.head_dim))
+            scores = scores.masked_fill(~causal_mask[None, None, :, :], float("-inf"))
+            probabilities = F.softmax(scores, dim=-1)
+            last_probabilities = probabilities
+
+            attended = (probabilities @ val).transpose(1, 2).contiguous().view(batch, blen, width)
+            value = value + block.attn_out(attended)
+            ffn_result = block.ffn(block.ln2(value))
+            hidden = ffn_result[0] if isinstance(ffn_result, tuple) else ffn_result
+            value = value + hidden
+
+        logits = F.linear(self.final_ln(value), self.lm_head.weight, self.lm_bias)
+        attn_matrix = last_probabilities[0].mean(dim=0).cpu().numpy()
+        logits_np = logits[0].cpu().numpy()
+
+        step_candidates = []
+        for t in range(length):
+            if t == 0:
+                step_candidates.append([])
+                continue
+            step_logits = logits_np[t - 1]
+            exp_logits = np.exp(step_logits - np.max(step_logits))
+            step_probs = exp_logits / np.sum(exp_logits)
+            top_indices = np.argsort(step_probs)[-top_k:][::-1]
+            step_candidates.append([
+                {"id": int(idx), "prob": round(float(step_probs[idx]), 4)}
+                for idx in top_indices
+            ])
+
+        return {
+            "attention": [[round(float(val), 4) for val in row] for row in attn_matrix],
+            "step_candidates": step_candidates,
+        }
 
 
 def _build_dense_transformer(config: ModelConfig) -> nn.Module:
